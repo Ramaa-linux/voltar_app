@@ -1,0 +1,42 @@
+name: voltar
+description: "VoltAR — aplikasi pembelajaran elektronika (Arduino/ESP) untuk siswa SMK."
+publish_to: 'none'
+
+# version: <build-name>+<build-number>
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.9
+  flutter_riverpod: ^3.4.3
+  go_router: ^18.1.1
+  flutter_svg: ^2.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Fase 2: ikon Lucide 24x24 (ISC). Lisensi: assets/licenses/ISC-Lucide.txt
+  assets:
+    - assets/icons/
+
+  # Fase 0: font dibundel (offline-first, tanpa google_fonts runtime fetch).
+  # Lisensi: assets/licenses/OFL-PlusJakartaSans.txt
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
+          weight: 700
