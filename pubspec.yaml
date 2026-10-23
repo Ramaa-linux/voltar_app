@@ -16,6 +16,7 @@ dependencies:
   flutter_riverpod: ^3.4.3
   go_router: ^18.1.1
   flutter_svg: ^2.3.0
+  avr8_dart: ^0.1.0
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +29,7 @@ flutter:
   # Fase 2: ikon Lucide 24x24 (ISC). Lisensi: assets/licenses/ISC-Lucide.txt
   assets:
     - assets/icons/
+    - assets/hex/
 
   # Fase 0: font dibundel (offline-first, tanpa google_fonts runtime fetch).
   # Lisensi: assets/licenses/OFL-PlusJakartaSans.txt

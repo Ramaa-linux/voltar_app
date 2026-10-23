@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:voltar/pages/home/home_page.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
 import 'package:voltar/pages/profil/profil_page.dart';
+import 'package:voltar/pages/simulasi/avr_debug_page.dart';
 import 'package:voltar/pages/simulasi/simulasi_editor_page.dart';
 import 'package:voltar/pages/simulasi/simulasi_page.dart';
 import 'package:voltar/router/app_routes.dart';
@@ -106,6 +107,13 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
             ],
           ),
         ],
+      ),
+      // Halaman uji mesin AVR: top-level route, jadi tampil penuh tanpa
+      // VoltFloatingNavBar (sama seperti editor simulasi).
+      GoRoute(
+        path: AppRoutes.avrDebug,
+        builder: (BuildContext context, GoRouterState state) =>
+            const AvrDebugPage(),
       ),
     ],
   );

@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.1"
+  avr8_dart:
+    dependency: "direct main"
+    description:
+      name: avr8_dart
+      sha256: "0abb3aeec58b93a47b9213cdcd9542c4032c32ffb98699d06de62bcd73fe6379"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   boolean_selector:
     dependency: transitive
     description:

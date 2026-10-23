@@ -11,6 +11,9 @@ abstract final class AppRoutes {
   /// Editor yang langsung dimuat dengan template Blink LED.
   static const String simulasiTemplateBlink = '/simulasi/template/blink';
 
+  /// Halaman uji coba mesin AVR native (Fase 5A). Sementara, bukan nav utama.
+  static const String avrDebug = '/debug-avr';
+
   /// Editor untuk project yang sudah ada. Nama project dikirim sebagai query
   /// supaya editor tidak perlu state tambahan di router.
   static String simulasiEditorFor(String projectName) => Uri(

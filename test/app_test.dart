@@ -224,6 +224,26 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('createAppRouter membuka halaman uji mesin AVR', (
+    WidgetTester tester,
+  ) async {
+    final GoRouter router = createAppRouter(
+      initialLocation: AppRoutes.avrDebug,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pin 13: LOW'), findsOneWidget);
+    expect(find.text('Start'), findsOneWidget);
+    expect(find.text('Stop'), findsOneWidget);
+    expect(find.byType(VoltFloatingNavBar), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
   test('theme memakai token warna dan font VoltAR', () {
     final ThemeData theme = AppTheme.light;
 

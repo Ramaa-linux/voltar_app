@@ -12,13 +12,14 @@ Flutter, offline-first: font dan ikon dibundel, tanpa fetch aset saat runtime.
 | 2 | Komponen dasar (ikon Lucide, tombol, kartu, chip, nav bar) | Selesai |
 | 3 | Navigasi 4 tab + halaman dengan data dummy | Selesai |
 | 4 | Dashboard simulasi + editor placeholder | Selesai |
-| 5 | WebView Wokwi + simulasi rangkaian 2D | Berikutnya |
+| 5 | Mesin simulasi AVR native + rangkaian 2D | Berjalan |
 | 6 | Materi interaktif + detail materi | Rencana |
 | 7 | Mode AR | Rencana |
 
-Fase 4 belum memakai backend, AR, atau mesin simulasi. Semua angka dan daftar
-project adalah data contoh di `lib/pages/`. Editor simulasi masih placeholder
-dan akan memuat WebView Wokwi di Fase 5.
+Fase 5A selesai: `avr8_dart` menjalankan `assets/hex/blink.hex` di isolate
+terpisah dan hasilnya bisa dilihat di route `/debug-avr`. Belum ada backend,
+AR, atau Wokwi. Semua angka dan daftar project adalah data contoh di
+`lib/pages/`. Editor simulasi masih placeholder sampai rangkaian 2D masuk.
 
 ## Struktur
 
@@ -27,13 +28,16 @@ lib/
   app.dart              MaterialApp.router + tema global
   router/               app_router.dart (4 branch), app_routes.dart
   shell/app_shell.dart  satu Scaffold + VoltFloatingNavBar
-  pages/                home, materi, simulasi (dashboard + editor), profil
+  pages/                home, materi, simulasi (dashboard + editor + debug AVR),
+                        profil
+  services/             parser Intel HEX, AvrMachine, AvrService (isolate)
   theme/                token: colors, spacing, typography, borders, gradients
   widgets/              AppIcon, VoltButton, VoltCard, VoltChip, nav bar,
                         PressScale, DashedBorderBox
   utils/                feedback SnackBar
 assets/
   fonts/                Plus Jakarta Sans (OFL)
+  hex/                  program AVR uji coba (blink.hex)
   icons/                Lucide 24x24 (ISC)
   licenses/             teks lisensi
 ```
