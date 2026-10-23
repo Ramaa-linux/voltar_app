@@ -12,7 +12,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_theme.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/app_icon.dart';
-import 'package:voltar/widgets/circuit_canvas.dart';
+import 'package:voltar/widgets/arduino_painter.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_floating_nav_bar.dart';
 
@@ -264,7 +264,7 @@ void main() {
     expect(
       find.byWidgetPredicate(
         (Widget widget) =>
-            widget is CustomPaint && widget.painter is CircuitCanvas,
+            widget is CustomPaint && widget.painter is ArduinoPainter,
       ),
       findsOneWidget,
     );

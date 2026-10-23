@@ -35,7 +35,7 @@ lib/
                         isolate/timer), AvrService (stream pin + aset hex)
   theme/                token: colors, spacing, typography, borders, gradients
   widgets/              AppIcon, VoltButton, VoltCard, VoltChip, nav bar,
-                        PressScale, DashedBorderBox, CircuitCanvas
+                        PressScale, DashedBorderBox, ArduinoPainter
   utils/                feedback SnackBar
 assets/
   fonts/                Plus Jakarta Sans (OFL)

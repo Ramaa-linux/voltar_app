@@ -9,7 +9,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/app_icon.dart';
-import 'package:voltar/widgets/circuit_canvas.dart';
+import 'package:voltar/widgets/arduino_painter.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_chip.dart';
 
@@ -153,7 +153,14 @@ class _CanvasDebugPageState extends State<CanvasDebugPage> {
                                         'LED pin ${CanvasDebugPage.watchedPin} '
                                         '${isHigh ? 'menyala' : 'mati'}',
                                     child: CustomPaint(
-                                      painter: CircuitCanvas(isLedOn: isHigh),
+                                      isComplex: true,
+                                      willChange: false,
+                                      painter: ArduinoPainter(
+                                        scene: ArduinoScene(
+                                          isLedOn: isHigh,
+                                          activePin: CanvasDebugPage.watchedPin,
+                                        ),
+                                      ),
                                       child: const SizedBox.expand(),
                                     ),
                                   ),
