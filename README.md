@@ -30,7 +30,8 @@ lib/
   shell/app_shell.dart  satu Scaffold + VoltFloatingNavBar
   pages/                home, materi, simulasi (dashboard + editor + debug AVR),
                         profil
-  services/             parser Intel HEX, AvrMachine, AvrService (isolate)
+  services/             parser Intel HEX, AvrMachine, AvrEngine (siklus hidup
+                        isolate/timer), AvrService (stream pin + aset hex)
   theme/                token: colors, spacing, typography, borders, gradients
   widgets/              AppIcon, VoltButton, VoltCard, VoltChip, nav bar,
                         PressScale, DashedBorderBox

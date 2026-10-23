@@ -14,13 +14,13 @@ import 'package:voltar/widgets/volt_chip.dart';
 
 /// Halaman uji coba mesin AVR native (Fase 5A).
 ///
-/// Menjalankan `assets/hex/blink.hex` lewat [AvrService] lalu menampilkan
-/// status pin 13. Halaman sementara untuk verifikasi, bukan alur siswa.
+/// Semua data pin datang dari [AvrService.watchPin]. Halaman tidak membuat
+/// isolate, timer, atau membaca aset hex sendiri.
 class AvrDebugPage extends StatefulWidget {
   const AvrDebugPage({super.key});
 
   /// Pin LED bawaan Arduino Uno (PB5).
-  static const int watchedPin = 13;
+  static const int watchedPin = AvrService.blinkPin;
 
   @override
   State<AvrDebugPage> createState() => _AvrDebugPageState();
@@ -28,10 +28,11 @@ class AvrDebugPage extends StatefulWidget {
 
 class _AvrDebugPageState extends State<AvrDebugPage> {
   final AvrService _service = AvrService();
-  StreamSubscription<int>? _pinSubscription;
+  late final Stream<int> _pinStream = _service.watchPin(
+    AvrDebugPage.watchedPin,
+  );
   StreamSubscription<String>? _errorSubscription;
 
-  int _pinValue = 0;
   bool _running = false;
   bool _starting = false;
   String? _error;
@@ -39,14 +40,6 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
   @override
   void initState() {
     super.initState();
-    _pinSubscription = _service
-        .watchPin(AvrDebugPage.watchedPin)
-        .listen((int value) {
-          if (!mounted) {
-            return;
-          }
-          setState(() => _pinValue = value);
-        });
     _errorSubscription = _service.errors.listen((String message) {
       if (!mounted) {
         return;
@@ -60,7 +53,6 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
 
   @override
   void dispose() {
-    _pinSubscription?.cancel();
     _errorSubscription?.cancel();
     unawaited(_service.dispose());
     super.dispose();
@@ -101,16 +93,13 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isHigh = _pinValue == 1;
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           tooltip: 'Kembali',
           icon: const AppIcon.arrowLeft(color: AppColors.textPrimary),
-          onPressed: () => context.canPop()
-              ? context.pop()
-              : context.go(AppRoutes.simulasi),
+          onPressed: () =>
+              context.canPop() ? context.pop() : context.go(AppRoutes.simulasi),
         ),
         title: const Text('Debug AVR'),
       ),
@@ -123,10 +112,12 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Text('Mesin AVR native', style: AppTypography.label),
+                  Text('Mesin simulasi', style: AppTypography.heading),
                   const Spacer(),
                   VoltChip(
-                    label: _running ? 'Berjalan' : 'Berhenti',
+                    label: _running
+                        ? (_service.runsInIsolate ? 'Isolate' : 'Timer')
+                        : 'Berhenti',
                     status: _running
                         ? VoltChipStatus.done
                         : VoltChipStatus.locked,
@@ -136,48 +127,14 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
               const SizedBox(height: AppSpacing.lg),
               Expanded(
                 child: Center(
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.xl,
-                      vertical: AppSpacing.xxl,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isHigh
-                          ? AppColors.successLight
-                          : AppColors.surface,
-                      borderRadius: BorderRadius.circular(AppRadius.card),
-                      border: AppBorders.standard,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        AppIcon(
-                          AppIconName.lightbulb,
-                          size: AppIconSize.lg,
-                          color: isHigh
-                              ? AppColors.success
-                              : AppColors.textTertiary,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          'Pin ${AvrDebugPage.watchedPin}: '
-                          '${isHigh ? 'HIGH' : 'LOW'}',
-                          textAlign: TextAlign.center,
-                          style: AppTypography.display.copyWith(
-                            color: isHigh
-                                ? AppColors.success
-                                : AppColors.textSecondary,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'blink.hex - ATmega328P @16 MHz',
-                          textAlign: TextAlign.center,
-                          style: AppTypography.caption,
-                        ),
-                      ],
-                    ),
+                  child: StreamBuilder<int>(
+                    stream: _pinStream,
+                    initialData:
+                        _service.pinValue(AvrDebugPage.watchedPin) ?? 0,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<int> snapshot) {
+                          return _PinStatusCard(isHigh: snapshot.data == 1);
+                        },
                   ),
                 ),
               ),
@@ -212,6 +169,53 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Kartu status pin 13. Dipisah supaya pembacaan snapshot tetap ringkas.
+class _PinStatusCard extends StatelessWidget {
+  const _PinStatusCard({required this.isHigh});
+
+  final bool isHigh;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xl,
+        vertical: AppSpacing.xxl,
+      ),
+      decoration: BoxDecoration(
+        color: isHigh ? AppColors.successLight : AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        border: AppBorders.standard,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          AppIcon(
+            AppIconName.lightbulb,
+            size: AppIconSize.lg,
+            color: isHigh ? AppColors.success : AppColors.textTertiary,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            'Pin ${AvrDebugPage.watchedPin}: ${isHigh ? 'HIGH' : 'LOW'}',
+            textAlign: TextAlign.center,
+            style: AppTypography.display.copyWith(
+              color: isHigh ? AppColors.success : AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'blink.hex - ATmega328P @16 MHz',
+            textAlign: TextAlign.center,
+            style: AppTypography.caption,
+          ),
+        ],
       ),
     );
   }
