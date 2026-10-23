@@ -12,6 +12,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_theme.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/app_icon.dart';
+import 'package:voltar/widgets/circuit_canvas.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_floating_nav_bar.dart';
 
@@ -103,9 +104,7 @@ void main() {
   testWidgets('createAppRouter membuka tab lewat initialLocation', (
     WidgetTester tester,
   ) async {
-    final GoRouter router = createAppRouter(
-      initialLocation: AppRoutes.profil,
-    );
+    final GoRouter router = createAppRouter(initialLocation: AppRoutes.profil);
     addTearDown(router.dispose);
 
     await tester.pumpWidget(
@@ -151,7 +150,9 @@ void main() {
   ) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(body: Center(child: VoltButton(label: 'Nonaktif'))),
+        home: Scaffold(
+          body: Center(child: VoltButton(label: 'Nonaktif')),
+        ),
       ),
     );
 
@@ -240,6 +241,33 @@ void main() {
     expect(find.text('Pin 13: LOW'), findsOneWidget);
     expect(find.text('Start'), findsOneWidget);
     expect(find.text('Stop'), findsOneWidget);
+    expect(find.byType(VoltFloatingNavBar), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('createAppRouter membuka halaman canvas 2D', (
+    WidgetTester tester,
+  ) async {
+    final GoRouter router = createAppRouter(
+      initialLocation: AppRoutes.canvasDebug,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Rangkaian Blink'), findsOneWidget);
+    expect(find.text('Pin 13: LOW'), findsOneWidget);
+    expect(find.text('Start'), findsOneWidget);
+    expect(find.text('Stop'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (Widget widget) =>
+            widget is CustomPaint && widget.painter is CircuitCanvas,
+      ),
+      findsOneWidget,
+    );
     expect(find.byType(VoltFloatingNavBar), findsNothing);
     expect(tester.takeException(), isNull);
   });

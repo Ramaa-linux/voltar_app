@@ -43,6 +43,22 @@ abstract final class AppColors {
   static const Color error = Color(0xFFEF4444);
   static const Color errorLight = Color(0xFFFEE2E2);
 
+  // --- Rangkaian 2D ---
+  /// Badan papan Arduino pada canvas simulator (teal gelap).
+  ///
+  /// Alias token brand supaya hex tetap satu sumber: mengubah [primaryDark]
+  /// otomatis mengubah warna papan.
+  static const Color circuitBoard = primaryDark;
+
+  /// Kabel jumper pin 13 -> LED.
+  static const Color circuitWire = success;
+
+  /// LED saat pin HIGH (menyala).
+  static const Color ledOn = error;
+
+  /// LED saat pin LOW (mati).
+  static const Color ledOff = borderStrong;
+
   // --- Elevasi ---
   /// Basis shadow; selalu dipakai dengan opacity rendah (maks 0.18).
   static const Color shadow = Color(0xFF111827);

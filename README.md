@@ -16,10 +16,11 @@ Flutter, offline-first: font dan ikon dibundel, tanpa fetch aset saat runtime.
 | 6 | Materi interaktif + detail materi | Rencana |
 | 7 | Mode AR | Rencana |
 
-Fase 5A selesai: `avr8_dart` menjalankan `assets/hex/blink.hex` di isolate
-terpisah dan hasilnya bisa dilihat di route `/debug-avr`. Belum ada backend,
-AR, atau Wokwi. Semua angka dan daftar project adalah data contoh di
-`lib/pages/`. Editor simulasi masih placeholder sampai rangkaian 2D masuk.
+Fase 5A berjalan: `avr8_dart` menjalankan `assets/hex/blink.hex` di isolate
+terpisah, hasilnya bisa dilihat di route `/debug-avr`, dan rangkaian 2D-nya di
+`/debug-canvas` (papan, kabel, LED yang berkedip mengikuti pin 13). Belum ada
+backend, AR, atau Wokwi. Semua angka dan daftar project adalah data contoh di
+`lib/pages/`. Editor simulasi masih placeholder sampai editor rangkaian masuk.
 
 ## Struktur
 
@@ -28,13 +29,13 @@ lib/
   app.dart              MaterialApp.router + tema global
   router/               app_router.dart (4 branch), app_routes.dart
   shell/app_shell.dart  satu Scaffold + VoltFloatingNavBar
-  pages/                home, materi, simulasi (dashboard + editor + debug AVR),
-                        profil
+  pages/                home, materi, simulasi (dashboard + editor + debug AVR +
+                        debug canvas), profil
   services/             parser Intel HEX, AvrMachine, AvrEngine (siklus hidup
                         isolate/timer), AvrService (stream pin + aset hex)
   theme/                token: colors, spacing, typography, borders, gradients
   widgets/              AppIcon, VoltButton, VoltCard, VoltChip, nav bar,
-                        PressScale, DashedBorderBox
+                        PressScale, DashedBorderBox, CircuitCanvas
   utils/                feedback SnackBar
 assets/
   fonts/                Plus Jakarta Sans (OFL)

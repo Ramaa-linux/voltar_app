@@ -5,6 +5,7 @@ import 'package:voltar/pages/home/home_page.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
 import 'package:voltar/pages/profil/profil_page.dart';
 import 'package:voltar/pages/simulasi/avr_debug_page.dart';
+import 'package:voltar/pages/simulasi/canvas_debug_page.dart';
 import 'package:voltar/pages/simulasi/simulasi_editor_page.dart';
 import 'package:voltar/pages/simulasi/simulasi_page.dart';
 import 'package:voltar/router/app_routes.dart';
@@ -38,12 +39,11 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
     routes: <RouteBase>[
       // IndexedStack: keempat branch tetap hidup, scroll position tidak reset.
       StatefulShellRoute.indexedStack(
-        builder:
-            (
-              BuildContext context,
-              GoRouterState state,
-              StatefulNavigationShell navigationShell,
-            ) => AppShell(navigationShell: navigationShell),
+        builder: (
+          BuildContext context,
+          GoRouterState state,
+          StatefulNavigationShell navigationShell,
+        ) => AppShell(navigationShell: navigationShell),
         branches: <StatefulShellBranch>[
           StatefulShellBranch(
             routes: <RouteBase>[
@@ -114,6 +114,11 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
         path: AppRoutes.avrDebug,
         builder: (BuildContext context, GoRouterState state) =>
             const AvrDebugPage(),
+      ), // Halaman uji canvas 2D: juga top-level, tanpa navbar.
+      GoRoute(
+        path: AppRoutes.canvasDebug,
+        builder: (BuildContext context, GoRouterState state) =>
+            const CanvasDebugPage(),
       ),
     ],
   );

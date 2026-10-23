@@ -14,6 +14,9 @@ abstract final class AppRoutes {
   /// Halaman uji coba mesin AVR native (Fase 5A). Sementara, bukan nav utama.
   static const String avrDebug = '/debug-avr';
 
+  /// Halaman uji canvas 2D rangkaian Blink (Fase 5A Hari 3).
+  static const String canvasDebug = '/debug-canvas';
+
   /// Editor untuk project yang sudah ada. Nama project dikirim sebagai query
   /// supaya editor tidak perlu state tambahan di router.
   static String simulasiEditorFor(String projectName) => Uri(
