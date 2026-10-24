@@ -59,6 +59,36 @@ abstract final class AppColors {
   /// LED saat pin LOW (mati).
   static const Color ledOff = borderStrong;
 
+  /// Kontur/tepi papan, satu tingkat lebih gelap dari [circuitBoard].
+  static const Color circuitBoardDark = Color(0xFF096B5D);
+
+  /// Logam komponen: badan USB, kaki IC, cincin jack DC, kaki LED.
+  static const Color circuitMetal = Color(0xFF9CA3AF);
+
+  /// Logam gelap: outline USB dan bayangan komponen.
+  static const Color circuitMetalDark = Color(0xFF6B7280);
+
+  /// Plastik header pin (dan LED indikator mati).
+  static const Color circuitPinHeader = Color(0xFF1F2937);
+
+  /// Logam pad pin dan detail komponen gelap.
+  static const Color circuitPin = Color(0xFF374151);
+
+  /// Badan IC, soket ICSP, dan jack DC.
+  static const Color circuitChip = Color(0xFF111827);
+
+  /// Outline IC supaya tetap terbaca di atas papan.
+  static const Color circuitChipDark = Color(0xFF0D1117);
+
+  /// Badan kristal osilator.
+  static const Color circuitCrystal = Color(0xFFE5E7EB);
+
+  /// Tombol reset.
+  static const Color circuitReset = Color(0xFFDC2626);
+
+  /// Cincin tombol reset.
+  static const Color circuitResetDark = Color(0xFF7F1D1D);
+
   // --- Elevasi ---
   /// Basis shadow; selalu dipakai dengan opacity rendah (maks 0.18).
   static const Color shadow = Color(0xFF111827);

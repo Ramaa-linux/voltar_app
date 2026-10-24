@@ -11,6 +11,13 @@ const Size _canvasSize = Size(400, 300);
 
 int _channel(double value) => (value * 255).round();
 
+void _expectColor(Color? actual, Color expected) {
+  expect(actual, isNotNull);
+  expect(_channel(actual!.r), _channel(expected.r));
+  expect(_channel(actual.g), _channel(expected.g));
+  expect(_channel(actual.b), _channel(expected.b));
+}
+
 /// Cat [painter] ke gambar RGBA lalu kembalikan warna pada [point].
 Future<Color> _paintAndProbe(ArduinoPainter painter, Offset point) async {
   final ui.PictureRecorder recorder = ui.PictureRecorder();
@@ -76,34 +83,79 @@ void main() {
     expect(a, isNot(c));
   });
 
-  test('geometri pin aktif menempel di tepi kanan papan', () {
-    final Rect board = ArduinoGeometry.boardRect(_canvasSize);
-    final Offset anchor = ArduinoGeometry.pinAnchor(_canvasSize, 13);
+  test('pin 13 punya anchor di header atas, pin asing jatuh ke pin 13', () {
+    final Size size = _canvasSize;
+    final Rect board = ArduinoGeometry.boardBounds(size);
+    final Rect strip = ArduinoGeometry.topHeaderRect(size);
+    final Offset pad13 = ArduinoGeometry.topPinCenter(size, 2);
+    final Offset anchor = ArduinoGeometry.pinAnchor(size, 13);
 
-    expect(anchor.dx, closeTo(board.right, 1e-9));
-    expect(anchor.dy, greaterThan(board.top));
-    expect(anchor.dy, lessThan(board.bottom));
-    // Di luar rentang tetap aman (di-clamp ke pin terakhir).
-    expect(
-      ArduinoGeometry.pinAnchor(_canvasSize, 99),
-      ArduinoGeometry.pinAnchor(
-        _canvasSize,
-        ArduinoGeometry.digitalPinCount - 1,
-      ),
-    );
+    expect(ArduinoGeometry.topPinIndex(13), 2);
+    expect(ArduinoGeometry.topPinIndex(0), 15);
+    expect(anchor.dx, closeTo(pad13.dx, 1e-9));
+    expect(anchor.dy, closeTo(strip.bottom, 1e-9));
+    expect(strip.top, closeTo(board.top, 1e-9));
+    expect(strip.right, lessThan(board.right));
+
+    // Nomor pin di luar rentang tetap aman (fallback ke pin 13).
+    expect(ArduinoGeometry.pinAnchor(size, 99), anchor);
+    expect(ArduinoGeometry.pinAnchor(size, -3), anchor);
   });
 
-  test('label pin digital D0-D13 lalu TX/RX', () {
-    expect(ArduinoGeometry.digitalPinLabel(0), 'D0');
-    expect(ArduinoGeometry.digitalPinLabel(13), 'D13');
-    expect(ArduinoGeometry.digitalPinLabel(14), 'TX');
-    expect(ArduinoGeometry.digitalPinLabel(15), 'RX');
+  test('label header mengikuti silkscreen Uno', () {
+    expect(ArduinoGeometry.topPinLabels.length, ArduinoGeometry.topPinCount);
+    expect(
+      ArduinoGeometry.powerPinLabels.length,
+      ArduinoGeometry.powerPinCount,
+    );
+    expect(
+      ArduinoGeometry.analogPinLabels.length,
+      ArduinoGeometry.analogPinCount,
+    );
+    expect(ArduinoGeometry.topPinLabels.first, 'AREF');
+    expect(ArduinoGeometry.topPinLabels[2], '13');
+    expect(ArduinoGeometry.topPinLabels.last, 'RX\u21900');
+    expect(ArduinoGeometry.powerPinLabels.first, 'VIN');
+    expect(ArduinoGeometry.powerPinLabels.last, 'IOREF');
+    expect(ArduinoGeometry.analogPinLabels.last, 'A5');
+  });
+
+  test('LED eksternal tidak menimpa IC, ICSP, maupun tepi papan', () {
+    final Size size = _canvasSize;
+    final Rect led = Rect.fromCircle(
+      center: ArduinoGeometry.extLedCenter(size),
+      radius: ArduinoGeometry.extLedRadius(size),
+    );
+
+    expect(led.overlaps(ArduinoGeometry.chipRect(size)), isFalse);
+    for (int i = 0; i < 2; i++) {
+      expect(led.overlaps(ArduinoGeometry.icspRect(size, i)), isFalse);
+    }
+    expect(ArduinoGeometry.boardBounds(size).contains(led.center), isTrue);
+    expect(ArduinoGeometry.boardBounds(size).contains(led.bottomRight), isTrue);
+  });
+
+  test('rute kabel tidak melewati badan IC', () {
+    final List<Offset> points = ArduinoGeometry.wirePoints(_canvasSize, 13);
+    final Rect chip = ArduinoGeometry.chipRect(_canvasSize).inflate(1);
+
+    expect(points.length, 4);
+    for (int i = 0; i < points.length - 1; i++) {
+      for (int step = 0; step <= 50; step++) {
+        final Offset point = Offset.lerp(points[i], points[i + 1], step / 50)!;
+        expect(
+          chip.contains(point),
+          isFalse,
+          reason: 'segmen $i langkah $step di $point',
+        );
+      }
+    }
   });
 
   testWidgets('LED berubah warna mengikuti isLedOn', (
     WidgetTester tester,
   ) async {
-    final Offset led = ArduinoGeometry.ledCenter(_canvasSize);
+    final Offset led = ArduinoGeometry.extLedCenter(_canvasSize);
 
     final Color? on = await tester.runAsync<Color>(
       () => _paintAndProbe(
@@ -120,25 +172,15 @@ void main() {
       ),
     );
 
-    expect(on, isNotNull);
-    expect(off, isNotNull);
-
-    // LED nyala: tepat di pusat memakai token ledOn.
-    expect(_channel(on!.r), _channel(AppColors.ledOn.r));
-    expect(_channel(on.g), _channel(AppColors.ledOn.g));
-    expect(_channel(on.b), _channel(AppColors.ledOn.b));
-
-    // LED mati: memakai token ledOff.
-    expect(_channel(off!.r), _channel(AppColors.ledOff.r));
-    expect(_channel(off.g), _channel(AppColors.ledOff.g));
-    expect(_channel(off.b), _channel(AppColors.ledOff.b));
+    _expectColor(on, AppColors.ledOn);
+    _expectColor(off, AppColors.ledOff);
   });
 
   testWidgets('kabel dari pin aktif memakai token circuitWire', (
     WidgetTester tester,
   ) async {
     final List<Offset> points = ArduinoGeometry.wirePoints(_canvasSize, 13);
-    final Offset midWire = Offset.lerp(points[0], points[1], 0.5)!;
+    final Offset midWire = Offset.lerp(points[1], points[2], 0.5)!;
 
     final Color? wire = await tester.runAsync<Color>(
       () => _paintAndProbe(
@@ -149,9 +191,6 @@ void main() {
       ),
     );
 
-    expect(wire, isNotNull);
-    expect(_channel(wire!.r), _channel(AppColors.circuitWire.r));
-    expect(_channel(wire.g), _channel(AppColors.circuitWire.g));
-    expect(_channel(wire.b), _channel(AppColors.circuitWire.b));
+    _expectColor(wire, AppColors.circuitWire);
   });
 }
