@@ -20,6 +20,8 @@ enum AppIconName {
   battery,
   plus,
   arrowLeft,
+  play,
+  stop,
 }
 
 /// Ukuran ikon standar - jangan pakai angka lepas di widget.
@@ -132,6 +134,20 @@ class AppIcon extends StatelessWidget {
     this.semanticLabel,
   }) : name = AppIconName.arrowLeft;
 
+  const AppIcon.play({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.play;
+
+  const AppIcon.stop({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.stop;
+
   final AppIconName name;
   final double size;
   final Color color;
@@ -153,6 +169,8 @@ class AppIcon extends StatelessWidget {
     AppIconName.battery => 'assets/icons/battery.svg',
     AppIconName.plus => 'assets/icons/plus.svg',
     AppIconName.arrowLeft => 'assets/icons/arrow-left.svg',
+    AppIconName.play => 'assets/icons/play.svg',
+    AppIconName.stop => 'assets/icons/stop.svg',
   };
 
   @override

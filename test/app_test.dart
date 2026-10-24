@@ -173,10 +173,17 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Project Baru'), findsOneWidget);
+    // Kanvas rangkaian + panel kode hidup di halaman yang sama.
     expect(
-      find.text('Area WebView Wokwi akan dimuat di sini (Fase 5).'),
+      find.byWidgetPredicate(
+        (Widget widget) =>
+            widget is CustomPaint && widget.painter is ArduinoPainter,
+      ),
       findsOneWidget,
     );
+    expect(find.text('blink.ino'), findsOneWidget);
+    expect(find.byTooltip('Run'), findsOneWidget);
+    expect(find.byTooltip('Stop'), findsOneWidget);
     expect(find.text('Simpan'), findsOneWidget);
     // Editor tampil di atas shell: navbar tidak dirender.
     expect(find.byType(VoltFloatingNavBar), findsNothing);

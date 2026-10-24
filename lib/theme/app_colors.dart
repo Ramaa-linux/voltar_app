@@ -37,6 +37,15 @@ abstract final class AppColors {
   static const Color textTertiary = Color(0xFF9CA3AF);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
 
+  // --- Editor kode ---
+  /// Latar panel sketch editor simulasi (gelap, seperti IDE).
+  ///
+  /// Alias [textPrimary] agar tetap satu sumber hex.
+  static const Color codeBackground = textPrimary;
+
+  /// Teks sketch di atas [codeBackground].
+  static const Color codeText = background;
+
   // --- Status ---
   static const Color success = Color(0xFF10B981);
   static const Color successLight = Color(0xFFECFDF5);
