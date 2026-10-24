@@ -196,6 +196,69 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('Simpan menampilkan dialog lalu kembali ke dashboard', (
+    WidgetTester tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(navItem('Simulasi'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Blink LED'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Simpan'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Project berhasil disimpan!'), findsOneWidget);
+    expect(find.text('Blink LED tersimpan di perangkat ini.'), findsOneWidget);
+
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Project berhasil disimpan!'), findsNothing);
+    expect(find.text('Project Saya'), findsOneWidget);
+    expect(find.byType(VoltFloatingNavBar), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('tombol kembali menghentikan simulasi sebelum pop', (
+    WidgetTester tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(navItem('Simulasi'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Buat Project Baru'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Run'));
+
+    // Sama seperti tes editor: runAsync agar aset hex + isolate punya waktu
+    // nyata. Jangan pumpAndSettle, stream pin tidak pernah selesai.
+    for (int i = 0; i < 100; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump();
+      final IconButton stop = tester
+          .widgetList<IconButton>(find.byType(IconButton))
+          .firstWhere((IconButton button) => button.tooltip == 'Stop');
+      if (stop.onPressed != null) {
+        break;
+      }
+    }
+
+    expect(find.text('Berhenti'), findsNothing);
+
+    await tester.tap(find.byTooltip('Kembali'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text('Project Saya'), findsOneWidget);
+    expect(find.byType(VoltFloatingNavBar), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('kartu project membuka editor dengan nama project', (
     WidgetTester tester,
   ) async {

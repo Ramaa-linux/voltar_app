@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:voltar/pages/simulasi/simulasi_editor_page.dart';
 import 'package:voltar/theme/app_theme.dart';
 import 'package:voltar/widgets/arduino_painter.dart';
+import 'package:voltar/widgets/grid_background_painter.dart';
 
 void main() {
   /// Pump editor langsung (tanpa router) pada ukuran layar target.
@@ -62,6 +63,55 @@ void main() {
     expect(tester.takeException(), isNull);
 
     // Lepas widget agar AvrService.dispose() menutup stream.
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+  });
+
+  testWidgets('grid sandbox digambar di belakang papan Arduino', (
+    WidgetTester tester,
+  ) async {
+    await pumpEditor(tester);
+
+    final Finder gridPaint = find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is CustomPaint && widget.painter is GridBackgroundPainter,
+    );
+    final Finder boardPaint = find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is CustomPaint && widget.painter is ArduinoPainter,
+    );
+
+    expect(gridPaint, findsOneWidget);
+    // CustomPaint.painter digambar sebelum child, jadi grid harus ancestor
+    // dari papan. Kalau urutan ini terbalik, papan menutupi grid.
+    expect(find.ancestor(of: boardPaint, matching: gridPaint), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump();
+  });
+
+  testWidgets('keyboard muncul tanpa overflow di 390x844', (
+    WidgetTester tester,
+  ) async {
+    await pumpEditor(tester);
+
+    // Tinggi papan ketik Android umum (~300 px) dipotong dari viewport.
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    addTearDown(tester.view.resetViewInsets);
+    await tester.pump();
+
+    expect(tester.takeException(), isNull);
+    expect(tester.getSize(find.byType(TextField)).height, greaterThan(0));
+    // Kanvas tetap ada saat panel kode menyusut.
+    expect(
+      find.byWidgetPredicate(
+        (Widget widget) =>
+            widget is CustomPaint && widget.painter is ArduinoPainter,
+      ),
+      findsOneWidget,
+    );
+
     await tester.pumpWidget(const SizedBox());
     await tester.pump();
   });
