@@ -60,25 +60,25 @@ abstract final class AppColors {
   static const Color ledOff = borderStrong;
 
   /// Kontur/tepi papan, satu tingkat lebih gelap dari [circuitBoard].
-  static const Color circuitBoardDark = Color(0xFF096B5D);
+  static const Color circuitBoardDark = Color(0xFF065A4E);
 
-  /// Logam komponen: badan USB, kaki IC, cincin jack DC, kaki LED.
+  /// Logam komponen: cincin jack DC, kaki LED, dudukan tombol reset.
   static const Color circuitMetal = Color(0xFF9CA3AF);
 
-  /// Logam gelap: outline USB dan bayangan komponen.
-  static const Color circuitMetalDark = Color(0xFF6B7280);
+  /// Logam terang: tab regulator, kaki IC.
+  static const Color circuitMetalLight = Color(0xFFA3A7B5);
 
   /// Plastik header pin (dan LED indikator mati).
   static const Color circuitPinHeader = Color(0xFF1F2937);
 
-  /// Logam pad pin dan detail komponen gelap.
-  static const Color circuitPin = Color(0xFF374151);
+  /// Pad logam pin header (dudukan pin di atas plastik).
+  static const Color circuitPinBox = Color(0xFFD4D4D8);
 
-  /// Badan IC, soket ICSP, dan jack DC.
+  /// Lubang pin pada header dan soket ICSP.
+  static const Color circuitPin = Color(0xFF4B5563);
+
+  /// Badan IC dan soket ICSP.
   static const Color circuitChip = Color(0xFF111827);
-
-  /// Outline IC supaya tetap terbaca di atas papan.
-  static const Color circuitChipDark = Color(0xFF0D1117);
 
   /// Badan kristal osilator.
   static const Color circuitCrystal = Color(0xFFE5E7EB);
@@ -87,7 +87,37 @@ abstract final class AppColors {
   static const Color circuitReset = Color(0xFFDC2626);
 
   /// Cincin tombol reset.
-  static const Color circuitResetDark = Color(0xFF7F1D1D);
+  static const Color circuitResetDark = Color(0xFF991B1B);
+
+  /// Badan konektor USB-B.
+  static const Color circuitUsbBody = Color(0xFFB4B9C6);
+
+  /// Pita logam pada konektor USB-B.
+  static const Color circuitUsbBand = Color(0xFF7C8191);
+
+  /// Cekungan mulut konektor USB-B.
+  static const Color circuitUsbRecess = Color(0xFF8C91A1);
+
+  /// Bayangan/tepi gelap konektor USB-B.
+  static const Color circuitUsbShade = Color(0xFF5E6373);
+
+  /// Flens dudukan USB-B yang menempel papan.
+  static const Color circuitUsbFlange = Color(0xFF6F7485);
+
+  /// Badan jack DC (barrel).
+  static const Color circuitJack = Color(0xFF2A2D3B);
+
+  /// Bibir/ring jack DC.
+  static const Color circuitJackLip = Color(0xFF3B4052);
+
+  /// LED SMD indikator TX/RX (kuning).
+  static const Color circuitLedAmber = Color(0xFFFBBF24);
+
+  /// Cincin LED eksternal saat menyala.
+  static const Color circuitLedRimOn = Color(0xFFB91C1C);
+
+  /// Tepi kabel jumper (lebih gelap dari [circuitWire]).
+  static const Color circuitWireDark = Color(0xFF047857);
 
   // --- Elevasi ---
   /// Basis shadow; selalu dipakai dengan opacity rendah (maks 0.18).

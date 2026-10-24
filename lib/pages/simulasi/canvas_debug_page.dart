@@ -146,7 +146,7 @@ class _CanvasDebugPageState extends State<CanvasDebugPage> {
                           Expanded(
                             child: Center(
                               child: AspectRatio(
-                                aspectRatio: 4 / 3,
+                                aspectRatio: ArduinoGeometry.canvasAspect,
                                 child: RepaintBoundary(
                                   child: Semantics(
                                     label:
@@ -155,12 +155,7 @@ class _CanvasDebugPageState extends State<CanvasDebugPage> {
                                     child: CustomPaint(
                                       isComplex: true,
                                       willChange: false,
-                                      painter: ArduinoPainter(
-                                        scene: ArduinoScene(
-                                          isLedOn: isHigh,
-                                          activePin: CanvasDebugPage.watchedPin,
-                                        ),
-                                      ),
+                                      painter: ArduinoPainter(ledOn: isHigh),
                                       child: const SizedBox.expand(),
                                     ),
                                   ),

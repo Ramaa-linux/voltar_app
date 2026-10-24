@@ -4,83 +4,215 @@ import 'package:flutter/material.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_typography.dart';
 
-/// Satu frame rangkaian Blink: LED menyala atau mati, plus pin yang dipakai.
+/// Papan Arduino Uno 2D untuk canvas Simulator.
 ///
-/// Nilai kecil dan immutable supaya `shouldRepaint` cukup membandingkan dua
-/// field (`==`/`hashCode` diturunkan manual, tanpa paket tambahan).
-@immutable
-class ArduinoScene {
-  const ArduinoScene({required this.isLedOn, required this.activePin});
+/// Semua koordinat memakai satuan desain 1400x1000 (lebar x tinggi papan)
+/// dengan margin kiri 130, atas 170, kanan 330 (kabel + LED), bawah 40.
+/// [ArduinoPainter.paint] menghitung skala "contain" dari
+/// [ArduinoGeometry.canvasAspect] lalu menggambar seluruh komponen di ruang
+/// desain itu, jadi proporsi papan tidak pernah gepeng di ukuran layar apa pun.
+///
+/// Pemakaian:
+/// ```dart
+/// AspectRatio(
+///   aspectRatio: ArduinoGeometry.canvasAspect,
+///   child: CustomPaint(painter: ArduinoPainter(ledOn: isHigh)),
+/// )
+/// ```
+abstract final class ArduinoGeometry {
+  static const double boardWidth = 1400;
+  static const double boardHeight = 1000;
+  static const double marginLeft = 130;
+  static const double marginTop = 170;
+  static const double marginRight = 330;
+  static const double marginBottom = 40;
 
-  /// `true` = pin [activePin] berlogika HIGH, LED menyala.
-  final bool isLedOn;
+  /// Lebar kanvas desain termasuk margin kabel/LED.
+  static const double canvasWidth = marginLeft + boardWidth + marginRight;
 
-  /// Nomor pin digital Arduino (0-13, 14 = TX, 15 = RX).
-  final int activePin;
+  /// Tinggi kanvas desain termasuk margin kabel/LED.
+  static const double canvasHeight = marginTop + boardHeight + marginBottom;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is ArduinoScene &&
-            other.isLedOn == isLedOn &&
-            other.activePin == activePin;
+  /// Rasio kanvas untuk [AspectRatio] halaman simulator (1860 / 1210).
+  static const double canvasAspect = canvasWidth / canvasHeight;
+
+  /// Jarak antar pin header (satuan desain).
+  static const double pinPitch = 54;
+
+  /// Pin digital yang dipantau demo blink (D13 = LED bawaan papan).
+  static const int watchedPin = 13;
+
+  /// Posisi LED eksternal di margin kanan.
+  static const double ledX = 1625;
+  static const double ledY = 340;
+
+  /// Jari-jari cincin LED eksternal.
+  static const double ledRim = 46;
+
+  /// Skala "contain" untuk [size].
+  static double scale(Size size) {
+    if (size.isEmpty) {
+      return 0;
+    }
+    return math.min(size.width / canvasWidth, size.height / canvasHeight);
   }
 
-  @override
-  int get hashCode => Object.hash(isLedOn, activePin);
+  /// Titik kiri-atas kanvas desain setelah di-scale.
+  static Offset canvasOrigin(Size size) {
+    final double k = scale(size);
+    return Offset(
+      (size.width - canvasWidth * k) / 2,
+      (size.height - canvasHeight * k) / 2,
+    );
+  }
 
-  @override
-  String toString() => 'ArduinoScene(isLedOn: $isLedOn, activePin: $activePin)';
+  /// Titik kiri-atas papan (tanpa margin) dalam piksel kanvas.
+  static Offset boardOrigin(Size size) {
+    final double k = scale(size);
+    return canvasOrigin(size) + Offset(marginLeft * k, marginTop * k);
+  }
+
+  /// Persegi papan di kanvas fisik.
+  static Rect boardRect(Size size) {
+    final double k = scale(size);
+    return boardOrigin(size) & Size(boardWidth * k, boardHeight * k);
+  }
+
+  /// Persegi badan IC ATmega328P di kanvas fisik.
+  static Rect chipRect(Size size) {
+    final Offset origin = boardOrigin(size);
+    final double k = scale(size);
+    return Rect.fromLTWH(
+      origin.dx + 609 * k,
+      origin.dy + 582 * k,
+      721 * k,
+      95 * k,
+    );
+  }
+
+  /// Titik tengah LED eksternal di kanvas fisik.
+  static Offset ledCenter(Size size) {
+    final double k = scale(size);
+    return boardOrigin(size) + Offset(ledX * k, ledY * k);
+  }
+
+  /// Koordinat-x pin digital D0..D13 pada baris header atas (satuan desain).
+  static double digitalPinX(int pin) {
+    final int index = pin.clamp(0, 13);
+    return index <= 7 ? 236 + index * pinPitch : 690 + (index - 8) * pinPitch;
+  }
+
+  /// Titik tengah pin digital pada kanvas fisik (untuk uji kabel).
+  static Offset pinCenter(Size size, int pin) {
+    final double k = scale(size);
+    final Offset origin = boardOrigin(size);
+    return Offset(origin.dx + digitalPinX(pin) * k, origin.dy + 50 * k);
+  }
 }
 
-/// Geometri papan Arduino Uno dalam koordinat kanvas.
+/// Menggambar papan Arduino Uno lengkap (USB, jack DC, header pin, IC,
+/// kristal, tombol reset) plus kabel jumper dan LED eksternal di margin kanan.
 ///
-/// Semua ukuran diturunkan dari [Size] (persentase bidang atau `shortestSide`)
-/// supaya gambar tetap proporsional di HP maupun jendela desktop. Fungsi statis
-/// dipakai juga oleh tes piksel, jadi tidak ada angka tersembunyi di `paint`.
-abstract final class ArduinoGeometry {
-  /// Header digital (atas): AREF, GND, lalu D13..D0.
-  static const int topPinCount = 16;
+/// Warna hanya lewat [AppColors] - tidak ada `Color(0x...)` di widget ini.
+class ArduinoPainter extends CustomPainter {
+  ArduinoPainter({this.ledOn = false});
 
-  /// Header POWER di kiri bawah.
-  static const int powerPinCount = 7;
+  /// Status pin [ArduinoGeometry.watchedPin]: `true` = LED menyala.
+  final bool ledOn;
 
-  /// Header ANALOG IN di kanan bawah.
-  static const int analogPinCount = 6;
+  // --- Warna teks silkscreen ---
+  final Color _silkColor = AppColors.textOnPrimary.withValues(alpha: 0.92);
+  final Color _outsideText = AppColors.circuitPinHeader;
+  final Color _outsideMuted = AppColors.circuitPinHeader.withValues(
+    alpha: 0.62,
+  );
 
-  /// Label silkscreen header digital, kiri ke kanan.
-  static const List<String> topPinLabels = <String>[
+  // --- Papan ---
+  final Paint _shadow = _fill(AppColors.shadow.withValues(alpha: 0.34))
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
+  final Paint _boardFill = _fill(AppColors.circuitBoard);
+  final Paint _boardEdge = _line(AppColors.circuitBoardDark, 8);
+  final Paint _silkLine = _line(
+    AppColors.textOnPrimary.withValues(alpha: 0.30),
+    3,
+  );
+
+  // --- Komponen ---
+  final Paint _usbBody = _fill(AppColors.circuitUsbBody);
+  final Paint _usbBand = _fill(AppColors.circuitUsbBand);
+  final Paint _usbRecess = _fill(AppColors.circuitUsbRecess);
+  final Paint _usbShade = _fill(AppColors.circuitUsbShade);
+  final Paint _usbHi = _fill(AppColors.textOnPrimary.withValues(alpha: 0.38));
+  final Paint _usbFlange = _fill(AppColors.circuitUsbFlange);
+  final Paint _dark = _fill(AppColors.circuitPinHeader);
+  final Paint _darker = _fill(AppColors.circuitChip);
+  final Paint _padFill = _fill(AppColors.circuitPinBox);
+  final Paint _holeFill = _fill(AppColors.circuitPin);
+  final Paint _metal = _fill(AppColors.circuitMetalLight);
+  final Paint _metalRing = _fill(AppColors.circuitMetal);
+  final Paint _silver = _fill(AppColors.circuitCrystal);
+  final Paint _silverRing = _line(AppColors.circuitMetal, 5);
+  final Paint _jack = _fill(AppColors.circuitJack);
+  final Paint _jackLip = _fill(AppColors.circuitJackLip);
+  final Paint _smdOff = _fill(AppColors.circuitPinHeader);
+
+  // --- Reset ---
+  final Paint _resetBase = _fill(AppColors.circuitMetal);
+  final Paint _resetBody = _fill(AppColors.circuitReset);
+  final Paint _resetRing = _line(AppColors.circuitResetDark, 7);
+  final Paint _resetHi = _fill(AppColors.textOnPrimary.withValues(alpha: 0.34));
+
+  // --- Kabel & LED ---
+  final Paint _wireEdge = _line(
+    AppColors.circuitWireDark,
+    26,
+    cap: StrokeCap.round,
+  );
+  final Paint _wire = _line(AppColors.circuitWire, 19, cap: StrokeCap.round);
+  final Paint _ledOffFill = _fill(AppColors.ledOff);
+  final Paint _ledOnFill = _fill(AppColors.ledOn);
+  final Paint _ledRimOff = _fill(AppColors.circuitMetal);
+  final Paint _ledRimOn = _fill(AppColors.circuitLedRimOn);
+  final Paint _ledHi = _fill(AppColors.textOnPrimary.withValues(alpha: 0.5));
+  final Paint _ledGlowOuter = _fill(AppColors.ledOn.withValues(alpha: 0.26))
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 46);
+  final Paint _ledGlowInner = _fill(AppColors.ledOn.withValues(alpha: 0.5))
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20);
+  final Paint _statusGlow = _fill(AppColors.ledOn.withValues(alpha: 0.45))
+    ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
+
+  // --- Nama pin ---
+  static const List<String> _leftPins = <String>[
+    'D0',
+    'D1',
+    'D2',
+    'D3',
+    'D4',
+    'D5',
+    'D6',
+    'D7',
+  ];
+  static const List<String> _rightPins = <String>[
+    'D8',
+    'D9',
+    'D10',
+    'D11',
+    'D12',
+    'D13',
+    'GND',
     'AREF',
-    'GND',
-    '13',
-    '12',
-    '11',
-    '10',
-    '9',
-    '8',
-    '7',
-    '6',
-    '5',
-    '4',
-    '3',
-    '2',
-    'TX\u21921',
-    'RX\u21900',
   ];
-
-  /// Label silkscreen header POWER.
-  static const List<String> powerPinLabels = <String>[
-    'VIN',
-    'GND',
-    'GND',
-    '5V',
-    '3V3',
-    'RST',
+  static const List<String> _powerPins = <String>[
     'IOREF',
+    'RESET',
+    '3V3',
+    '5V',
+    'GND',
+    'GND',
+    'VIN',
+    'NC',
   ];
-
-  /// Label silkscreen header ANALOG IN.
-  static const List<String> analogPinLabels = <String>[
+  static const List<String> _analogPins = <String>[
     'A0',
     'A1',
     'A2',
@@ -89,896 +221,618 @@ abstract final class ArduinoGeometry {
     'A5',
   ];
 
-  /// Badan papan: 89% lebar kanvas, 93% tinggi, menyisakan margin tipis.
-  static Rect boardBounds(Size size) {
-    return Rect.fromLTWH(
-      size.width * 0.085,
-      size.height * 0.030,
-      size.width * 0.890,
-      size.height * 0.930,
-    );
-  }
-
-  /// Radius sudut papan.
-  static double boardRadius(Size size) {
-    return math.max(3.0, size.shortestSide * 0.018);
-  }
-
-  /// Panjang potongan diagonal di sudut kanan-atas (khas Uno).
-  static double boardCornerCut(Size size) => boardBounds(size).width * 0.068;
-
-  /// Siluet papan: sudut kanan-atas dipotong diagonal.
-  static Path boardPath(Size size) {
-    final Rect b = boardBounds(size);
-    final double r = boardRadius(size);
-    final double cut = boardCornerCut(size);
-    return Path()
-      ..moveTo(b.left + r, b.top)
-      ..lineTo(b.right - cut, b.top)
-      ..lineTo(b.right, b.top + cut)
-      ..lineTo(b.right, b.bottom - r)
-      ..arcToPoint(Offset(b.right - r, b.bottom), radius: Radius.circular(r))
-      ..lineTo(b.left + r, b.bottom)
-      ..arcToPoint(Offset(b.left, b.bottom - r), radius: Radius.circular(r))
-      ..lineTo(b.left, b.top + r)
-      ..arcToPoint(Offset(b.left + r, b.top), radius: Radius.circular(r))
-      ..close();
-  }
-
-  /// Sisi pad pin. Minimum 4 supaya header 16 pin tetap terlihat.
-  static double pinSize(Size size) => math.max(4.0, size.shortestSide * 0.028);
-
-  /// Jarak antar pusat pad pin.
-  static double pinGap(Size size) => math.max(6.0, size.shortestSide * 0.045);
-
-  /// Tinggi plastik header pin.
-  static double stripHeight(Size size) => pinSize(size) * 1.30;
-
-  /// Plastik header digital, menempel tepi atas papan.
-  static Rect topHeaderRect(Size size) {
-    final Rect b = boardBounds(size);
-    final double width = (topPinCount - 1) * pinGap(size) + pinSize(size);
-    return Rect.fromLTWH(
-      b.left + b.width * 0.215,
-      b.top,
-      width,
-      stripHeight(size),
-    );
-  }
-
-  /// Plastik header POWER, menempel tepi bawah papan.
-  static Rect powerHeaderRect(Size size) {
-    final Rect b = boardBounds(size);
-    final double width = (powerPinCount - 1) * pinGap(size) + pinSize(size);
-    return Rect.fromLTWH(
-      b.left + b.width * 0.255,
-      b.bottom - stripHeight(size),
-      width,
-      stripHeight(size),
-    );
-  }
-
-  /// Plastik header ANALOG IN, menempel tepi bawah papan.
-  static Rect analogHeaderRect(Size size) {
-    final Rect b = boardBounds(size);
-    final double width = (analogPinCount - 1) * pinGap(size) + pinSize(size);
-    return Rect.fromLTWH(
-      b.left + b.width * 0.620,
-      b.bottom - stripHeight(size),
-      width,
-      stripHeight(size),
-    );
-  }
-
-  /// Pusat pad header digital ke-[index] (0 = AREF, 2 = pin 13).
-  static Offset topPinCenter(Size size, int index) {
-    final int i = index.clamp(0, topPinCount - 1).toInt();
-    final Rect strip = topHeaderRect(size);
-    return Offset(
-      strip.left + pinSize(size) / 2 + pinGap(size) * i,
-      strip.top + pinSize(size) * 0.65,
-    );
-  }
-
-  /// Pusat pad header POWER ke-[index] (0 = VIN).
-  static Offset powerPinCenter(Size size, int index) {
-    final int i = index.clamp(0, powerPinCount - 1).toInt();
-    final Rect strip = powerHeaderRect(size);
-    return Offset(
-      strip.left + pinSize(size) / 2 + pinGap(size) * i,
-      strip.top + pinSize(size) * 0.65,
-    );
-  }
-
-  /// Pusat pad header ANALOG ke-[index] (0 = A0).
-  static Offset analogPinCenter(Size size, int index) {
-    final int i = index.clamp(0, analogPinCount - 1).toInt();
-    final Rect strip = analogHeaderRect(size);
-    return Offset(
-      strip.left + pinSize(size) / 2 + pinGap(size) * i,
-      strip.top + pinSize(size) * 0.65,
-    );
-  }
-
-  /// Indeks pad header untuk nomor pin digital; di luar rentang -> pin 13.
-  static int topPinIndex(int pinNumber) {
-    if (pinNumber >= 0 && pinNumber <= 13) {
-      return 2 + (13 - pinNumber);
-    }
-    if (pinNumber == 14) {
-      return 14;
-    }
-    if (pinNumber == 15) {
-      return 15;
-    }
-    return 2;
-  }
-
-  /// Titik sambung kabel: tepi bawah plastik header, tepat di tengah pad.
-  static Offset pinAnchor(Size size, int pinNumber) {
-    final Offset pad = topPinCenter(size, topPinIndex(pinNumber));
-    return Offset(pad.dx, topHeaderRect(size).bottom);
-  }
-
-  /// Badan IC ATmega328P.
-  static Rect chipRect(Size size) {
-    final Rect b = boardBounds(size);
-    return Rect.fromLTWH(
-      b.left + b.width * 0.400,
-      b.top + b.height * 0.400,
-      b.width * 0.260,
-      b.height * 0.220,
-    );
-  }
-
-  /// Port USB tipe-B di sisi kiri papan.
-  static Rect usbRect(Size size) {
-    final Rect b = boardBounds(size);
-    return Rect.fromCenter(
-      center: Offset(b.left + b.width * 0.095, b.top + b.height * 0.300),
-      width: b.width * 0.150,
-      height: b.height * 0.130,
-    );
-  }
-
-  /// Jack DC di kiri bawah papan.
-  static Rect dcJackRect(Size size) {
-    final Rect b = boardBounds(size);
-    return Rect.fromCenter(
-      center: Offset(b.left + b.width * 0.100, b.top + b.height * 0.720),
-      width: b.width * 0.130,
-      height: b.height * 0.170,
-    );
-  }
-
-  /// Soket ICSP 2x3; [index] 0 = atas, 1 = bawah.
-  static Rect icspRect(Size size, int index) {
-    final Rect b = boardBounds(size);
-    final double pad = pinSize(size) * 0.72;
-    final double pitch = pad * 1.30;
-    final double boxPad = pad * 0.45;
-    final double width = pitch + pad + boxPad * 2;
-    final double height = pitch * 2 + pad + boxPad * 2;
-    final double top = b.top + b.height * (index == 0 ? 0.200 : 0.475);
-    return Rect.fromLTWH(b.left + b.width * 0.795, top, width, height);
-  }
-
-  /// Pusat kristal ke-[index]; 0 = osilator 16 MHz.
-  static Offset crystalCenter(Size size, int index) {
-    final Rect b = boardBounds(size);
-    final double y = b.top + b.height * (index == 0 ? 0.420 : 0.600);
-    return Offset(b.left + b.width * 0.255, y);
-  }
-
-  /// Lebar badan kristal.
-  static double crystalWidth(Size size) => pinSize(size) * 2.60;
-
-  /// Tinggi badan kristal.
-  static double crystalHeight(Size size) => pinSize(size) * 1.50;
-
-  /// Pusat LED indikator ke-[index]: 0 = L, 1 = TX, 2 = RX, 3 = ON.
-  static Offset indicatorCenter(Size size, int index) {
-    final Rect b = boardBounds(size);
-    final int i = index.clamp(0, 3).toInt();
-    return Offset(
-      b.left + b.width * (0.600 + 0.035 * i),
-      b.top + b.height * 0.285,
-    );
-  }
-
-  /// Radius LED indikator.
-  static double indicatorRadius(Size size) {
-    return math.max(1.6, pinSize(size) * 0.34);
-  }
-
-  /// Pusat tombol reset di dekat sudut potong papan.
-  static Offset resetCenter(Size size) {
-    final Rect b = boardBounds(size);
-    return Offset(b.left + b.width * 0.900, b.top + b.height * 0.135);
-  }
-
-  /// Radius tombol reset.
-  static double resetRadius(Size size) => math.max(3.0, pinSize(size) * 1.10);
-
-  /// LED eksternal di zona kosong kanan-bawah papan.
-  ///
-  /// Zona ini sengaja dipilih karena bebas dari IC (berakhir 0.62h), ICSP
-  /// bawah (berakhir 0.58h), header bawah (mulai 0.96h), dan tepi papan kanan.
-  static Offset extLedCenter(Size size) {
-    final Rect b = boardBounds(size);
-    return Offset(b.left + b.width * 0.885, b.top + b.height * 0.740);
-  }
-
-  /// Radius badan LED eksternal; minimum 7 supaya tetap terlihat.
-  static double extLedRadius(Size size) {
-    return math.max(7.0, size.shortestSide * 0.055);
-  }
-
-  /// Rute kabel pin -> LED: menyusur bawah header, turun di kanal kanan,
-  /// lalu masuk LED dari samping (3 segmen, tidak melewati badan IC).
-  static List<Offset> wirePoints(Size size, int pinNumber) {
-    final Offset pin = pinAnchor(size, pinNumber);
-    final Offset led = extLedCenter(size);
-    final double r = extLedRadius(size);
-    final double channelX =
-        led.dx + r + math.max(4.0, size.shortestSide * 0.020);
-    return <Offset>[
-      pin,
-      Offset(channelX, pin.dy),
-      Offset(channelX, led.dy),
-      Offset(led.dx + r, led.dy),
-    ];
-  }
-}
-
-/// Lukisan papan Arduino Uno lengkap + LED Blink memakai [CustomPainter].
-///
-/// Tanpa aset bitmap: seluruh bentuk memakai `drawPath`, `drawRRect`,
-/// `drawCircle`, dan `drawLine`. Warna hanya dari [AppColors]; ukuran hanya dari
-/// [ArduinoGeometry]. Repaint 2x/detik tetap murah karena semua `Paint`
-/// di-hoist ke field.
-class ArduinoPainter extends CustomPainter {
-  ArduinoPainter({required this.scene});
-
-  /// Nilai yang digambar pada frame ini.
-  final ArduinoScene scene;
-
-  /// Warna silkscreen: putih papan dengan sedikit transparansi.
-  final Color _silkColor = AppColors.textOnPrimary.withValues(alpha: 0.78);
-
-  late final Paint _boardFill = Paint()..color = AppColors.circuitBoard;
-  late final Paint _boardEdge = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.circuitBoardDark;
-  late final Paint _silkscreenStroke = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.textOnPrimary.withValues(alpha: 0.10);
-  late final Paint _stripFill = Paint()..color = AppColors.circuitPinHeader;
-  late final Paint _padFill = Paint()..color = AppColors.circuitPin;
-  late final Paint _padActiveFill = Paint()..color = AppColors.circuitWire;
-  late final Paint _padStroke = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.circuitChipDark.withValues(alpha: 0.55);
-  late final Paint _metalFill = Paint()..color = AppColors.circuitMetal;
-  late final Paint _metalStroke = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.circuitMetalDark;
-  late final Paint _chipFill = Paint()..color = AppColors.circuitChip;
-  late final Paint _chipStroke = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.circuitChipDark;
-  late final Paint _chipHighlight = Paint()
-    ..color = AppColors.textOnPrimary.withValues(alpha: 0.10);
-  late final Paint _crystalFill = Paint()..color = AppColors.circuitCrystal;
-  late final Paint _crystalHighlight = Paint()
-    ..color = AppColors.textOnPrimary.withValues(alpha: 0.33);
-  late final Paint _resetFill = Paint()..color = AppColors.circuitReset;
-  late final Paint _resetRing = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.circuitResetDark;
-  late final Paint _indicatorOff = Paint()..color = AppColors.circuitPinHeader;
-  late final Paint _indicatorOn = Paint()..color = AppColors.success;
-  late final Paint _indicatorTx = Paint()..color = AppColors.accent;
-  late final Paint _wireStroke = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeCap = StrokeCap.round
-    ..strokeJoin = StrokeJoin.round
-    ..color = AppColors.circuitWire;
-  late final Paint _ledGlow = Paint()
-    ..color = AppColors.ledOn.withValues(alpha: 0.16);
-  late final Paint _ledGlowInner = Paint()
-    ..color = AppColors.ledOn.withValues(alpha: 0.24);
-  late final Paint _ledFillOn = Paint()..color = AppColors.ledOn;
-  late final Paint _ledFillOff = Paint()..color = AppColors.ledOff;
-  late final Paint _ledRingOn = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.ledOn;
-  late final Paint _ledRingOff = Paint()
-    ..style = PaintingStyle.stroke
-    ..color = AppColors.textTertiary;
-  late final Paint _ledGloss = Paint()
-    ..color = AppColors.textOnPrimary.withValues(alpha: 0.55);
-
   @override
   void paint(Canvas canvas, Size size) {
-    if (size.isEmpty) {
+    final double k = ArduinoGeometry.scale(size);
+    if (size.isEmpty || k <= 0) {
       return;
     }
-    _paintBoard(canvas, size);
-    _paintTopHeader(canvas, size);
-    _paintBottomHeaders(canvas, size);
-    _paintUsbPort(canvas, size);
-    _paintDcJack(canvas, size);
-    _paintCrystals(canvas, size);
-    _paintChip(canvas, size);
-    _paintIcspHeaders(canvas, size);
-    _paintResetButton(canvas, size);
-    _paintIndicators(canvas, size);
-    _paintWire(canvas, size);
-    _paintExtLed(canvas, size);
+    final Offset origin = ArduinoGeometry.boardOrigin(size);
+    canvas.save();
+    canvas.translate(origin.dx, origin.dy);
+    canvas.scale(k);
+
+    _paintBoard(canvas);
+    _paintSilk(canvas);
+    _paintUsb(canvas);
+    _paintJack(canvas);
+    _paintRegulator(canvas);
+    _paintReset(canvas);
+    _paintStatusLeds(canvas);
+    _paintHeaders(canvas);
+    _paintIcsp(canvas);
+    _paintChip(canvas);
+    _paintCrystal(canvas);
+    _paintLabels(canvas);
+    _paintWire(canvas);
+    _paintLed(canvas);
+
+    canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant ArduinoPainter oldDelegate) =>
-      oldDelegate.scene != scene;
+      oldDelegate.ledOn != ledOn;
 
-  void _paintBoard(Canvas canvas, Size size) {
-    final Rect board = ArduinoGeometry.boardBounds(size);
-    final Path shape = ArduinoGeometry.boardPath(size);
-    _boardEdge.strokeWidth = math.max(1.0, size.shortestSide * 0.005);
-    _silkscreenStroke.strokeWidth = math.max(0.8, size.shortestSide * 0.0028);
+  void _paintBoard(Canvas canvas) {
+    const double w = ArduinoGeometry.boardWidth;
+    const double h = ArduinoGeometry.boardHeight;
+    const double r = 26;
+    const double cut = 58;
+    final Path path = Path()
+      ..moveTo(r, 0)
+      ..lineTo(w - r, 0)
+      ..quadraticBezierTo(w, 0, w, r)
+      ..lineTo(w, h - cut)
+      ..lineTo(w - cut, h)
+      ..lineTo(r, h)
+      ..quadraticBezierTo(0, h, 0, h - r)
+      ..lineTo(0, r)
+      ..quadraticBezierTo(0, 0, r, 0)
+      ..close();
 
-    canvas.drawPath(shape, _boardFill);
-    canvas.drawPath(shape, _boardEdge);
+    canvas.drawPath(path.shift(const Offset(0, 14)), _shadow);
+    canvas.drawPath(path, _boardFill);
+    canvas.drawPath(path, _boardEdge);
+  }
 
-    // Garis silkscreen tipis di dalam tepi papan.
+  void _paintSilk(Canvas canvas) {
+    const double w = ArduinoGeometry.boardWidth;
+    canvas.drawLine(const Offset(70, 206), Offset(w - 70, 206), _silkLine);
+    canvas.drawLine(const Offset(70, 706), Offset(w - 70, 706), _silkLine);
+  }
+
+  void _paintUsb(Canvas canvas) {
+    // Flens dudukan yang menempel ke papan.
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        board.deflate(math.max(3.0, size.shortestSide * 0.016)),
-        Radius.circular(ArduinoGeometry.boardRadius(size)),
+        const Rect.fromLTWH(-4, 172, 42, 222),
+        const Radius.circular(8),
       ),
-      _silkscreenStroke,
+      _usbFlange,
     );
-
-    _paintCenteredText(
+    // Badan konektor menjorok keluar tepi kiri papan.
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        const Rect.fromLTWH(-112, 194, 308, 178),
+        topLeft: const Radius.circular(18),
+        bottomLeft: const Radius.circular(18),
+        topRight: const Radius.circular(10),
+        bottomRight: const Radius.circular(10),
+      ),
+      _usbBody,
+    );
+    // Pita logam melintang.
+    canvas.drawRect(const Rect.fromLTWH(-112, 232, 308, 20), _usbBand);
+    canvas.drawRect(const Rect.fromLTWH(-112, 318, 308, 14), _usbBand);
+    // Cekungan mulut konektor.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(-98, 214, 120, 138),
+        const Radius.circular(10),
+      ),
+      _usbRecess,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(-86, 230, 96, 106),
+        const Radius.circular(7),
+      ),
+      _usbShade,
+    );
+    // Kilau atas.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(-52, 202, 226, 9),
+        const Radius.circular(5),
+      ),
+      _usbHi,
+    );
+    _text(
       canvas,
-      'UNO',
-      Offset(
-        board.left + board.width * 0.160,
-        board.top + board.height * 0.865,
-      ),
-      _silk(
-        size: size,
-        scale: 0.060,
-        min: 8.0,
-        weight: FontWeight.w700,
-        letterSpacing: 1.2,
-      ),
+      'USB',
+      const Offset(132, 276),
+      size: 26,
+      color: _usbShade.color,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
     );
   }
 
-  void _paintUsbPort(Canvas canvas, Size size) {
-    final Rect port = ArduinoGeometry.usbRect(size);
-    final double ps = ArduinoGeometry.pinSize(size);
-    _metalStroke.strokeWidth = math.max(0.8, size.shortestSide * 0.004);
-
-    final RRect shell = RRect.fromRectAndRadius(
-      port,
-      Radius.circular(port.height * 0.18),
+  void _paintJack(Canvas canvas) {
+    const Offset hub = Offset(96, 825);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(-40, 744, 136, 162),
+        const Radius.circular(16),
+      ),
+      _jack,
     );
-    canvas.drawRRect(shell, _metalFill);
-    canvas.drawRRect(shell, _metalStroke);
-
-    final Rect slot = Rect.fromCenter(
-      center: port.center,
-      width: port.width * 0.62,
-      height: port.height * 0.46,
+    canvas.drawCircle(hub, 84, _jack);
+    canvas.drawCircle(hub, 84, _line(AppColors.circuitJackLip, 9));
+    canvas.drawCircle(hub, 58, _jackLip);
+    canvas.drawCircle(hub, 30, _darker);
+    // Pin tengah jack.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(-40, 806, 78, 38),
+        const Radius.circular(10),
+      ),
+      _metal,
     );
-    final RRect slotShell = RRect.fromRectAndRadius(
-      slot,
-      Radius.circular(slot.height * 0.20),
+    _text(
+      canvas,
+      'DC IN',
+      const Offset(30, 940),
+      size: 24,
+      color: _silkColor,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
     );
-    canvas.drawRRect(slotShell, _chipFill);
-    canvas.drawRRect(slotShell, _metalStroke);
+  }
 
-    // Dua pin kontak di dalam slot.
-    for (final double dx in <double>[-0.18, 0.18]) {
-      canvas.drawRect(
-        Rect.fromCenter(
-          center: Offset(slot.center.dx + slot.width * dx, slot.center.dy),
-          width: ps * 0.22,
-          height: slot.height * 0.34,
-        ),
-        _metalFill,
+  void _paintRegulator(Canvas canvas) {
+    // Tab logam regulator 5V.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(118, 536, 96, 158),
+        const Radius.circular(8),
+      ),
+      _metal,
+    );
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(136, 560, 60, 110),
+        const Radius.circular(5),
+      ),
+      _darker,
+    );
+    for (int i = 0; i < 3; i++) {
+      canvas.drawRect(Rect.fromLTWH(141 + i * 26, 694, 12, 40), _metal);
+    }
+    _text(
+      canvas,
+      'NCP1117',
+      const Offset(166, 500),
+      size: 20,
+      color: _silkColor.withValues(alpha: 0.75),
+      align: TextAlign.center,
+    );
+  }
+
+  void _paintReset(Canvas canvas) {
+    const Offset center = Offset(131, 80);
+    canvas.drawCircle(center, 56, _resetBase);
+    canvas.drawCircle(center, 46, _resetBody);
+    canvas.drawCircle(center, 46, _resetRing);
+    canvas.drawCircle(center.translate(-13, -13), 12, _resetHi);
+    _text(
+      canvas,
+      'RESET',
+      const Offset(131, 154),
+      size: 24,
+      color: _silkColor,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
+    );
+  }
+
+  void _paintStatusLeds(Canvas canvas) {
+    const List<String> names = <String>['L', 'TX', 'RX'];
+    for (int i = 0; i < names.length; i++) {
+      final Offset center = Offset(246, 258 + i * 60.0);
+      canvas.drawCircle(center, 25, _metalRing);
+      if (i == 0) {
+        if (ledOn) {
+          canvas.drawCircle(center, 26, _statusGlow);
+        }
+        canvas.drawCircle(center, 19, ledOn ? _ledOnFill : _smdOff);
+      } else {
+        canvas.drawCircle(
+          center,
+          19,
+          _fill(AppColors.circuitLedAmber.withValues(alpha: 0.36)),
+        );
+      }
+      _text(
+        canvas,
+        names[i],
+        center.translate(40, 0),
+        size: 24,
+        color: _silkColor,
+        weight: FontWeight.w700,
       );
     }
   }
 
-  void _paintDcJack(Canvas canvas, Size size) {
-    final Rect jack = ArduinoGeometry.dcJackRect(size);
-    final double ps = ArduinoGeometry.pinSize(size);
-    _chipStroke.strokeWidth = math.max(0.8, size.shortestSide * 0.004);
+  void _paintHeaders(Canvas canvas) {
+    _headerStrip(canvas, const Rect.fromLTWH(209, 26, 432, 48), 8, 236, 54);
+    _headerStrip(canvas, const Rect.fromLTWH(663, 26, 432, 48), 8, 690, 54);
+    _headerStrip(canvas, const Rect.fromLTWH(613, 800, 426, 48), 8, 640, 54);
+    _headerStrip(canvas, const Rect.fromLTWH(1043, 800, 324, 48), 6, 1070, 54);
 
-    final RRect body = RRect.fromRectAndRadius(
-      jack,
-      Radius.circular(jack.width * 0.16),
-    );
-    canvas.drawRRect(body, _chipFill);
-    canvas.drawRRect(body, _chipStroke);
-
-    // Barrel logam di tengah jack.
-    canvas.drawCircle(jack.center, jack.width * 0.30, _metalFill);
-    canvas.drawCircle(jack.center, jack.width * 0.17, _chipFill);
-
-    // Pin positif di bawah barrel.
-    canvas.drawRect(
-      Rect.fromCenter(
-        center: Offset(jack.center.dx, jack.bottom - jack.height * 0.14),
-        width: jack.width * 0.10,
-        height: ps * 0.30,
-      ),
-      _metalFill,
-    );
+    for (int i = 0; i < _leftPins.length; i++) {
+      _verticalText(
+        canvas,
+        _leftPins[i],
+        Offset(236 + i * 54, 88),
+        size: 26,
+        downward: true,
+      );
+      _verticalText(
+        canvas,
+        _rightPins[i],
+        Offset(690 + i * 54, 88),
+        size: 26,
+        downward: true,
+      );
+    }
+    for (int i = 0; i < _powerPins.length; i++) {
+      _verticalText(
+        canvas,
+        _powerPins[i],
+        Offset(640 + i * 54, 792),
+        size: 26,
+        downward: false,
+      );
+    }
+    for (int i = 0; i < _analogPins.length; i++) {
+      _verticalText(
+        canvas,
+        _analogPins[i],
+        Offset(1070 + i * 54, 792),
+        size: 26,
+        downward: false,
+      );
+    }
   }
 
-  void _paintCrystals(Canvas canvas, Size size) {
-    final double w = ArduinoGeometry.crystalWidth(size);
-    final double h = ArduinoGeometry.crystalHeight(size);
-    _metalStroke.strokeWidth = math.max(0.8, size.shortestSide * 0.0035);
-
-    for (int i = 0; i < 2; i++) {
-      final Offset center = ArduinoGeometry.crystalCenter(size, i);
-      final Rect body = Rect.fromCenter(center: center, width: w, height: h);
-      final RRect shell = RRect.fromRectAndRadius(
-        body,
-        Radius.circular(h * 0.38),
+  void _headerStrip(
+    Canvas canvas,
+    Rect strip,
+    int count,
+    double firstX,
+    double pitch,
+  ) {
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(strip, const Radius.circular(6)),
+      _dark,
+    );
+    for (int i = 0; i < count; i++) {
+      final Offset center = Offset(firstX + i * pitch, strip.center.dy);
+      canvas.drawRect(
+        Rect.fromCenter(center: center, width: 30, height: 30),
+        _padFill,
       );
-      canvas.drawRRect(shell, _crystalFill);
-      canvas.drawRRect(shell, _metalStroke);
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-            body.left + w * 0.10,
-            body.top + h * 0.16,
-            w * 0.80,
-            h * 0.24,
-          ),
-          Radius.circular(h * 0.12),
-        ),
-        _crystalHighlight,
+      canvas.drawRect(
+        Rect.fromCenter(center: center, width: 14, height: 14),
+        _holeFill,
       );
+    }
+  }
 
-      // Dua kaki di bawah badan kristal.
-      for (final double dx in <double>[-0.28, 0.28]) {
-        canvas.drawLine(
-          Offset(center.dx + w * dx, body.bottom),
-          Offset(center.dx + w * dx, body.bottom + h * 0.55),
-          _metalStroke,
+  void _paintIcsp(Canvas canvas) {
+    _icsp(canvas, const Rect.fromLTWH(330, 430, 130, 90));
+    _icsp(canvas, const Rect.fromLTWH(1185, 455, 130, 90));
+  }
+
+  void _icsp(Canvas canvas, Rect box) {
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(box, const Radius.circular(6)),
+      _dark,
+    );
+    for (int row = 0; row < 2; row++) {
+      for (int col = 0; col < 3; col++) {
+        final Offset center = Offset(
+          box.left + 32 + col * 33,
+          box.top + 28 + row * 36,
+        );
+        canvas.drawRect(
+          Rect.fromCenter(center: center, width: 26, height: 26),
+          _padFill,
+        );
+        canvas.drawRect(
+          Rect.fromCenter(center: center, width: 12, height: 12),
+          _holeFill,
         );
       }
     }
   }
 
-  void _paintChip(Canvas canvas, Size size) {
-    final Rect chip = ArduinoGeometry.chipRect(size);
-    final double ps = ArduinoGeometry.pinSize(size);
-    final double legLength = chip.width * 0.07;
-    final double legHeight = chip.height * 0.055;
-    _chipStroke.strokeWidth = math.max(0.8, size.shortestSide * 0.004);
-
-    // Kaki IC: 7 pasang, menjulur keluar badan.
-    for (int i = 0; i < 7; i++) {
-      final double y = chip.top + chip.height * (0.10 + 0.133 * i);
-      canvas.drawRect(
-        Rect.fromLTWH(
-          chip.left - legLength,
-          y - legHeight / 2,
-          legLength,
-          legHeight,
-        ),
-        _metalFill,
-      );
-      canvas.drawRect(
-        Rect.fromLTWH(chip.right, y - legHeight / 2, legLength, legHeight),
-        _metalFill,
-      );
+  void _paintChip(Canvas canvas) {
+    const Rect body = Rect.fromLTWH(609, 582, 721, 95);
+    for (int i = 0; i < 14; i++) {
+      final double x = body.left + 22 + i * 50;
+      canvas.drawRect(Rect.fromLTWH(x, body.top - 16, 16, 22), _metal);
+      canvas.drawRect(Rect.fromLTWH(x, body.bottom - 6, 16, 22), _metal);
     }
-
-    final RRect body = RRect.fromRectAndRadius(
-      chip,
-      Radius.circular(ps * 0.35),
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(body, const Radius.circular(9)),
+      _darker,
     );
-    canvas.drawRRect(body, _chipFill);
-    canvas.drawRRect(body, _chipStroke);
-
-    // Notch setengah lingkaran di kiri badan + titik pin 1.
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(body, const Radius.circular(9)),
+      _silverRing,
+    );
+    // Lekuk penanda pin 1 di ujung kiri.
+    canvas.drawCircle(Offset(body.left + 34, body.center.dy), 16, _boardFill);
     canvas.drawCircle(
-      Offset(chip.left + chip.width * 0.10, chip.center.dy),
-      chip.height * 0.10,
-      _boardFill,
+      Offset(body.left + 34, body.center.dy),
+      16,
+      _line(AppColors.circuitBoardDark, 4),
     );
-    canvas.drawCircle(
-      Offset(chip.left + chip.width * 0.16, chip.top + chip.height * 0.20),
-      ps * 0.16,
-      _metalFill,
-    );
-
-    // Kilau tipis di tepi atas badan.
-    canvas.drawRect(
-      Rect.fromLTWH(
-        chip.left + chip.width * 0.06,
-        chip.top + chip.height * 0.06,
-        chip.width * 0.88,
-        chip.height * 0.05,
-      ),
-      _chipHighlight,
-    );
-
-    _paintCenteredText(
+    canvas.drawCircle(Offset(body.left + 74, body.center.dy), 7, _metalRing);
+    _text(
       canvas,
-      'ATmega328P',
-      Offset(chip.center.dx, chip.center.dy - chip.height * 0.06),
-      _silk(size: size, scale: 0.030, min: 5.0, letterSpacing: 0.4),
+      'ATMEGA328P-PU',
+      Offset(body.center.dx + 26, body.center.dy),
+      size: 28,
+      color: AppColors.borderStrong,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
+      letterSpacing: 2,
     );
-    _paintCenteredText(
+    _text(
+      canvas,
+      'ATMEL',
+      Offset(body.center.dx + 26, body.top + 21),
+      size: 18,
+      color: AppColors.borderStrong,
+      align: TextAlign.center,
+      letterSpacing: 3,
+    );
+  }
+
+  void _paintCrystal(Canvas canvas) {
+    for (final double x in <double>[344, 486]) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset(x, 806), width: 118, height: 118),
+          const Radius.circular(24),
+        ),
+        _metal,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset(x, 800), width: 92, height: 104),
+          const Radius.circular(18),
+        ),
+        _silver,
+      );
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(center: Offset(x, 800), width: 92, height: 104),
+          const Radius.circular(18),
+        ),
+        _silverRing,
+      );
+      canvas.drawRect(Rect.fromLTWH(x - 30, 858, 12, 40), _metal);
+      canvas.drawRect(Rect.fromLTWH(x + 18, 858, 12, 40), _metal);
+    }
+    _text(
+      canvas,
+      '16MHz',
+      const Offset(415, 690),
+      size: 24,
+      color: _silkColor,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
+    );
+  }
+
+  void _paintLabels(Canvas canvas) {
+    // Merek papan.
+    _text(
+      canvas,
+      'ARDUINO',
+      const Offset(600, 320),
+      size: 58,
+      color: _silkColor,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
+      letterSpacing: 8,
+    );
+    canvas.drawRect(
+      const Rect.fromLTWH(470, 356, 260, 4),
+      _fill(AppColors.textOnPrimary.withValues(alpha: 0.55)),
+    );
+    _text(
       canvas,
       'UNO R3',
-      Offset(chip.center.dx, chip.center.dy + chip.height * 0.24),
-      _silk(
-        size: size,
-        scale: 0.022,
-        min: 4.0,
-        color: AppColors.textOnPrimary.withValues(alpha: 0.55),
-        letterSpacing: 0.6,
-      ),
+      const Offset(600, 392),
+      size: 28,
+      color: _silkColor.withValues(alpha: 0.8),
+      align: TextAlign.center,
+      letterSpacing: 6,
     );
-  }
-
-  void _paintIcspHeaders(Canvas canvas, Size size) {
-    final double pad = ArduinoGeometry.pinSize(size) * 0.72;
-    final double pitch = pad * 1.30;
-    _chipStroke.strokeWidth = math.max(0.6, size.shortestSide * 0.003);
-
-    for (int index = 0; index < 2; index++) {
-      final Rect box = ArduinoGeometry.icspRect(size, index);
-      final RRect shell = RRect.fromRectAndRadius(
-        box,
-        Radius.circular(pad * 0.60),
-      );
-      canvas.drawRRect(shell, _chipFill);
-      canvas.drawRRect(shell, _chipStroke);
-
-      final double originX = box.left + (box.width - (pitch + pad)) / 2;
-      final double originY = box.top + (box.height - (pitch * 2 + pad)) / 2;
-      for (int row = 0; row < 3; row++) {
-        for (int col = 0; col < 2; col++) {
-          canvas.drawCircle(
-            Offset(
-              originX + pad / 2 + pitch * col,
-              originY + pad / 2 + pitch * row,
-            ),
-            pad * 0.42,
-            _metalFill,
-          );
-        }
-      }
-    }
-  }
-
-  void _paintResetButton(Canvas canvas, Size size) {
-    final Offset center = ArduinoGeometry.resetCenter(size);
-    final double r = ArduinoGeometry.resetRadius(size);
-    _resetRing.strokeWidth = math.max(0.8, size.shortestSide * 0.004);
-
-    canvas.drawCircle(center, r, _resetFill);
-    canvas.drawCircle(center, r, _resetRing);
-    canvas.drawCircle(center, r * 0.45, _chipFill);
-  }
-
-  void _paintIndicators(Canvas canvas, Size size) {
-    const List<String> labels = <String>['L', 'TX', 'RX', 'ON'];
-    final double r = ArduinoGeometry.indicatorRadius(size);
-    _padStroke.strokeWidth = math.max(0.5, r * 0.25);
-
-    for (int i = 0; i < labels.length; i++) {
-      final Offset center = ArduinoGeometry.indicatorCenter(size, i);
-      final bool lit = i == 3 || (i == 0 && scene.isLedOn);
-      final Paint fill = lit
-          ? (i == 3 ? _indicatorOn : _indicatorTx)
-          : _indicatorOff;
-      canvas.drawCircle(center, r, fill);
-      canvas.drawCircle(center, r, _padStroke);
-      _paintCenteredText(
-        canvas,
-        labels[i],
-        Offset(center.dx, center.dy + r * 2.8),
-        _silk(size: size, scale: 0.020, min: 4.0, letterSpacing: 0.2),
-      );
-    }
-  }
-
-  void _paintTopHeader(Canvas canvas, Size size) {
-    final Rect strip = ArduinoGeometry.topHeaderRect(size);
-    final Rect board = ArduinoGeometry.boardBounds(size);
-    final double ps = ArduinoGeometry.pinSize(size);
-    final int activeIndex = ArduinoGeometry.topPinIndex(scene.activePin);
-
-    _paintStrip(
+    // Judul grup header.
+    _text(
       canvas,
-      strip,
-      ArduinoGeometry.topPinCount,
-      (int i) => ArduinoGeometry.topPinCenter(size, i),
-      activeIndex,
-      roundedTop: true,
+      'DIGITAL (PWM~)',
+      const Offset(209, 178),
+      size: 28,
+      color: _silkColor,
+      letterSpacing: 2,
     );
-
-    // Label pin ditulis vertikal supaya 16 pin tetap terbaca tanpa bertabrakan.
-    final double labelTop = strip.bottom + ps * 0.35;
-    for (int i = 0; i < ArduinoGeometry.topPinCount; i++) {
-      final bool active = i == activeIndex;
-      _paintVerticalText(
-        canvas,
-        ArduinoGeometry.topPinLabels[i],
-        ArduinoGeometry.topPinCenter(size, i).dx,
-        labelTop,
-        _silk(
-          size: size,
-          scale: 0.028,
-          min: 5.0,
-          color: active ? AppColors.circuitWire : _silkColor,
-          weight: active ? FontWeight.w700 : FontWeight.w500,
-        ),
-      );
-    }
-
-    _paintCenteredText(
-      canvas,
-      'DIGITAL (PWM=~)',
-      Offset(strip.center.dx, board.top + board.height * 0.235),
-      _silk(size: size, scale: 0.026, min: 5.0, letterSpacing: 0.4),
-    );
-  }
-
-  void _paintBottomHeaders(Canvas canvas, Size size) {
-    final double ps = ArduinoGeometry.pinSize(size);
-    final Rect power = ArduinoGeometry.powerHeaderRect(size);
-    final Rect analog = ArduinoGeometry.analogHeaderRect(size);
-
-    _paintStrip(
-      canvas,
-      power,
-      ArduinoGeometry.powerPinCount,
-      (int i) => ArduinoGeometry.powerPinCenter(size, i),
-      -1,
-      roundedTop: false,
-    );
-    _paintStrip(
-      canvas,
-      analog,
-      ArduinoGeometry.analogPinCount,
-      (int i) => ArduinoGeometry.analogPinCenter(size, i),
-      -1,
-      roundedTop: false,
-    );
-
-    // Label pin bawah juga vertikal: 7 pin POWER terlalu rapat untuk teks
-    // horizontal di kanvas kecil.
-    final double labelBottom = power.top - ps * 0.30;
-    for (int i = 0; i < ArduinoGeometry.powerPinCount; i++) {
-      _paintVerticalTextUp(
-        canvas,
-        ArduinoGeometry.powerPinLabels[i],
-        ArduinoGeometry.powerPinCenter(size, i).dx,
-        labelBottom,
-        _silk(size: size, scale: 0.024, min: 4.6, letterSpacing: -0.2),
-      );
-    }
-    for (int i = 0; i < ArduinoGeometry.analogPinCount; i++) {
-      _paintVerticalTextUp(
-        canvas,
-        ArduinoGeometry.analogPinLabels[i],
-        ArduinoGeometry.analogPinCenter(size, i).dx,
-        labelBottom,
-        _silk(size: size, scale: 0.024, min: 4.6, letterSpacing: -0.2),
-      );
-    }
-
-    // Judul grup + garis pemisah di atas label pin.
-    final double lineY = power.top - ps * 4.2;
-    _paintCenteredText(
+    _text(
       canvas,
       'POWER',
-      Offset(power.center.dx, lineY - ps * 1.3),
-      _silk(size: size, scale: 0.026, min: 5.0, letterSpacing: 1.0),
+      const Offset(826, 900),
+      size: 28,
+      color: _silkColor,
+      align: TextAlign.center,
+      letterSpacing: 2,
     );
-    _paintCenteredText(
+    _text(
       canvas,
       'ANALOG IN',
-      Offset(analog.center.dx, lineY - ps * 1.3),
-      _silk(size: size, scale: 0.026, min: 5.0, letterSpacing: 1.0),
-    );
-
-    _silkscreenStroke.strokeWidth = math.max(0.6, ps * 0.09);
-    canvas.drawLine(
-      Offset(power.left, lineY),
-      Offset(power.right, lineY),
-      _silkscreenStroke,
-    );
-    canvas.drawLine(
-      Offset(analog.left, lineY),
-      Offset(analog.right, lineY),
-      _silkscreenStroke,
+      const Offset(1205, 900),
+      size: 28,
+      color: _silkColor,
+      align: TextAlign.center,
+      letterSpacing: 2,
     );
   }
 
-  /// Plastik header + pad pin; [activeIndex] < 0 berarti tanpa pin aktif.
-  void _paintStrip(
-    Canvas canvas,
-    Rect strip,
-    int count,
-    Offset Function(int index) centerOf,
-    int activeIndex, {
-    required bool roundedTop,
-  }) {
-    final double ps = strip.height / 1.30;
-    final Radius corner = Radius.circular(ps * 0.22);
-    canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        strip,
-        topLeft: roundedTop ? corner : Radius.zero,
-        topRight: roundedTop ? corner : Radius.zero,
-        bottomLeft: roundedTop ? Radius.zero : corner,
-        bottomRight: roundedTop ? Radius.zero : corner,
-      ),
-      _stripFill,
+  void _paintWire(Canvas canvas) {
+    final double startX = ArduinoGeometry.digitalPinX(
+      ArduinoGeometry.watchedPin,
     );
-
-    _padStroke.strokeWidth = math.max(0.5, ps * 0.10);
-    for (int i = 0; i < count; i++) {
-      final Rect pad = Rect.fromCenter(
-        center: centerOf(i),
-        width: ps,
-        height: ps,
+    const double cruiseY = -118;
+    const double ledTop = ArduinoGeometry.ledY - ArduinoGeometry.ledRim;
+    final Path path = Path()
+      ..moveTo(startX, 50)
+      ..lineTo(startX, -20)
+      ..cubicTo(startX, cruiseY, startX + 60, cruiseY, startX + 150, cruiseY)
+      ..lineTo(1520, cruiseY)
+      ..cubicTo(
+        1600,
+        cruiseY,
+        ArduinoGeometry.ledX,
+        40,
+        ArduinoGeometry.ledX,
+        ledTop,
       );
-      final RRect shell = RRect.fromRectAndRadius(
-        pad,
-        Radius.circular(ps * 0.22),
-      );
-      canvas.drawRRect(shell, i == activeIndex ? _padActiveFill : _padFill);
-      canvas.drawRRect(shell, _padStroke);
-    }
+    canvas.drawPath(path, _wireEdge);
+    canvas.drawPath(path, _wire);
   }
 
-  void _paintWire(Canvas canvas, Size size) {
-    final List<Offset> points = ArduinoGeometry.wirePoints(
-      size,
-      scene.activePin,
+  void _paintLed(Canvas canvas) {
+    const Offset center = Offset(ArduinoGeometry.ledX, ArduinoGeometry.ledY);
+    if (ledOn) {
+      canvas.drawCircle(center, 92, _ledGlowOuter);
+      canvas.drawCircle(center, 64, _ledGlowInner);
+    }
+    // Kaki LED.
+    canvas.drawRect(
+      Rect.fromLTWH(center.dx - 26, center.dy + 24, 12, 96),
+      _metal,
     );
-    _wireStroke.strokeWidth = math.max(2.0, size.shortestSide * 0.012);
-
-    final Path path = Path()..moveTo(points.first.dx, points.first.dy);
-    for (int i = 1; i < points.length; i++) {
-      path.lineTo(points[i].dx, points[i].dy);
-    }
-    canvas.drawPath(path, _wireStroke);
-  }
-
-  void _paintExtLed(Canvas canvas, Size size) {
-    final Offset center = ArduinoGeometry.extLedCenter(size);
-    final double radius = ArduinoGeometry.extLedRadius(size);
-    final double legLength = radius * 0.90;
-
-    // Kaki LED menghadap ke bawah (menuju header bawah).
-    _metalStroke.strokeWidth = math.max(1.0, radius * 0.16);
-    for (final double dx in <double>[-0.55, 0.55]) {
-      final double x = center.dx + radius * dx;
-      canvas.drawLine(
-        Offset(x, center.dy + radius * 0.85),
-        Offset(x, center.dy + radius + legLength),
-        _metalStroke,
-      );
-    }
-
-    if (scene.isLedOn) {
-      canvas.drawCircle(center, radius * 2.2, _ledGlow);
-      canvas.drawCircle(center, radius * 1.55, _ledGlowInner);
-    }
-
-    canvas.drawCircle(center, radius, scene.isLedOn ? _ledFillOn : _ledFillOff);
-    canvas.drawCircle(center, radius, scene.isLedOn ? _ledRingOn : _ledRingOff);
-
-    // Kilau kaca di kiri atas badan LED.
+    canvas.drawRect(
+      Rect.fromLTWH(center.dx + 14, center.dy + 24, 12, 96),
+      _metal,
+    );
+    // Badan LED.
     canvas.drawCircle(
-      Offset(center.dx - radius * 0.30, center.dy - radius * 0.35),
-      radius * 0.26,
-      _ledGloss,
+      center,
+      ArduinoGeometry.ledRim,
+      ledOn ? _ledRimOn : _ledRimOff,
     );
-
-    _paintCenteredText(
+    canvas.drawCircle(center, 38, ledOn ? _ledOnFill : _ledOffFill);
+    canvas.drawCircle(center.translate(-13, -15), 11, _ledHi);
+    _text(
       canvas,
-      'LED',
-      Offset(
-        center.dx,
-        center.dy +
-            radius +
-            legLength +
-            math.max(4.0, size.shortestSide * 0.022),
-      ),
-      _silk(size: size, scale: 0.024, min: 4.5, letterSpacing: 0.4),
+      ledOn ? 'LED ON' : 'LED OFF',
+      center.translate(0, 136),
+      size: 30,
+      color: _outsideText,
+      align: TextAlign.center,
+      weight: FontWeight.w700,
+    );
+    _text(
+      canvas,
+      'D13 / 220R',
+      center.translate(0, 176),
+      size: 24,
+      color: _outsideMuted,
+      align: TextAlign.center,
     );
   }
 
-  /// Gaya teks silkscreen papan (Plus Jakarta Sans, ukuran mengikuti kanvas).
-  TextStyle _silk({
-    required Size size,
-    required double scale,
-    required double min,
-    Color color = AppColors.textOnPrimary,
+  // --- Helper teks ---
+
+  TextPainter _layoutText(
+    String text, {
+    required double size,
+    required Color color,
+    TextAlign align = TextAlign.left,
     FontWeight weight = FontWeight.w500,
-    double letterSpacing = 0.0,
+    double letterSpacing = 0,
   }) {
-    return AppTypography.overline.copyWith(
-      fontSize: math.max(min, size.shortestSide * scale),
-      color: color,
-      fontWeight: weight,
-      letterSpacing: letterSpacing,
-      height: 1.0,
-    );
-  }
-
-  void _paintCenteredText(
-    Canvas canvas,
-    String text,
-    Offset center,
-    TextStyle style,
-  ) {
-    final TextPainter painter = _layoutText(text, style);
-    painter.paint(
-      canvas,
-      Offset(center.dx - painter.width / 2, center.dy - painter.height / 2),
-    );
-    painter.dispose();
-  }
-
-  /// Teks diputar 90 derajat CCW: tumbuh ke bawah, dibaca dari bawah ke atas.
-  void _paintVerticalText(
-    Canvas canvas,
-    String text,
-    double x,
-    double top,
-    TextStyle style,
-  ) {
-    final TextPainter painter = _layoutText(text, style);
-    canvas.save();
-    canvas.translate(x + painter.height / 2, top + painter.width);
-    canvas.rotate(-math.pi / 2);
-    painter.paint(canvas, Offset.zero);
-    canvas.restore();
-    painter.dispose();
-  }
-
-  /// Teks vertikal yang tumbuh ke atas dari [bottom] (label header bawah).
-  void _paintVerticalTextUp(
-    Canvas canvas,
-    String text,
-    double x,
-    double bottom,
-    TextStyle style,
-  ) {
-    final TextPainter painter = _layoutText(text, style);
-    canvas.save();
-    canvas.translate(x + painter.height / 2, bottom);
-    canvas.rotate(-math.pi / 2);
-    painter.paint(canvas, Offset.zero);
-    canvas.restore();
-    painter.dispose();
-  }
-
-  static TextPainter _layoutText(String text, TextStyle style) {
     return TextPainter(
-      text: TextSpan(text: text, style: style),
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          fontFamily: AppTypography.fontFamily,
+          fontSize: size,
+          height: 1.1,
+          fontWeight: weight,
+          letterSpacing: letterSpacing,
+          color: color,
+        ),
+      ),
+      textAlign: align,
       textDirection: TextDirection.ltr,
-      maxLines: 1,
     )..layout();
   }
+
+  /// Teks horizontal. [anchor] = titik kiri/tengah/kanan pada garis tengah.
+  void _text(
+    Canvas canvas,
+    String text,
+    Offset anchor, {
+    required double size,
+    required Color color,
+    TextAlign align = TextAlign.left,
+    FontWeight weight = FontWeight.w500,
+    double letterSpacing = 0,
+  }) {
+    final TextPainter painter = _layoutText(
+      text,
+      size: size,
+      color: color,
+      align: align,
+      weight: weight,
+      letterSpacing: letterSpacing,
+    );
+    final double dx = switch (align) {
+      TextAlign.center => anchor.dx - painter.width / 2,
+      TextAlign.right => anchor.dx - painter.width,
+      _ => anchor.dx,
+    };
+    painter.paint(canvas, Offset(dx, anchor.dy - painter.height / 2));
+    painter.dispose();
+  }
+
+  /// Teks silkscreen diputar 90 derajat, tetap dirapatkan ke [anchor].
+  void _verticalText(
+    Canvas canvas,
+    String text,
+    Offset anchor, {
+    required double size,
+    required bool downward,
+  }) {
+    final TextPainter painter = _layoutText(
+      text,
+      size: size,
+      color: _silkColor,
+      weight: FontWeight.w700,
+      letterSpacing: 1,
+    );
+    canvas.save();
+    canvas.translate(anchor.dx, anchor.dy);
+    canvas.rotate(downward ? math.pi / 2 : -math.pi / 2);
+    painter.paint(canvas, Offset(0, -painter.height / 2));
+    canvas.restore();
+    painter.dispose();
+  }
+
+  static Paint _fill(Color color) => Paint()
+    ..color = color
+    ..style = PaintingStyle.fill
+    ..isAntiAlias = true;
+
+  static Paint _line(
+    Color color,
+    double width, {
+    StrokeCap cap = StrokeCap.butt,
+  }) => Paint()
+    ..color = color
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width
+    ..strokeCap = cap
+    ..isAntiAlias = true;
+
+  @override
+  bool shouldRebuildSemantics(covariant ArduinoPainter oldDelegate) => false;
 }
