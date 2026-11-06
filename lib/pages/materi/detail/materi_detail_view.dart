@@ -9,6 +9,7 @@ import 'package:voltar/widgets/volt_chip.dart';
 import 'package:voltar/pages/materi/detail/content_block_renderer.dart';
 import 'package:voltar/pages/materi/detail/bottom_action_bar.dart';
 import 'package:voltar/pages/materi/detail/praktik/led_animation.dart';
+import 'package:voltar/pages/materi/detail/praktik/ohm_law_animation.dart';
 import 'package:voltar/pages/materi/detail/praktik/push_button_sim.dart';
 import 'package:voltar/pages/materi/detail/praktik/resistor_calculator.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -292,6 +293,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
       'l1_kom_resistor' => const ResistorCalculator(),
       'l1_kom_led' => const LedAnimation(),
       'l1_kom_tactile_switch' => const PushButtonSim(),
+      'l1_kom_hukum_ohm' => const OhmLawAnimation(),
       _ => Padding(
           padding: const EdgeInsets.all(AppSpacing.pagePadding),
           child: Center(

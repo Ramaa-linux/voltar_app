@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:voltar/models/learning_step.dart';
 import 'package:voltar/pages/materi/detail/materi_detail_view.dart';
 import 'package:voltar/pages/materi/detail/praktik/led_animation.dart';
+import 'package:voltar/pages/materi/detail/praktik/ohm_law_animation.dart';
 import 'package:voltar/pages/materi/detail/praktik/push_button_sim.dart';
 import 'package:voltar/pages/materi/detail/praktik/resistor_calculator.dart';
 
@@ -108,5 +109,58 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(ResistorCalculator), findsOneWidget);
+  });
+
+  testWidgets('OhmLawAnimation renders closed circuit, calculates current, and toggles switch', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: OhmLawAnimation(),
+        ),
+      ),
+    );
+
+    expect(find.text('Simulasi Rangkaian Tertutup & Hukum Ohm'), findsOneWidget);
+    // Default V=9.0V, R=220 Ohm -> I = 40.9 mA
+    expect(find.textContaining('RANGKAIAN TERTUTUP: Arus Mengalir (40.9 mA)'), findsOneWidget);
+    expect(find.text('Buka Saklar (OFF)'), findsOneWidget);
+
+    // Advance animation
+    await tester.pump(const Duration(milliseconds: 500));
+
+    // Open switch
+    await tester.tap(find.text('Buka Saklar (OFF)'));
+    await tester.pump();
+
+    expect(find.text('RANGKAIAN TERBUKA: Arus Terputus (0.0 mA)'), findsOneWidget);
+    expect(find.text('Tutup Saklar (ON)'), findsOneWidget);
+
+    // Close switch again
+    await tester.tap(find.text('Tutup Saklar (ON)'));
+    await tester.pump();
+
+    expect(find.textContaining('RANGKAIAN TERTUTUP: Arus Mengalir (40.9 mA)'), findsOneWidget);
+  });
+
+  testWidgets('MateriDetailView switches to OhmLawAnimation for l1_kom_hukum_ohm', (WidgetTester tester) async {
+    const ohmStep = LearningStep(
+      id: 'l1_kom_hukum_ohm',
+      type: LearningStepType.materi,
+      title: 'Hukum Ohm',
+      description: 'Hubungan tegangan, arus, dan hambatan',
+      estimatedTime: '15 menit',
+    );
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: MateriDetailView(step: ohmStep, levelNumber: 1),
+      ),
+    );
+
+    await tester.tap(find.text('Praktik'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    expect(find.byType(OhmLawAnimation), findsOneWidget);
   });
 }

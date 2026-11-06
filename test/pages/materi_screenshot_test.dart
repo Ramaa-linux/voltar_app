@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voltar/pages/materi/detail/praktik/led_animation.dart';
+import 'package:voltar/pages/materi/detail/praktik/ohm_law_animation.dart';
 import 'package:voltar/pages/materi/detail/praktik/push_button_sim.dart';
 import 'package:voltar/pages/materi/detail/praktik/resistor_calculator.dart';
 import 'package:voltar/theme/app_colors.dart';
@@ -60,5 +61,13 @@ void main() {
     );
     await gesture?.up();
     await tester.pump();
+
+    await capture(
+      const OhmLawAnimation(),
+      'fase10b-ohm-law.png',
+      act: () async {
+        await tester.pump(const Duration(milliseconds: 600));
+      },
+    );
   });
 }
