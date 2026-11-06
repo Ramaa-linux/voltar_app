@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-/// Tipe learning step: pretest, materi, atau posttest.
-enum LearningStepType { pretest, materi, posttest }
+/// Tipe learning step: pretest, materi, posttest, atau folder.
+enum LearningStepType { pretest, materi, posttest, folder }
 
 /// Pertanyaan untuk pretest dan posttest.
 @immutable
@@ -35,7 +35,7 @@ class QuizQuestion {
   };
 }
 
-/// Blok konten atomik di dalam step materi (teks narasi, potongan kode, atau gambar).
+/// Blok konten atomik di dalam step materi.
 @immutable
 class ContentBlock {
   const ContentBlock({
@@ -59,10 +59,10 @@ class ContentBlock {
   };
 }
 
-/// Tipe blok konten: teks narasi, potongan kode, atau gambar ilustrasi.
-enum ContentBlockType { text, code, image }
+/// Tipe blok konten: teks narasi, potongan kode, gambar ilustrasi, atau heading.
+enum ContentBlockType { text, code, image, heading }
 
-/// Satu langkah belajar: bisa berupa pretest, materi, atau posttest.
+/// Satu langkah belajar: bisa berupa pretest, materi, posttest, atau folder.
 @immutable
 class LearningStep {
   const LearningStep({
@@ -71,8 +71,12 @@ class LearningStep {
     required this.title,
     required this.description,
     this.estimatedTime,
+    this.heroImageUrl,
+    this.videoUrl,
     this.content,
+    this.videoSummary,
     this.questions,
+    this.subMateri,
   });
 
   final String id;
@@ -80,8 +84,12 @@ class LearningStep {
   final String title;
   final String description;
   final String? estimatedTime;
+  final String? heroImageUrl;
+  final String? videoUrl;
   final List<ContentBlock>? content;
+  final List<ContentBlock>? videoSummary;
   final List<QuizQuestion>? questions;
+  final List<LearningStep>? subMateri;
 
   factory LearningStep.fromJson(Map<String, dynamic> json) {
     final type = LearningStepType.values.byName(json['type'] as String);
@@ -91,8 +99,15 @@ class LearningStep {
       title: json['title'] as String,
       description: json['description'] as String,
       estimatedTime: json['estimatedTime'] as String?,
+      heroImageUrl: json['heroImageUrl'] as String?,
+      videoUrl: json['videoUrl'] as String?,
       content: type == LearningStepType.materi
           ? (json['content'] as List<dynamic>?)
+              ?.map((e) => ContentBlock.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
+      videoSummary: type == LearningStepType.materi
+          ? (json['videoSummary'] as List<dynamic>?)
               ?.map((e) => ContentBlock.fromJson(e as Map<String, dynamic>))
               .toList()
           : null,
@@ -100,6 +115,11 @@ class LearningStep {
               type == LearningStepType.posttest)
           ? (json['questions'] as List<dynamic>?)
               ?.map((e) => QuizQuestion.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
+      subMateri: type == LearningStepType.folder
+          ? (json['subMateri'] as List<dynamic>?)
+              ?.map((e) => LearningStep.fromJson(e as Map<String, dynamic>))
               .toList()
           : null,
     );
@@ -111,7 +131,11 @@ class LearningStep {
     'title': title,
     'description': description,
     'estimatedTime': estimatedTime,
+    'heroImageUrl': heroImageUrl,
+    'videoUrl': videoUrl,
     'content': content?.map((e) => e.toJson()).toList(),
+    'videoSummary': videoSummary?.map((e) => e.toJson()).toList(),
     'questions': questions?.map((e) => e.toJson()).toList(),
+    'subMateri': subMateri?.map((e) => e.toJson()).toList(),
   };
 }

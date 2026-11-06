@@ -54,10 +54,21 @@ class MateriRepository {
   Future<LearningStep> getStepById(String stepId) async {
     final List<LevelModel> levels = await getAllLevels();
     for (final LevelModel level in levels) {
-      for (final LearningStep step in level.steps) {
-        if (step.id == stepId) return step;
-      }
+      final LearningStep? found = _findStepInList(level.steps, stepId);
+      if (found != null) return found;
     }
     throw StateError('Step dengan id "$stepId" tidak ditemukan');
+  }
+
+  /// Cari rekursif di daftar step (termasuk subMateri folder).
+  LearningStep? _findStepInList(List<LearningStep> steps, String stepId) {
+    for (final LearningStep step in steps) {
+      if (step.id == stepId) return step;
+      if (step.subMateri != null) {
+        final LearningStep? nested = _findStepInList(step.subMateri!, stepId);
+        if (nested != null) return nested;
+      }
+    }
+    return null;
   }
 }

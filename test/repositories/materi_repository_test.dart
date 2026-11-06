@@ -19,13 +19,22 @@ void main() {
         expect(level.levelNumber, i + 1);
         expect(level.steps.isNotEmpty, isTrue);
 
-        // Setiap level harus punya minimal 1 pretest, minimal 1 materi, minimal 1 posttest
+        // Setiap level harus punya minimal 1 pretest, minimal 1 materi (termasuk di subMateri), minimal 1 posttest
         final pretests = level.steps.where((s) => s.type == LearningStepType.pretest);
-        final materis = level.steps.where((s) => s.type == LearningStepType.materi);
         final posttests = level.steps.where((s) => s.type == LearningStepType.posttest);
 
+        // Materi bisa berada di top-level atau di dalam folder (subMateri)
+        final allMateris = level.steps
+            .where((s) => s.type == LearningStepType.materi)
+            .toList();
+        for (final step in level.steps) {
+          if (step.type == LearningStepType.folder) {
+            allMateris.addAll(_collectMaterisRecursive(step));
+          }
+        }
+
         expect(pretests.isNotEmpty, isTrue, reason: 'Level ${i + 1} harus ada pretest');
-        expect(materis.isNotEmpty, isTrue, reason: 'Level ${i + 1} harus ada materi');
+        expect(allMateris.isNotEmpty, isTrue, reason: 'Level ${i + 1} harus ada materi');
         expect(posttests.isNotEmpty, isTrue, reason: 'Level ${i + 1} harus ada posttest');
 
         // Pretest & posttest harus punya questions
@@ -41,7 +50,7 @@ void main() {
         }
 
         // Materi harus punya content blocks
-        for (final m in materis) {
+        for (final m in allMateris) {
           expect(m.content, isNotNull);
           expect(m.content!.isNotEmpty, isTrue);
         }
@@ -60,5 +69,28 @@ void main() {
       expect(step.type, LearningStepType.pretest);
       expect(step.questions?.length, 4);
     });
+
+    test('getStepById menemukan subMateri di dalam folder', () async {
+      final step = await repository.getStepById('l1_kom_led');
+      expect(step.id, 'l1_kom_led');
+      expect(step.type, LearningStepType.materi);
+      expect(step.title, 'LED (Light Emitting Diode)');
+      expect(step.videoUrl, isNotNull);
+      expect(step.heroImageUrl, isNotNull);
+      expect(step.videoSummary, isNotNull);
+      expect(step.videoSummary!.isNotEmpty, isTrue);
+    });
   });
+}
+
+List<LearningStep> _collectMaterisRecursive(LearningStep folder) {
+  final List<LearningStep> result = [];
+  for (final LearningStep item in folder.subMateri ?? const []) {
+    if (item.type == LearningStepType.materi) {
+      result.add(item);
+    } else if (item.type == LearningStepType.folder) {
+      result.addAll(_collectMaterisRecursive(item));
+    }
+  }
+  return result;
 }

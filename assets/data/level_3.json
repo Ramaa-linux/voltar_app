@@ -8,165 +8,181 @@
       {
         "id": "q1",
         "question": "Pin input analog pada Arduino Uno adalah...",
-        "options": ["D0–D13", "A0–A5", "RX/TX", "RESET"],
+        "options": [
+          "D0–D13",
+          "A0–A5",
+          "RX/TX",
+          "RESET"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
-        "question": "Sensor LDR digunakan untuk mengukur...",
-        "options": ["Suhu", "Jarak", "Intensitas cahaya", "Gas"],
+        "question": "Rentang nilai hasil konversi ADC 10-bit pada Arduino adalah...",
+        "options": [
+          "0–100",
+          "0–255",
+          "0–1023",
+          "0–5"
+        ],
         "correctAnswerIndex": 2
       },
       {
         "id": "q3",
-        "question": "Rentang nilai pada analogWrite() adalah...",
-        "options": ["0–100", "0–255", "0–1023", "0–5"],
+        "question": "Rentang nilai pada analogWrite() untuk PWM adalah...",
+        "options": [
+          "0–100",
+          "0–255",
+          "0–1023",
+          "0–5"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q4",
-        "question": "Sensor HC-SR04 digunakan untuk mengukur...",
-        "options": ["Jarak", "Kelembaban", "Tekanan", "Arus"],
+        "question": "Fungsi yang digunakan untuk memetakan rentang nilai 0–1023 ke 0–255 adalah...",
+        "options": [
+          "map()",
+          "delay()",
+          "pinMode()",
+          "Serial.begin()"
+        ],
         "correctAnswerIndex": 0
       }
     ]
   },
   {
-    "id": "l3_m1",
+    "id": "l3_adc",
     "type": "materi",
     "title": "ADC (Analog to Digital Converter)",
-    "description": "Mengubah tegangan analog menjadi angka.",
+    "description": "Memahami input analog Arduino, konversi ADC 0-1023, dan membaca potensiometer untuk mengendalikan LED indikator.",
     "estimatedTime": "10 menit",
+    "heroImageUrl": "assets/images/materi/level_3/ADC/ADC.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=gMZgmtwKVds",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Video ini membahas pin analog Arduino Uno dengan potensiometer sebagai input dan LED sebagai indikator. Dimulai dari perbedaan pin digital dan analog, konsep Analog to Digital Converter (ADC), hingga cara membaca tegangan potensiometer menjadi nilai digital 0 sampai 1023. Nilai itu dipakai untuk menyalakan LED sesuai rentang tegangan. Pin analog penting untuk sensor yang mengeluarkan tegangan kontinu, berbeda dengan sinyal digital yang hanya bernilai 0 dan 1."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• Input digital hanya 0 dan 1, sedangkan input analog bernilai kontinu antara 0 sampai 5 Volt.\n• ADC Arduino mengubah sinyal analog menjadi nilai digital 0 sampai 1023.\n• Potensiometer adalah sensor analog yang tegangan keluarannya bisa diatur manual.\n• Rumus tegangan: V = (nilai ADC / 1023) × 5 V.\n• Struktur if-else mengatur LED sesuai rentang nilai analog.\n• Pilih jenis Arduino dengan jumlah pin analog sesuai kebutuhan, misalnya Arduino Mega untuk banyak sensor."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Penting"
+      },
+      {
+        "type": "text",
+        "data": "• ADC itu esensial: ADC 10-bit mengubah tegangan kontinu menjadi angka 0-1023. Tanpa ADC, Arduino hanya paham nyala atau mati.\n• Potensiometer cocok untuk belajar: memutar knob membuat nilai ADC di serial monitor naik atau turun sehingga hubungan tegangan dan nilai terbaca mudah dipahami.\n• Rumus konversi: Tegangan input = (nilai ADC / 1023) × 5 Volt, dipakai untuk mengubah angka digital menjadi besaran tegangan nyata.\n• Pengkondisian LED: contoh if-else dengan nilai ADC di bawah 350 menyalakan LED merah, 351-700 kuning, dan di atas 700 hijau.\n• Batasan pin: Arduino Uno hanya punya enam pin analog. Arduino Mega punya lebih banyak untuk kebutuhan yang lebih kompleks.\n• Hardware dan software harus sejalan: pemasangan potensiometer, resistor, dan LED yang benar dipadukan dengan program yang logis.\n• Banyak sensor fisik (suhu, arus, tegangan, posisi) memberi keluaran analog, sehingga materi ini menjadi dasar untuk IoT, robotika, dan otomasi."
+      }
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Mikrokontroler hanya memproses data digital, sedangkan suhu, cahaya, dan gas menghasilkan tegangan analog. ADC mengubahnya lewat tiga tahap:\n• Sampling: mengambil cuplikan sinyal\n• Quantization: membulatkan ke level diskrit\n• Encoding: mengubah ke kode biner"
+        "data": "Poin penting:\n• Pin digital: hanya HIGH (1) atau LOW (0).\n• Pin analog: membaca tegangan 0-5 V sebagai angka 0-1023 (ADC 10-bit).\n• Potensiometer menghasilkan tegangan yang berubah saat knob diputar.\n• Arduino Uno punya enam pin analog; Arduino Mega punya lebih banyak."
       },
       {
         "type": "text",
-        "data": "ADC Arduino Uno: resolusi 10 bit = 1024 level (0–1023) untuk 0–5 V.\nResolusi tegangan = 5 / 1023 ≈ 4,9 mV per level.\n\nResolusi tinggi lebih akurat tetapi lebih lambat dan mahal."
-      },
-      {
-        "type": "code",
-        "data": "int adc = analogRead(A0);\nfloat tegangan = adc * (5.0 / 1023.0);"
+        "data": "Rumus konversi:\nV = (nilai ADC / 1023) × 5 V\n\nContoh pengondisian LED:\n• ADC < 350: LED merah menyala\n• ADC 351-700: LED kuning menyala\n• ADC > 700: LED hijau menyala"
       }
     ]
   },
   {
-    "id": "l3_m2",
+    "id": "l3_pwm",
     "type": "materi",
     "title": "PWM (Pulse Width Modulation)",
-    "description": "Meniru keluaran analog dengan sinyal digital.",
-    "estimatedTime": "8 menit",
-    "content": [
+    "description": "Mengatur kecerahan LED dengan PWM, analogWrite(), dan potensiometer menggunakan fungsi map().",
+    "estimatedTime": "10 menit",
+    "heroImageUrl": "assets/images/materi/level_3/PWM/hero_pwm.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=qohll5CsjxY",
+    "videoSummary": [
       {
-        "type": "text",
-        "data": "Arduino tidak punya DAC, tetapi dapat meniru keluaran analog dengan PWM: sinyal digital yang dinyalakan-dimatikan sangat cepat.\n\n• Duty cycle = perbandingan waktu ON terhadap periode\n• Duty cycle besar → tegangan rata-rata besar\n• analogWrite(pin, 0–255) pada pin bertanda ~ (3, 5, 6, 9, 10, 11)"
+        "type": "heading",
+        "data": "Ringkasan"
       },
       {
         "type": "text",
-        "data": "Contoh:\n• analogWrite 0 → duty 0% → 0 V\n• analogWrite 128 → duty 50% → ± 2,5 V\n• analogWrite 255 → duty 100% → 5 V"
+        "data": "Video ini menjelaskan konsep Pulse Width Modulation (PWM) dan penerapannya untuk mengatur kecerahan LED. Dengan PWM, Arduino dapat menghasilkan berbagai nilai tegangan antara 0 sampai 5 volt lewat pin digital yang mendukung PWM, tidak hanya 0 atau 5 volt. Pada contoh praktik, nilai analog potensiometer (0-1023) dikonversi dengan map() menjadi 0-255, lalu dipakai sebagai parameter analogWrite() untuk mengatur intensitas LED. Nilai input dan output dipantau di serial monitor."
+      },
+      {
+        "type": "heading",
+        "data": "Poin-poin Penting"
+      },
+      {
+        "type": "text",
+        "data": "• PWM memungkinkan tegangan variatif (0-5 V) pada pin digital Arduino.\n• analogWrite() menerima nilai 0-255 untuk mengatur output PWM.\n• Potensiometer memberi nilai analog 0-1023.\n• map() mengubah nilai analog menjadi rentang PWM 0-255.\n• Arduino Nano mendukung PWM di pin digital 3, 5, 6, 9, 10, dan 11.\n• Kecerahan LED berubah real-time sesuai putaran potensiometer.\n• Serial monitor menampilkan nilai input potensiometer dan output PWM."
+      },
+      {
+        "type": "heading",
+        "data": "Insight Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• PWM efisien untuk kontrol tegangan: sinyal digital dihidupkan dan dimatikan sangat cepat sehingga tegangan rata-rata menjadi variatif tanpa DAC fisik atau hardware tambahan.\n• Potensiometer adalah input analog yang mudah dipakai sehingga rangkaian interaktif dan mudah diatur manual.\n• map() penting karena ADC 10-bit (0-1023) dan PWM 8-bit (0-255) memiliki skala berbeda; map() mengonversinya secara proporsional.\n• Tidak semua pin digital mendukung PWM; pahami pin yang didukung tiap board agar program berjalan benar.\n• Serial monitor mempercepat debugging karena nilai input dan output bisa dibandingkan langsung.\n• Dibanding on/off biasa, PWM membuat gradasi kecerahan LED lebih halus, berguna untuk pencahayaan dekoratif, indikator, atau display.\n• PWM adalah fondasi sebelum mengendalikan motor, servo, atau perangkat analog lain."
+      }
+    ],
+    "content": [
+      {
+        "type": "text",
+        "data": "Poin penting:\n• PWM meniru tegangan analog dengan menyalakan dan mematikan sinyal digital secara cepat.\n• analogWrite(pin, nilai) dengan nilai 0-255.\n• Gunakan hanya pin PWM (3, 5, 6, 9, 10, 11 pada Arduino Nano).\n• map(nilai, 0, 1023, 0, 255) menyesuaikan nilai potensiometer ke rentang PWM."
+      },
+      {
+        "type": "text",
+        "data": "Alur program:\n1. Baca potensiometer dengan analogRead() (0-1023).\n2. Ubah ke 0-255 dengan map().\n3. Kirim hasilnya ke LED dengan analogWrite().\n4. Tampilkan nilai input dan output di serial monitor."
       }
     ]
   },
   {
-    "id": "l3_m3",
-    "type": "materi",
-    "title": "Praktikum 3: Dimmer LED dengan Potensiometer",
-    "description": "Mengatur terang LED dan membaca ADC di Serial Monitor.",
-    "estimatedTime": "15 menit",
-    "content": [
-      {
-        "type": "text",
-        "data": "Rangkaian:\n• Potensiometer: kaki kiri → 5V, tengah → A0, kanan → GND\n• LED anoda (via 220 Ω) → D9 (PWM), katoda → GND"
-      },
-      {
-        "type": "code",
-        "data": "const int POT = A0;\nconst int LED = 9;\n\nvoid setup() {\n  pinMode(LED, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int adc = analogRead(POT);                // 0–1023\n  int pwm = map(adc, 0, 1023, 0, 255);      // skala ke 0–255\n  analogWrite(LED, pwm);\n\n  float tegangan = adc * (5.0 / 1023.0);\n  Serial.print(\"ADC: \");\n  Serial.print(adc);\n  Serial.print(\" | Tegangan: \");\n  Serial.print(tegangan, 2);\n  Serial.println(\" V\");\n  delay(100);\n}"
-      },
-      {
-        "type": "text",
-        "data": "Penjelasan:\n• analogRead: membaca tegangan A0 menjadi 0–1023\n• map(): mengubah skala 0–1023 ke 0–255\n• analogWrite: PWM sebanding nilai pwm\n• adc * (5.0 / 1023.0): mengubah ADC ke volt\n\nHasil: potensiometer di tengah → ADC ≈ 512, 2,50 V, LED setengah terang. Putar kiri → padam, putar kanan → terang penuh."
-      }
-    ]
-  },
-  {
-    "id": "l3_m4",
+    "id": "l3_jenis_prinsip_kerja_sensor",
     "type": "materi",
     "title": "Jenis & Prinsip Kerja Sensor",
-    "description": "Sensor analog, digital, dan serial.",
-    "estimatedTime": "12 menit",
-    "content": [
-      {
-        "type": "text",
-        "data": "Sensor mengubah besaran fisik menjadi sinyal listrik. Jenis keluaran:\n• Analog: tegangan sebanding besaran (LDR, LM35, MQ-135 pin AO)\n• Digital sederhana: HIGH/LOW (sensor gerak PIR, pin DO sensor gas)\n• Digital serial: data berformat khusus (DHT11, sensor I2C)"
-      },
-      {
-        "type": "text",
-        "data": "Sensor pada modul ini:\n• DHT11: suhu & kelembaban, digital serial, pin D2\n• MQ-135: kualitas udara, analog, A0\n• HC-SR04: jarak, lebar pulsa, TRIG D9 / ECHO D10\n• LDR: cahaya, analog via pembagi tegangan, A1"
-      },
-      {
-        "type": "text",
-        "data": "Prinsip kerja:\n• DHT11: elemen polimer untuk kelembaban, termistor NTC untuk suhu; chip mengirim data digital lewat satu kabel.\n• MQ-135: semikonduktor oksida logam yang dipanaskan; hambatan turun saat gas pencemar bertambah, modul mengubahnya jadi tegangan di pin AO.\n• HC-SR04: pemancar mengirim pulsa 40 kHz, penerima menangkap pantulan; jarak dihitung dari waktu pantulan.\n• LDR: hambatan turun saat cahaya bertambah; dibaca dengan pembagi tegangan."
-      }
-    ]
-  },
-  {
-    "id": "l3_m5",
-    "type": "materi",
-    "title": "Memilih Sensor yang Tepat",
-    "description": "Pertimbangan memilih sensor untuk proyekmu.",
+    "description": "Mengenal berbagai jenis sensor untuk belajar elektronika, dari joystick dan sensor suhu hingga sensor garis dan laser.",
     "estimatedTime": "8 menit",
-    "content": [
+    "heroImageUrl": "assets/images/materi/level_3/jenis_prinsip_kerja_sensor/hero_jenis_kerja_sensor.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=bsXfEfGP35o",
+    "videoSummary": [
       {
-        "type": "text",
-        "data": "Pertimbangan:\n• Besaran dan rentang: apa yang diukur dan sejauh apa? (HC-SR04 ± 2–400 cm)\n• Akurasi: DHT11 ± 2 °C; DHT22 ± 0,5 °C\n• Tegangan kerja: 5 V atau 3,3 V, sesuaikan dengan Arduino\n• Jenis keluaran: analog butuh A0–A5; sensor I2C hemat pin\n• Kecepatan baca: DHT11 maksimal 1 pembacaan per detik\n• Library dan harga: pastikan tersedia dan sesuai anggaran"
+        "type": "heading",
+        "data": "Ringkasan"
       },
       {
         "type": "text",
-        "data": "Langkah praktis: tulis kebutuhan (besaran, rentang, akurasi) → cocokkan dengan datasheet beberapa kandidat → pilih yang paling sederhana yang memenuhi kebutuhan."
+        "data": "Video ini memperkenalkan 37 jenis sensor untuk belajar elektronika dan mengembangkan aplikasi mikrokontroler. Pembicara menunjukkan sensor satu per satu sambil menguji fungsinya. Sebagian sudah dicoba, sebagian masih dievaluasi. Video memberi gambaran fungsi dasar maupun khusus berbagai sensor yang cocok untuk eksperimen pemula dan hobiis."
+      },
+      {
+        "type": "heading",
+        "data": "Sensor yang Ditampilkan"
+      },
+      {
+        "type": "text",
+        "data": "• Joystick\n• Modul sensor suara (besar dan kecil)\n• Sensor garis (line tracking)\n• Sensor jarak\n• Sensor suhu dan kelembaban (termistor NTC dan analog)\n• Sensor sentuh (metal touch)\n• Sensor magnetik\n• LED RGB dan LED dua warna\n• Sensor laser\n• Potensiometer rotary\n• Sensor fotoresistor"
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• Paket sensor lengkap mempercepat belajar karena bisa langsung dicoba, dari input analog hingga digital. Paket 37 sensor ini sekitar Rp190.000.\n• Ada sensor dengan fungsi sama tetapi bentuk dan ukuran modul berbeda (misalnya modul suara besar dan kecil), sehingga bisa disesuaikan dengan ruang proyek.\n• Sensor magnetik mendeteksi magnet atau logam; sensor metal touch dapat dipakai untuk kontak sentuh tanpa tombol fisik.\n• LED RGB dan LED dua warna memungkinkan eksperimen pengaturan warna dengan mikrokontroler.\n• Sensor suhu (termistor NTC maupun analog) dan sensor kelembaban penting untuk monitoring lingkungan dan IoT.\n• Sensor garis dan sensor laser berguna untuk robot bergerak otomatis dan pengindraan jarak.\n• Sensor banyak dipakai pada aplikasi robotik dan kontrol otomatis."
       }
-    ]
-  },
-  {
-    "id": "l3_m6",
-    "type": "materi",
-    "title": "Praktikum 4: Pengukur Jarak Ultrasonik",
-    "description": "Mengukur jarak dengan HC-SR04.",
-    "estimatedTime": "15 menit",
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Jarak = (waktu × kecepatan suara) / 2, dengan kecepatan suara ≈ 0,0343 cm/µs. Dibagi 2 karena gelombang pergi-pulang.\n\nRangkaian: VCC → 5V, TRIG → D9, ECHO → D10, GND → GND."
-      },
-      {
-        "type": "code",
-        "data": "const int TRIG = 9;\nconst int ECHO = 10;\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(TRIG, OUTPUT);\n  pinMode(ECHO, INPUT);\n}\n\nvoid loop() {\n  digitalWrite(TRIG, LOW);\n  delayMicroseconds(2);\n  digitalWrite(TRIG, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(TRIG, LOW);\n\n  long durasi = pulseIn(ECHO, HIGH, 30000);  // timeout 30 ms\n  float jarak = durasi * 0.0343 / 2.0;\n\n  Serial.print(\"Jarak: \");\n  Serial.print(jarak);\n  Serial.println(\" cm\");\n  delay(300);\n}"
+        "data": "Poin penting:\n• Sensor mengubah kondisi fisik (cahaya, suhu, jarak, suara, magnet) menjadi sinyal listrik yang dibaca mikrokontroler.\n• Ada sensor analog dan digital; sebagian sensor sama fungsinya tetapi berbeda bentuk dan ukuran modul.\n• Sensor suhu: termistor NTC dan sensor analog; ada juga sensor kelembaban.\n• Sensor garis dan laser dipakai untuk robot dan pengindraan jarak.\n• Sensor magnetik mendeteksi magnet atau logam; sensor sentuh dipakai sebagai pengganti tombol."
       },
       {
         "type": "text",
-        "data": "Penjelasan:\n• Pulsa 10 µs di TRIG memicu sensor mengirim gelombang ultrasonik.\n• pulseIn mengukur lama ECHO bernilai HIGH (µs); 30 ms adalah batas tunggu.\n• Bila tidak ada penghalang dalam jangkauan, pulseIn mengembalikan 0 dan jarak tampil 0 cm."
-      }
-    ]
-  },
-  {
-    "id": "l3_m7",
-    "type": "materi",
-    "title": "Praktikum 5: Monitor Lingkungan dengan OLED",
-    "description": "Menampilkan suhu, kelembaban, dan kualitas udara di layar OLED.",
-    "estimatedTime": "25 menit",
-    "content": [
-      {
-        "type": "text",
-        "data": "Alat: Arduino Uno, breadboard, jumper, DHT11, MQ-135, OLED 128×64 (I2C).\n\nRangkaian:\n• DHT11: VCC → 5V, GND → GND, DATA → D2\n• MQ-135: VCC → 5V, GND → GND, AO → A0\n• OLED: VCC → 5V (atau 3,3 V sesuai modul), GND → GND, SDA → A4, SCL → A5\n\nLibrary (Sketch → Include Library → Manage Libraries): DHT sensor library, Adafruit Unified Sensor, Adafruit GFX, Adafruit SSD1306."
-      },
-      {
-        "type": "code",
-        "data": "#include <Wire.h>\n#include <DHT.h>\n#include <Adafruit_GFX.h>\n#include <Adafruit_SSD1306.h>\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\n#define MQ135PIN A0\n\nDHT dht(DHTPIN, DHTTYPE);\nAdafruit_SSD1306 display(128, 64, &Wire, -1);\n\nconst char* klasifikasi(int adc) {\n  if (adc < 181) return \"BAIK\";\n  else if (adc < 225) return \"SEDANG\";\n  else if (adc < 300) return \"BURUK\";\n  else return \"SANGAT BURUK\";\n}\n\nvoid setup() {\n  Serial.begin(9600);\n  dht.begin();\n  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {\n    Serial.println(F(\"OLED tidak terdeteksi\"));\n    while (true);\n  }\n  display.setTextColor(WHITE);\n}\n\nvoid loop() {\n  int gas = analogRead(MQ135PIN);\n  float h = dht.readHumidity();\n  float t = dht.readTemperature();\n\n  display.clearDisplay();\n  display.setTextSize(1);\n  display.setCursor(0, 0);\n  display.println(F(\"Monitor Lingkungan\"));\n  display.setCursor(0, 16);\n  display.print(F(\"Udara: \"));\n  display.println(klasifikasi(gas));\n\n  if (isnan(h) || isnan(t)) {\n    display.setCursor(0, 40);\n    display.println(F(\"DHT gagal dibaca\"));\n  } else {\n    display.setCursor(0, 40);\n    display.print(F(\"Suhu : \"));\n    display.print(t, 1);\n    display.println(F(\" C\"));\n    display.setCursor(0, 52);\n    display.print(F(\"RH   : \"));\n    display.print(h, 0);\n    display.println(F(\" %\"));\n  }\n  display.display();\n  delay(2000);  // DHT11 maksimal 1 pembacaan per detik\n}"
-      },
-      {
-        "type": "text",
-        "data": "Catatan:\n• Nilai MQ-135 adalah ADC mentah (bukan ppm); ambang batas hanya relatif.\n• Sensor perlu dipanaskan beberapa menit sebelum pembacaan stabil.\n• Kalibrasi diperlukan bila ingin hasil dalam ppm."
+        "data": "Contoh sensor yang dibahas: joystick, modul suara, sensor garis, sensor jarak, sensor suhu, sensor sentuh, sensor magnetik, LED RGB, sensor laser, potensiometer, dan fotoresistor."
       }
     ]
   },
@@ -178,33 +194,58 @@
     "questions": [
       {
         "id": "q1",
-        "question": "ADC Arduino Uno 10 bit memiliki berapa level?",
-        "options": ["256", "1024", "4096", "10"],
+        "question": "Rumus konversi nilai ADC menjadi tegangan (dengan referensi 5 V) adalah...",
+        "options": [
+          "V = (nilai ADC / 255) × 5 V",
+          "V = (nilai ADC / 1023) × 5 V",
+          "V = nilai ADC × 5 V",
+          "V = 1023 / nilai ADC"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
-        "question": "Jika analogRead menghasilkan 512, tegangan yang dibaca sekitar...",
-        "options": ["1,25 V", "2,5 V", "5 V", "0 V"],
+        "question": "Jika analogRead menghasilkan sekitar 512, tegangan yang dibaca mendekati...",
+        "options": [
+          "1,25 V",
+          "2,5 V",
+          "5 V",
+          "0 V"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q3",
-        "question": "Pin berikut yang mendukung PWM adalah...",
-        "options": ["D2", "D4", "D9", "A0"],
+        "question": "Pin berikut yang mendukung keluaran PWM adalah...",
+        "options": [
+          "D2",
+          "D4",
+          "D9",
+          "A0"
+        ],
         "correctAnswerIndex": 2
       },
       {
         "id": "q4",
-        "question": "Pada HC-SR04, durasi dibagi 2 karena...",
-        "options": ["Ada dua sensor", "Gelombang menempuh jarak pergi dan pulang", "Kecepatan suara berubah", "Pin menggunakan pull-up"],
+        "question": "Perintah untuk mengatur kecerahan LED melalui sinyal PWM adalah...",
+        "options": [
+          "digitalWrite()",
+          "analogWrite()",
+          "analogRead()",
+          "digitalRead()"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q5",
-        "question": "DHT11 maksimal dapat dibaca...",
-        "options": ["10 kali per detik", "1 kali per detik", "100 kali per detik", "Tanpa batas"],
-        "correctAnswerIndex": 1
+        "question": "Fungsi utama sensor dalam sistem mikrokontroler adalah...",
+        "options": [
+          "Mengubah kondisi fisik menjadi sinyal listrik",
+          "Menyimpan program secara permanen",
+          "Menggantikan catu daya utama",
+          "Memutus arus saat korsleting"
+        ],
+        "correctAnswerIndex": 0
       }
     ]
   }

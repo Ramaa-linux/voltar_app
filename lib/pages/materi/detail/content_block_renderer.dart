@@ -21,8 +21,20 @@ class ContentBlockRenderer extends StatelessWidget {
         ContentBlockType.text => _TextBlock(text: block.data),
         ContentBlockType.code => _CodeBlock(code: block.data),
         ContentBlockType.image => _ImagePlaceholder(imageUrl: block.data),
+        ContentBlockType.heading => _HeadingBlock(text: block.data),
       },
     );
+  }
+}
+
+class _HeadingBlock extends StatelessWidget {
+  const _HeadingBlock({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text, style: AppTypography.heading);
   }
 }
 

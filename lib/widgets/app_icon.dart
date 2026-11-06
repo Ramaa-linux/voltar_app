@@ -27,6 +27,7 @@ enum AppIconName {
   lock,
   chevronDown,
   helpCircle,
+  folder,
 }
 
 /// Ukuran ikon standar - jangan pakai angka lepas di widget.
@@ -216,6 +217,7 @@ class AppIcon extends StatelessWidget {
     AppIconName.lock => 'assets/icons/lock.svg',
     AppIconName.chevronDown => 'assets/icons/chevron-down.svg',
     AppIconName.helpCircle => 'assets/icons/help-circle.svg',
+    AppIconName.folder => 'assets/icons/folder.svg',
   };
 
   @override

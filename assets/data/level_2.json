@@ -8,156 +8,303 @@
       {
         "id": "q1",
         "question": "Fungsi setup() pada sketch Arduino dijalankan...",
-        "options": ["Berulang tanpa henti", "Sekali saat board menyala", "Setiap tombol ditekan", "Tidak pernah"],
+        "options": [
+          "Berulang tanpa henti",
+          "Sekali saat board menyala",
+          "Setiap tombol ditekan",
+          "Tidak pernah"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
         "question": "Tipe data untuk bilangan desimal adalah...",
-        "options": ["int", "bool", "float", "char"],
+        "options": [
+          "int",
+          "bool",
+          "float",
+          "char"
+        ],
         "correctAnswerIndex": 2
       },
       {
         "id": "q3",
         "question": "Dua keadaan pin digital adalah...",
-        "options": ["HIGH dan LOW", "ON dan 0", "1 dan 2", "VCC dan AC"],
+        "options": [
+          "HIGH dan LOW",
+          "ON dan 0",
+          "1 dan 2",
+          "VCC dan AC"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q4",
         "question": "Indeks elemen pertama sebuah array adalah...",
-        "options": ["1", "0", "-1", "Tergantung tipe data"],
+        "options": [
+          "1",
+          "0",
+          "-1",
+          "Tergantung tipe data"
+        ],
         "correctAnswerIndex": 1
       }
     ]
   },
   {
-    "id": "l2_m1",
+    "id": "l2_struktur_sketch",
     "type": "materi",
     "title": "Struktur Sketch, Variabel & Tipe Data",
-    "description": "Dasar penulisan program Arduino.",
+    "description": "Mengenal fungsi setup() dan loop(), aturan penulisan variabel, tipe data umum, dan komentar pada program Arduino.",
+    "estimatedTime": "8 menit",
+    "heroImageUrl": "assets/images/materi/level_2/struktur_sketch/hero_struktur_sketch.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=y2umEZuKdhw",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Video ini membahas dasar pemrograman Arduino: struktur program, penulisan variabel, tipe data yang umum dipakai, dan cara menulis komentar. Fungsi setup() berjalan sekali saat program dijalankan, sedangkan loop() berjalan berulang selama alat menyala. Tipe data dipilih sesuai kebutuhan penyimpanan angka, karakter, hingga kalimat. Di akhir dijelaskan dua bentuk komentar: satu baris dengan // dan blok dengan /* ... */."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• setup() dan loop() adalah fungsi wajib dalam semua program Arduino.\n• Nama variabel tidak boleh mengandung spasi dan tidak boleh diawali angka.\n• int, long, dan versi unsigned-nya menyimpan bilangan bulat dengan rentang memori berbeda.\n• char dan String menyimpan karakter dan kalimat; boolean menyimpan true/false.\n• Komentar menjelaskan kode tanpa memengaruhi eksekusi program."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• Setup dan loop: setup() bekerja sekali di awal untuk inisialisasi, sedangkan loop() mengulang perintah terus-menerus sehingga Arduino berjalan tanpa henti.\n• Aturan penamaan variabel: tanpa spasi dan tidak diawali angka agar kode bebas error dan mudah dibaca. Underscore atau gabungan kata tanpa spasi membantu keterbacaan.\n• Pilihan tipe data: byte untuk angka kecil tanpa tanda, int dan long untuk bilangan bulat yang lebih besar, float dan double untuk bilangan pecahan. Pilih sesuai kebutuhan agar memori efisien dan data akurat.\n• Boolean: hanya bernilai true atau false, cocok untuk kondisi logika seperti sensor digital yang hanya punya dua keadaan.\n• Komentar satu baris (//) cocok untuk penjelasan singkat, sedangkan komentar blok (/* ... */) cocok untuk catatan panjang atau menonaktifkan banyak baris kode sekaligus."
+      },
+      {
+        "type": "heading",
+        "data": "Penutup"
+      },
+      {
+        "type": "text",
+        "data": "Video ini adalah pertemuan pertama dari seri belajar Arduino. Memahami struktur dasar, tipe data, dan komentar adalah fondasi sebelum membuat proyek yang lebih kompleks."
+      }
+    ],
+    "content": [
+      {
+        "type": "text",
+        "data": "Poin penting:\n• setup(): berjalan sekali saat Arduino menyala, dipakai untuk inisialisasi.\n• loop(): berjalan berulang selama Arduino menyala.\n• Variabel: tanpa spasi, tidak diawali angka.\n• Tipe data umum: boolean, byte, char, int, unsigned int, long, unsigned long, float, double, String.\n• Komentar: // untuk satu baris, /* ... */ untuk blok."
+      },
+      {
+        "type": "code",
+        "data": "int ledPin = 2; // Menyimpan pin LED dengan nomor 2\nboolean sensorActive = true; // Status sensor, aktif = true\nString pesan = \"Belajar Arduino\"; // Menyimpan kalimat\n\n// Komentar satu baris: penjelasan kode di sini\n\n/*\nKomentar blok:\nBisa menulis penjelasan yang lebih panjang\natau menonaktifkan beberapa baris kode\n*/"
+      }
+    ]
+  },
+  {
+    "id": "l2_operator_percabangan",
+    "type": "materi",
+    "title": "Operator & Percabangan (Simulasi LED)",
+    "description": "Praktik membuat LED berkedip dan mengubah kecepatan kedipnya dengan push button memakai digitalRead() dan if-else.",
     "estimatedTime": "10 menit",
+    "heroImageUrl": "assets/images/materi/level_2/operator_percabangan/hero_percabangan.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=EN0Et74bBrU",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Tutorial pengantar untuk pemula yang belajar Arduino dari nol. Video memakai Arduino Uno R3, breadboard, LED, resistor, dan push button. Alurnya: instalasi Arduino IDE, memasang komponen, membuat program LED berkedip, lalu membuat mode kecepatan kedip yang diubah dengan push button. Video juga menekankan kesabaran, eksplorasi mandiri, dan belajar bersama komunitas."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• Panduan memulai Arduino dari nol tanpa asumsi pengetahuan teknis.\n• Komponen yang dibahas: Arduino Uno R3, breadboard, LED, resistor, kabel jumper, dan push button.\n• Instalasi dan penggunaan Arduino IDE untuk pemrograman dasar LED.\n• Rangkaian LED sederhana yang berkedip dengan interval yang bisa diubah.\n• Dua LED berkedip bergantian pada breadboard.\n• Push button dipakai untuk mengubah kecepatan kedip LED secara interaktif."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• Arduino sebagai otak rangkaian: program yang di-upload mengatur cara kerja komponen elektronik. Banyaknya pin I/O memudahkan sambungan ke sensor dan modul lain.\n• Breadboard: memudahkan merangkai tanpa solder. Jalur positif (garis merah) dan negatif (garis biru) serta jalur horizontal perlu dipahami agar tidak salah menyusun rangkaian.\n• Resistor: menghambat arus agar LED tidak rusak karena kelebihan arus. Resistor 220 ohm menjadi contoh paling dasar.\n• Arduino IDE dan bahasa Arduino (mirip C/C++): setup() untuk inisialisasi sekali, loop() untuk perintah berulang, serta digitalWrite() dan delay() untuk mengatur pin dan waktu.\n• Push button sebagai input: digitalRead() membaca status tombol, lalu if-else mengubah kecepatan kedip LED. Serial monitor dipakai untuk memantau status tombol (debugging).\n• Praktik langsung: unggah program, lalu coba modifikasi seperti mengubah nilai delay agar pemahaman lebih dalam."
+      },
+      {
+        "type": "heading",
+        "data": "Langkah-langkah Penting"
+      },
+      {
+        "type": "text",
+        "data": "1. Siapkan peralatan dan komponen sesuai daftar.\n2. Pahami fungsi breadboard dan aturan jalur listriknya (merah positif, biru negatif).\n3. Pasang Arduino IDE versi terbaru dan sambungkan Arduino ke PC dengan kabel USB.\n4. Buat program pertama: LED bawaan Arduino berkedip dengan delay yang bisa diatur.\n5. Pasang LED di breadboard dengan resistor dan sambungkan ke pin digital Arduino.\n6. Ubah program agar mengendalikan LED eksternal pada pin yang sesuai, lalu uji.\n7. Tambahkan LED kedua untuk kedip bergantian.\n8. Pasang push button di breadboard dan sambungkan ke pin digital sebagai input.\n9. Program kecepatan kedip agar berubah saat tombol ditekan memakai digitalRead() dan if-else.\n10. Gunakan serial monitor untuk memantau status tombol."
+      },
+      {
+        "type": "heading",
+        "data": "Penutup"
+      },
+      {
+        "type": "text",
+        "data": "Dengan biaya sekitar 100 ribu rupiah, siapa pun bisa mulai belajar Arduino. Pesan pembuat video: jangan cepat menyerah, terus bereksplorasi, dan berbagi di komunitas."
+      }
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Struktur sketch:\n• setup(): dijalankan sekali saat board menyala\n• loop(): dijalankan berulang tanpa henti\n\nVariabel adalah lokasi memori bernama; harus dideklarasikan beserta tipe datanya."
+        "data": "Poin penting:\n• Fungsi yang dipakai: setup(), loop(), digitalWrite(), delay(), dan digitalRead().\n• LED harus dipasang dengan resistor (contoh 220 ohm) agar arus aman.\n• Push button dibaca dengan digitalRead(); hasilnya diproses dengan if-else.\n• Contoh logika: jika tombol ditekan, kedipkan LED lebih cepat; jika tidak, kembali ke kecepatan normal.\n• Serial monitor membantu memantau status tombol saat debugging."
       },
       {
         "type": "text",
-        "data": "Tipe data (Uno):\n• bool: 1 byte, true/false\n• char: 1 byte, satu karakter\n• byte: 1 byte, 0–255\n• int: 2 byte, −32768 s.d. 32767\n• long: 4 byte, bilangan bulat besar\n• float: 4 byte, bilangan desimal"
-      },
-      {
-        "type": "code",
-        "data": "void setup() {\n  int angkaBulat = 10;\n  float angkaDesimal = 3.14;\n  char karakter = 'A';\n  bool nilaiLogika = true;\n}"
+        "data": "Alur praktik:\n1. Kedipkan LED bawaan Arduino.\n2. Pindahkan ke LED eksternal di breadboard.\n3. Tambahkan LED kedua agar berkedip bergantian.\n4. Tambahkan push button untuk mengubah kecepatan kedip."
       }
     ]
   },
   {
-    "id": "l2_m2",
+    "id": "l2_array_pointer",
     "type": "materi",
-    "title": "Operator, Percabangan & Perulangan",
-    "description": "Operator, if-else, dan for.",
-    "estimatedTime": "12 menit",
+    "title": "Array & Pointer",
+    "description": "Mengelola data berbentuk tabel dengan array satu dimensi dan multidimensi, lengkap dengan fungsi dan pembatasan indeks.",
+    "estimatedTime": "8 menit",
+    "heroImageUrl": "assets/images/materi/level_2/array_pointer/hero_array.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=RvRYZ3ptgQc",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Video ini melanjutkan seri belajar Arduino dengan fokus pada array satu dimensi dan multidimensi. Array multidimensi dijelaskan sebagai data tabel seperti di Excel, misalnya nilai beberapa siswa pada beberapa mata pelajaran. Program mengisi nilai ke dalam array, lalu mencari nilai matematika terendah, nilai IPA tertinggi, dan nilai rata-rata tertinggi. Serial monitor dipakai untuk memantau nilai dan proses perhitungan langkah demi langkah."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• Array multidimensi untuk merepresentasikan data tabel seperti nilai siswa.\n• Pengisian data nilai siswa ke dalam array multidimensi.\n• Fungsi khusus untuk mencari nilai terendah, tertinggi, dan rata-rata tertinggi.\n• Pembatasan indeks array agar tidak terjadi error saat indeks melebihi batas data.\n• Serial monitor untuk debugging dan memantau perhitungan secara real-time.\n• Variabel, fungsi, dan array digabung dalam satu program yang relatif lengkap."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• Array multidimensi memudahkan pengelolaan data kompleks, terutama saat satu operasi melibatkan banyak data sekaligus.\n• Fungsi membuat kode modular: misalnya satu fungsi untuk mengisi nilai dan satu fungsi untuk mencari nilai terendah, sehingga kode lebih rapi dan mudah di-debug.\n• Pembatasan indeks krusial: array punya batas indeks tetap, jadi program harus memeriksa indeks agar tidak melebihi jumlah data dan menghindari error runtime.\n• Serial monitor menampilkan nilai dan hasil hitung berurutan, sehingga logika program mudah dipahami langkah demi langkah.\n• Penomoran ramah pengguna: menambah 1 pada indeks membuat nomor siswa dimulai dari 1, bukan 0.\n• Mencari nilai minimum atau maksimum: tentukan nilai awal (misalnya 100 untuk nilai terendah), bandingkan satu per satu, dan perbarui nilainya sampai ditemukan hasil yang dicari."
+      }
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Operator:\n• Aritmatika: + - * / %\n• Perbandingan: == != < > <= >= (hasil true/false)\n• Logika: && (AND), || (OR), ! (NOT)\n\nCatatan: di Arduino, keluaran ditampilkan dengan Serial.print(), bukan cout."
-      },
-      {
-        "type": "code",
-        "data": "void setup() {\n  Serial.begin(9600);\n  int a = 1, b = 0;\n  bool c = a && b;  // operasi AND\n  Serial.print(\"a AND b = \");\n  Serial.println(c);\n}\n\nvoid loop() {}"
-      },
-      {
-        "type": "code",
-        "data": "void setup() {\n  Serial.begin(9600);\n  int angka = 5;\n\n  if (angka > 0) {\n    Serial.println(\"Angka positif\");\n  } else if (angka < 0) {\n    Serial.println(\"Angka negatif\");\n  } else {\n    Serial.println(\"Nol\");\n  }\n\n  for (int i = 1; i <= 10; i++) {\n    Serial.println(i);\n  }\n}\n\nvoid loop() {}"
+        "data": "Poin penting:\n• Array menyimpan banyak nilai dalam satu variabel; array multidimensi seperti tabel baris dan kolom.\n• Indeks array dimulai dari 0, jadi tambahkan 1 saat menampilkan nomor agar mudah dibaca.\n• Batasi indeks agar tidak melewati ukuran array.\n• Gunakan fungsi terpisah untuk mengisi data dan mencari nilai tertentu."
       },
       {
         "type": "text",
-        "data": "Perulangan lain yang tersedia: while dan do ... while."
+        "data": "Cara mencari nilai terendah:\n1. Mulai dari nilai awal yang besar (contoh 100).\n2. Bandingkan setiap elemen array dengan nilai tersebut.\n3. Jika ada elemen yang lebih kecil, ganti nilai terendah.\n4. Setelah semua elemen diperiksa, nilai yang tersisa adalah yang terendah."
       }
     ]
   },
   {
-    "id": "l2_m3",
-    "type": "materi",
-    "title": "Fungsi, Array & Pointer",
-    "description": "Blok kode berulang, kumpulan data, dan alamat memori.",
-    "estimatedTime": "12 menit",
-    "content": [
-      {
-        "type": "text",
-        "data": "Fungsi: blok kode yang bisa dipanggil berulang, menerima parameter, dan dapat mengembalikan nilai."
-      },
-      {
-        "type": "code",
-        "data": "int jumlah(int a, int b) {\n  return a + b;\n}\n\nvoid setup() {\n  Serial.begin(9600);\n  Serial.println(jumlah(10, 5));  // 15\n}\n\nvoid loop() {}"
-      },
-      {
-        "type": "text",
-        "data": "Array menyimpan banyak nilai bertipe sama; indeks dimulai dari 0.\nPointer menyimpan alamat memori variabel lain, berguna untuk menghemat memori yang terbatas."
-      },
-      {
-        "type": "code",
-        "data": "int angka[5] = {1, 2, 3, 4, 5};\nangka[3] = 10;  // elemen ke-4 menjadi 10\n\nint nilai = 10;\nint *ptr = &nilai;  // ptr menunjuk alamat nilai\n*ptr = 20;          // nilai sekarang 20"
-      }
-    ]
-  },
-  {
-    "id": "l2_m4",
+    "id": "l2_input_output",
     "type": "materi",
     "title": "Input & Output Digital",
-    "description": "pinMode, digitalWrite, digitalRead, dan pull-up.",
+    "description": "Mengontrol empat LED secara bergantian dengan satu push button memakai array, perulangan for, dan switch case.",
     "estimatedTime": "10 menit",
-    "content": [
+    "heroImageUrl": "assets/images/materi/level_2/input_output/hero_input_output.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=H3ydZc6_Mf0",
+    "videoSummary": [
       {
-        "type": "text",
-        "data": "Pin digital hanya punya dua keadaan: HIGH (5 V) dan LOW (0 V). Pin bisa jadi OUTPUT (LED, relay) atau INPUT (tombol, sensor digital).\n\n• pinMode(pin, mode): mengatur mode pin\n• digitalWrite(pin, nilai): menulis HIGH/LOW\n• digitalRead(pin): membaca keadaan pin"
+        "type": "heading",
+        "data": "Ringkasan"
       },
       {
         "type": "text",
-        "data": "Pull-up:\n• Pin yang dibiarkan mengambang (floating) membaca nilai acak.\n• Solusinya resistor pull-up. Arduino punya yang internal lewat INPUT_PULLUP.\n• Tombol cukup dihubungkan antara pin dan GND.\n• Logika terbalik: tombol ditekan = LOW."
+        "data": "Video ini menjawab pertanyaan: bisakah satu push button mengontrol beberapa LED secara bergantian? Empat LED dipasang di pin digital 9 sampai 12, dan push button di pin analog 4. Pin LED disimpan dalam array konstan dan diinisialisasi dengan perulangan for. Setiap kali tombol ditekan, variabel penghitung x bertambah satu, dan nilai x menentukan LED mana yang menyala lewat switch case. Setelah LED keempat, x kembali ke 0 sehingga urutan berulang."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• Satu push button dapat mengontrol empat LED secara bergantian.\n• Array pin LED membuat kode rapi dan mudah ditambah.\n• Perulangan for dan switch case mengatur LED yang aktif.\n• Pin tombol harus diatur sebagai input dengan pinMode() dan dibaca dengan digitalRead().\n• Penghitung x di-reset ke 0 saat mencapai 4 agar siklus berulang.\n• Jeda 300 ms mencegah pembacaan ganda akibat bouncing tombol."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• Array konstan untuk pin LED membuat program skalabel: menambah LED tidak perlu banyak mengubah kode.\n• Perulangan for dan switch case menghemat kode dan menghindari if-else yang rumit; nilai x langsung menentukan LED aktif.\n• Pin Arduino harus diset sebagai input secara eksplisit dengan pinMode(), lalu status tombol dibaca dengan digitalRead().\n• Mereset penghitung saat mencapai 4 adalah contoh sederhana pengendalian state yang berulang (siklik) dan sering dipakai di sistem embedded.\n• Delay 300 ms setelah pembacaan tombol meredam bouncing sehingga satu tekanan tidak terbaca berkali-kali."
+      },
+      {
+        "type": "heading",
+        "data": "Alur Program"
+      },
+      {
+        "type": "text",
+        "data": "1. Inisialisasi array pin LED: LED[0] = 12, LED[1] = 11, LED[2] = 10, LED[3] = 9.\n2. Atur pin push button sebagai input.\n3. Baca status push button dengan digitalRead().\n4. Jika tombol ditekan (status == 1), tambahkan x = x + 1.\n5. Gunakan switch case pada x: 0 menyalakan LED 1, 1 menyalakan LED 2, 2 menyalakan LED 3, 3 menyalakan LED 4 (LED lain mati), dan 4 mereset x menjadi 0.\n6. Beri delay 300 ms sebelum membaca input lagi.\n7. Ulangi dari langkah 3."
+      }
+    ],
+    "content": [
+      {
+        "type": "text",
+        "data": "Rangkaian:\n• Empat LED di pin digital 9 sampai 12.\n• Push button di pin analog 4."
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n• Simpan pin LED dalam array konstan, lalu atur semuanya sebagai output dengan perulangan for.\n• Pin push button diatur sebagai input dan dibaca dengan digitalRead().\n• Setiap tekanan menambah penghitung x; switch case memilih LED yang menyala sesuai nilai x.\n• Saat x mencapai 4, reset ke 0 agar urutan kembali ke LED pertama.\n• Delay 300 ms mencegah pembacaan ganda akibat bouncing."
       }
     ]
   },
   {
-    "id": "l2_m5",
-    "type": "materi",
-    "title": "Praktikum 2: Tombol dan LED",
-    "description": "LED menyala hanya saat tombol ditekan.",
-    "estimatedTime": "15 menit",
-    "content": [
-      {
-        "type": "text",
-        "data": "Rangkaian:\n• Tombol kaki 1 → D2, kaki 2 → GND\n• LED anoda (via resistor 220 Ω) → D8, katoda → GND"
-      },
-      {
-        "type": "code",
-        "data": "const int TOMBOL = 2;\nconst int LED = 8;\n\nvoid setup() {\n  pinMode(TOMBOL, INPUT_PULLUP);\n  pinMode(LED, OUTPUT);\n}\n\nvoid loop() {\n  if (digitalRead(TOMBOL) == LOW) {  // tombol ditekan\n    digitalWrite(LED, HIGH);\n  } else {\n    digitalWrite(LED, LOW);\n  }\n}"
-      },
-      {
-        "type": "text",
-        "data": "Hasil: LED menyala hanya selama tombol ditekan."
-      }
-    ]
-  },
-  {
-    "id": "l2_m6",
+    "id": "l2_relay",
     "type": "materi",
     "title": "Relay",
-    "description": "Saklar elektromekanik untuk beban besar.",
-    "estimatedTime": "10 menit",
+    "description": "Cara kerja relay 5V DC, fungsi pin COM, NO, dan NC, serta cara memprogramnya dengan Arduino.",
+    "estimatedTime": "8 menit",
+    "heroImageUrl": "assets/images/materi/level_2/relay/hero_relay.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=kc94lP9MFqo",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Video ini menjelaskan relay 5 volt DC dengan tiga pin utama: COM (Common), NO (Normally Open), dan NC (Normally Close). Relay bekerja sebagai saklar elektromagnetik yang menyambung atau memutus koneksi antar pin sesuai kondisi ON/OFF. Pembahasan mencakup fungsi tiap pin, pengkabelan relay dengan Arduino Nano, pemrograman sederhana lewat pin digital dengan interval waktu tertentu, dan demo pengendalian kipas DC 12 volt memakai pin NO dan NC. Relay ini juga dapat dipakai pada tegangan AC hingga 250 volt dengan arus maksimal 10-15 ampere."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• Fungsi pin COM, NO, dan NC pada relay 5V DC.\n• Relay dihubungkan ke Arduino Nano lewat pin digital dan ground.\n• Pemrograman dasar relay tidak membutuhkan library khusus.\n• Waktu hidup-mati relay diatur dengan delay.\n• Demo kipas DC 12 volt, termasuk perbedaan kerja relay saat memakai NO dan NC.\n• Relay dapat mengendalikan beban AC hingga 250 volt dan maksimal 10-15 ampere."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• NO dan NC: NO hanya terhubung dengan COM saat relay aktif (ON), sedangkan NC terhubung saat relay OFF. Dengan demikian ada dua skenario kendali beban tanpa mengubah rangkaian lain.\n• Relay sebagai saklar elektromagnetik: tegangan rendah (5V dari Arduino) dapat mengendalikan beban bertegangan tinggi atau arus besar karena sisi kontrol dan sisi beban terpisah.\n• Tanpa library khusus: cukup atur pin digital sebagai output lalu beri sinyal HIGH atau LOW.\n• Pengaturan waktu dengan delay: misalnya kipas menyala 5 detik, mati 1 detik, lalu berulang.\n• Menukar sambungan dari NO ke NC akan membalik pola hidup-mati perangkat tanpa mengubah kode.\n• Relay ini cocok untuk peralatan rumah tangga seperti lampu, kipas angin, atau mesin dengan tegangan AC standar."
+      }
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Relay adalah saklar elektromekanik yang dikendalikan sinyal kecil untuk memutus/menyambung beban besar (lampu, pompa, kipas AC).\n\nJenis:\n• Relay elektromagnetik (paling umum)\n• Solid state relay (lebih cepat dan awet, lebih mahal)\n• Relay termal (pengaman beban lebih)\n\nBanyak modul relay 5 V bersifat active LOW: relay menyala saat pin diberi LOW."
-      },
-      {
-        "type": "code",
-        "data": "const int RELAY = 7;\n\nvoid setup() {\n  pinMode(RELAY, OUTPUT);\n  digitalWrite(RELAY, HIGH);  // awal: relay mati (active LOW)\n}\n\nvoid loop() {\n  digitalWrite(RELAY, LOW);   // relay ON\n  delay(3000);\n  digitalWrite(RELAY, HIGH);  // relay OFF\n  delay(3000);\n}"
+        "data": "Pin relay:\n• COM (Common): terminal bersama.\n• NO (Normally Open): terhubung ke COM hanya saat relay ON.\n• NC (Normally Close): terhubung ke COM saat relay OFF."
       },
       {
         "type": "text",
-        "data": "⚠️ Keselamatan: tegangan jala-jala 220 V berbahaya. Pada praktikum gunakan beban tegangan rendah (misalnya lampu 12 V) atau dampingi instruktur."
+        "data": "Poin penting:\n• Relay memisahkan sisi kontrol (5V Arduino) dari sisi beban.\n• Kendalikan relay dengan pinMode(pin, OUTPUT) dan digitalWrite() HIGH atau LOW.\n• Atur siklus ON/OFF dengan delay, misalnya ON 5 detik lalu OFF 1 detik.\n• Menukar sambungan NO dan NC membalik pola hidup-mati beban.\n• Kemampuan relay pada video: AC hingga 250 volt, arus maksimal 10-15 ampere."
       }
     ]
   },
@@ -169,33 +316,58 @@
     "questions": [
       {
         "id": "q1",
-        "question": "Dengan INPUT_PULLUP, tombol yang ditekan akan terbaca...",
-        "options": ["HIGH", "LOW", "Acak", "Tidak berubah"],
+        "question": "Fungsi loop() pada sketch Arduino dijalankan...",
+        "options": [
+          "Sekali saat board menyala",
+          "Berulang selama Arduino menyala",
+          "Hanya saat terjadi error",
+          "Ketika dikompilasi"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
         "question": "Operator logika AND ditulis...",
-        "options": ["||", "&&", "!", "=="],
+        "options": [
+          "||",
+          "&&",
+          "!",
+          "=="
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q3",
-        "question": "Modul relay active LOW akan menyala ketika pin kontrol diberi...",
-        "options": ["HIGH", "LOW", "Dibiarkan floating", "delay()"],
+        "question": "Terminal relay yang terhubung ke COM hanya saat relay aktif (ON) adalah...",
+        "options": [
+          "NC (Normally Close)",
+          "NO (Normally Open)",
+          "GND",
+          "VCC"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q4",
-        "question": "Perintah untuk menampilkan teks ke Serial Monitor adalah...",
-        "options": ["cout", "Serial.print()", "echo", "display()"],
+        "question": "Perintah untuk membaca status tombol pada pin digital adalah...",
+        "options": [
+          "digitalWrite()",
+          "digitalRead()",
+          "analogWrite()",
+          "pinMode()"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q5",
-        "question": "Beban yang aman untuk praktikum relay adalah...",
-        "options": ["Listrik 220 V tanpa pendamping", "Lampu 12 V atau didampingi instruktur", "Motor besar tanpa pengaman", "Tidak boleh ada beban"],
-        "correctAnswerIndex": 1
+        "question": "Cara menulis komentar satu baris pada kode Arduino adalah menggunakan...",
+        "options": [
+          "//",
+          "##",
+          "--",
+          "<!--"
+        ],
+        "correctAnswerIndex": 0
       }
     ]
   }

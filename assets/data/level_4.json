@@ -8,136 +8,278 @@
       {
         "id": "q1",
         "question": "Servo digunakan untuk...",
-        "options": ["Putaran kontinu tanpa batas", "Menggerakkan ke sudut tertentu dalam rentang terbatas", "Menyambung beban AC", "Mengukur suhu"],
+        "options": [
+          "Putaran kontinu tanpa batas",
+          "Menggerakkan ke sudut tertentu dalam rentang terbatas",
+          "Menyambung beban AC",
+          "Mengukur suhu"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
-        "question": "Mengapa motor tidak boleh langsung dihubungkan ke pin Arduino?",
-        "options": ["Arus pin (± 20 mA) terlalu kecil untuk motor", "Tegangan 5 V terlalu besar", "Arduino tidak punya pin keluaran", "Motor tidak bisa menggunakan PWM"],
+        "question": "Kabel warna merah pada motor servo standar umumnya dihubungkan ke...",
+        "options": [
+          "VCC 5V",
+          "Ground",
+          "Pin Reset",
+          "Pin RX"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q3",
         "question": "Saat delay() berjalan, mikrokontroler...",
-        "options": ["Berhenti dan tidak bisa membaca tombol", "Bekerja lebih cepat", "Menghemat daya otomatis", "Mengaktifkan PWM"],
+        "options": [
+          "Berhenti menunggu dan memblokir perintah lain",
+          "Bekerja lebih cepat",
+          "Menghemat daya otomatis",
+          "Mengaktifkan PWM"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q4",
-        "question": "Pin interrupt eksternal pada Arduino Uno adalah...",
-        "options": ["Pin 2 dan 3", "Pin 0 dan 1", "A0 dan A1", "Pin 12 dan 13"],
+        "question": "Masalah getaran mekanis pada tombol yang terbaca berkali-kali disebut...",
+        "options": [
+          "Bouncing",
+          "Floating",
+          "Overflow",
+          "Polling"
+        ],
         "correctAnswerIndex": 0
       }
     ]
   },
   {
-    "id": "l4_m1",
+    "id": "l4_jenis_motor",
     "type": "materi",
-    "title": "Jenis Motor",
-    "description": "Motor DC, stepper, dan servo.",
+    "title": "Jenis Motor: Servo",
+    "description": "Cara kerja servo yang dikendalikan sinyal PWM, standar kabel servo, dan pemrograman Arduino lewat Python (pyfirmata).",
     "estimatedTime": "10 menit",
-    "content": [
+    "heroImageUrl": "assets/images/materi/level_4/jenis_motor/hero_jenis_motor.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=3qbFvcnObfI",
+    "videoSummary": [
       {
-        "type": "text",
-        "data": "Prinsip motor DC: rotor (berputar, berisi kumparan dan komutator) dan stator (diam, magnet tetap). Arus pada kumparan menimbulkan medan magnet yang berinteraksi dengan stator sehingga rotor berputar.\n• Arah putaran dibalik dengan membalik polaritas arus.\n• Kecepatan diatur dengan tegangan atau PWM."
+        "type": "heading",
+        "data": "Ringkasan"
       },
       {
         "type": "text",
-        "data": "Perbandingan:\n• Motor DC: torsi besar, kecepatan mudah diatur PWM, posisi tidak presisi. Untuk roda robot, kipas.\n• Motor stepper: berputar bertahap per langkah, posisi presisi, torsi lebih kecil. Untuk printer 3D, CNC.\n• Servo: motor DC dengan umpan balik posisi, sudut dapat ditentukan, rentang terbatas (± 180°). Untuk lengan robot, kemudi."
+        "data": "Video ini membahas cara mengendalikan motor servo dengan Python yang terhubung ke board Arduino. Dimulai dari konsep dasar servo yang dikendalikan sinyal PWM, lalu contoh kode Python yang menggerakkan servo dari sudut 0° sampai 180° dengan variasi kecepatan dan sudut. Video juga membahas sambungan kabel servo (VCC, ground, PWM), library pyfirmata untuk komunikasi dengan Arduino, dan antarmuka grafis sederhana dengan Tkinter untuk kontrol servo secara interaktif."
+      },
+      {
+        "type": "heading",
+        "data": "Poin-poin Penting"
+      },
+      {
+        "type": "text",
+        "data": "• Servo dikendalikan sinyal PWM dari Arduino.\n• Kabel servo: merah (VCC 5V), coklat (ground), oranye atau kuning (sinyal PWM).\n• Contoh perangkat: Arduino Uno dan servo MG90S atau MG995.\n• Python memakai library pyfirmata dan port serial untuk berkomunikasi dengan Arduino.\n• Loop dengan penambahan sudut menggerakkan servo secara bertahap.\n• Delay mengatur kecepatan gerak servo.\n• GUI Tkinter menyediakan slider sudut dan tombol sweep otomatis."
+      },
+      {
+        "type": "heading",
+        "data": "Insight Utama"
+      },
+      {
+        "type": "text",
+        "data": "• Servo bergantung pada PWM: sudut servo mengikuti durasi pulsa. Semakin panjang pulsa ON, sudut bertambah hingga maksimum 180°.\n• Python-Arduino membuka peluang pemrograman tingkat tinggi dan antarmuka kontrol yang lebih interaktif dibanding hanya memakai Arduino IDE.\n• pyfirmata memudahkan komunikasi dengan Arduino lewat serial, sedangkan Tkinter memberi GUI sederhana tanpa toolkit berat.\n• Delay singkat (misalnya 0,05 detik) membuat gerak servo halus dan mudah diikuti, serta tidak membebani mikrokontroler dan servo.\n• Memahami fungsi warna kabel servo mencegah korsleting dan kerusakan komponen.\n• Loop menaikkan dan menurunkan sudut adalah dasar untuk aplikasi seperti robotika, kamera otomatis, dan sistem kendali posisi."
+      }
+    ],
+    "content": [
+      {
+        "type": "text",
+        "data": "Poin penting:\n• Servo: motor yang sudutnya dapat ditentukan, dikendalikan sinyal PWM.\n• Rentang gerak servo pada video: 0° sampai 180°.\n• Kabel servo: merah = VCC 5V, coklat = ground, oranye/kuning = sinyal PWM.\n• Delay kecil (contoh 0,05 detik) membuat gerakan servo halus."
+      },
+      {
+        "type": "text",
+        "data": "Cara menggerakkan servo secara bertahap:\n1. Sambungkan servo: merah ke 5V, coklat ke ground, oranye/kuning ke pin PWM.\n2. Naikkan sudut sedikit demi sedikit dari 0° ke 180° dengan loop.\n3. Beri delay pendek di setiap langkah.\n4. Turunkan sudut kembali dari 180° ke 0° untuk gerakan bolak-balik (sweep)."
+      },
+      {
+        "type": "text",
+        "data": "Pengembangan: Python dengan library pyfirmata dapat mengontrol Arduino, dan Tkinter dapat dipakai untuk membuat slider sudut serta tombol sweep."
       }
     ]
   },
   {
-    "id": "l4_m2",
+    "id": "l4_timer_tanpa_henti",
     "type": "materi",
-    "title": "Driver Motor & Memilih Aktuator",
-    "description": "Mengapa perlu driver dan cara memilih aktuator.",
+    "title": "Timer Tanpa Henti (millis)",
+    "description": "Membuat program berbasis event dengan millis() agar tugas berjalan tanpa terhenti oleh delay().",
     "estimatedTime": "10 menit",
+    "heroImageUrl": "assets/images/materi/level_4/milis/hero_milis.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=t96Q7bY4CjU",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Video ini menjelaskan cara memakai millis() untuk pemrograman berbasis event tanpa delay(). Fungsi millis() menghasilkan waktu dalam milidetik sejak Arduino dinyalakan dan terus berjalan kecuali board di-reset. Nilainya dipakai untuk mengatur interval secara non-blocking sehingga perangkat bisa mengerjakan tugas lain, berbeda dengan delay() yang membuat program berhenti sementara."
+      },
+      {
+        "type": "heading",
+        "data": "Contoh Implementasi"
+      },
+      {
+        "type": "text",
+        "data": "Dua lampu LED dikendalikan dengan interval berbeda: lampu pertama berubah setiap 10 detik dan lampu kedua setiap 6 detik. Status dan waktu ditampilkan di LCD 20x4 dengan library LiquidCrystal. Aksi hanya dijalankan saat selisih antara millis() sekarang dan waktu sebelumnya mencapai interval. Tipe data unsigned long menampung nilai waktu, variabel boolean menyimpan status lampu, dan if membandingkan waktu."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan Utama"
+      },
+      {
+        "type": "text",
+        "data": "• millis() menghitung waktu berjalan dalam milidetik sejak Arduino menyala.\n• Pemrograman event-based membandingkan waktu sekarang dengan waktu sebelumnya (non-blocking).\n• Dua LED dengan interval 10 detik dan 6 detik sebagai contoh.\n• LCD 20x4 menampilkan status dan waktu.\n• unsigned long untuk waktu dan boolean untuk status lampu.\n• Kode modular dengan fungsi untuk membalik status lampu dan memperbarui waktu sebelumnya."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• millis() mengatasi masalah delay() yang bersifat blocking, sehingga program bisa multitasking dan responsif untuk aplikasi IoT, kontrol real-time, dan robotika.\n• unsigned long dipakai untuk waktu karena nilai millis() bisa mencapai sekitar 4,2 miliar ms (sekitar 50 hari) sebelum kembali ke nol.\n• Pendekatan event-based: aksi dipicu oleh waktu atau kejadian lain, konsep yang juga dipakai di banyak bahasa pemrograman modern.\n• Toggle status boolean: membalik status lampu (true/false) setiap interval tercapai adalah cara sederhana mengendalikan output.\n• LCD memberi umpan balik visual untuk memverifikasi program tanpa alat tambahan.\n• Variabel waktu sebelumnya (previousTime) menjaga interval tetap konsisten dan tidak bergantung pada nilai mutlak millis()."
+      }
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Pin Arduino hanya mampu ± 20 mA, sedangkan motor butuh ratusan mA. Motor tidak boleh langsung ke pin Arduino.\n\nDriver motor (L293D, L298N, TB6612) menerima sinyal kecil dan meneruskan daya dari sumber terpisah. Rangkaian H-bridge di dalamnya memungkinkan polaritas dibalik sehingga arah putaran dapat dikendalikan."
+        "data": "Poin penting:\n• delay() menghentikan program, millis() tidak.\n• millis() = jumlah milidetik sejak Arduino menyala.\n• Simpan waktu terakhir aksi di variabel (previousTime) bertipe unsigned long.\n• Jika millis() - previousTime >= interval, jalankan aksi lalu perbarui previousTime.\n• Gunakan variabel boolean untuk membalik status LED."
       },
       {
         "type": "text",
-        "data": "Langkah memilih aktuator:\n1. Catat tegangan dan arus beban.\n2. Bila arus > 20 mA, gunakan transistor, relay, atau driver.\n3. Pilih driver dengan kemampuan arus di atas arus motor (L293D ± 600 mA per kanal, L298N ± 2 A per kanal).\n4. Siapkan catu daya terpisah untuk beban besar."
-      },
-      {
-        "type": "text",
-        "data": "Pilihan cepat:\n• Beban besar/AC → relay\n• Putaran kontinu, kecepatan variabel → motor DC + driver\n• Sudut tertentu → servo\n• Posisi presisi tanpa sensor → motor stepper\n• Indikator sederhana → LED atau buzzer"
+        "data": "Contoh pada video:\n• LED 1 berubah status setiap 10 detik.\n• LED 2 berubah status setiap 6 detik.\n• Keduanya berjalan bersamaan tanpa saling menunggu."
       }
     ]
   },
   {
-    "id": "l4_m3",
+    "id": "l4_interrupt",
     "type": "materi",
-    "title": "Praktikum 6: Motor DC dengan Driver L298N",
-    "description": "Mengatur arah dan kecepatan motor DC.",
-    "estimatedTime": "20 menit",
-    "content": [
-      {
-        "type": "text",
-        "data": "Rangkaian:\n• ENA → pin 9 (PWM)\n• IN1 → pin 7, IN2 → pin 8\n• OUT1/OUT2 → motor\n• Catu motor dari baterai/adaptor terpisah\n• GND baterai harus disambung ke GND Arduino"
-      },
-      {
-        "type": "code",
-        "data": "const int ENA = 9;\nconst int IN1 = 7;\nconst int IN2 = 8;\n\nvoid setup() {\n  pinMode(ENA, OUTPUT);\n  pinMode(IN1, OUTPUT);\n  pinMode(IN2, OUTPUT);\n}\n\nvoid loop() {\n  // Maju, kecepatan sedang-tinggi\n  digitalWrite(IN1, HIGH);\n  digitalWrite(IN2, LOW);\n  analogWrite(ENA, 200);\n  delay(5000);\n\n  // Berhenti sebentar sebelum membalik arah\n  analogWrite(ENA, 0);\n  delay(500);\n\n  // Mundur, kecepatan lebih rendah\n  digitalWrite(IN1, LOW);\n  digitalWrite(IN2, HIGH);\n  analogWrite(ENA, 100);\n  delay(5000);\n\n  analogWrite(ENA, 0);\n  delay(500);\n}"
-      }
-    ]
-  },
-  {
-    "id": "l4_m4",
-    "type": "materi",
-    "title": "Praktikum 7: Servo Motor",
-    "description": "Menggerakkan servo bolak-balik 0–180°.",
+    "title": "Interrupt",
+    "description": "Menangani input eksternal secara langsung dengan interrupt, ISR, variabel volatile, dan mode RISING, FALLING, CHANGE, LOW.",
     "estimatedTime": "10 menit",
+    "heroImageUrl": "assets/images/materi/level_4/interrupt/hero_interrupt.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=lziAhnQ_3qs",
+    "videoSummary": [
+      {
+        "type": "heading",
+        "data": "Ringkasan"
+      },
+      {
+        "type": "text",
+        "data": "Video ini membahas cara kerja dan implementasi interrupt pada Arduino dengan mikrokontroler ATmega328 seperti Arduino Uno. Interrupt memungkinkan Arduino menjalankan fungsi tertentu segera saat sinyal pada pin berubah, tanpa menunggu proses utama selesai. Topiknya meliputi definisi interrupt, pemilihan pin pemicu, mode interrupt (rising, falling, change, low), dan penulisan Interrupt Service Routine (ISR)."
+      },
+      {
+        "type": "heading",
+        "data": "Contoh Implementasi"
+      },
+      {
+        "type": "text",
+        "data": "Kode contoh memakai LCD untuk menampilkan counter yang bertambah saat interrupt terjadi. Proses utama disimulasikan dengan loading yang lama. Counter tetap bertambah tanpa menunggu loading selesai, sedangkan logika if biasa tidak dapat menangani input secara real-time saat program lain berjalan berat."
+      },
+      {
+        "type": "heading",
+        "data": "Sorotan"
+      },
+      {
+        "type": "text",
+        "data": "• Konsep dan fungsi dasar interrupt pada Arduino.\n• Pin 2 dan 3 sebagai pin interrupt eksternal pada ATmega328.\n• ISR yang memodifikasi variabel volatile.\n• Perbandingan interrupt dan logika if biasa saat proses berat berjalan.\n• delay() dan millis() tidak efektif di dalam ISR."
+      },
+      {
+        "type": "heading",
+        "data": "Wawasan Kunci"
+      },
+      {
+        "type": "text",
+        "data": "• Interrupt mengeksekusi fungsi secara asinkron saat sinyal pin berubah, sangat penting untuk input real-time seperti tombol atau sensor.\n• Arduino Uno dan board ATmega328 lain memakai pin 2 dan 3 untuk interrupt eksternal; sesuaikan pin jika memakai board lain.\n• Variabel yang diubah ISR harus dideklarasikan volatile agar compiler tidak mengoptimasinya dan nilainya selalu terbaru.\n• ISR sebaiknya sesingkat mungkin dan tidak memakai delay() atau millis() karena dapat mengganggu kestabilan program.\n• Mode LOW, CHANGE, RISING, dan FALLING mengatur kapan ISR dipanggil sesuai karakter input.\n• Interrupt mengubah pola pemrograman dari sinkron ke asinkron: program merespons input tanpa menunggu proses lain selesai."
+      },
+      {
+        "type": "heading",
+        "data": "Kesimpulan"
+      },
+      {
+        "type": "text",
+        "data": "Interrupt membuat sistem merespons input eksternal dengan cepat, terutama saat proses utama berlangsung lama dan tidak boleh terganggu. Mekanisme ini penting pada sistem embedded dan sensor yang butuh pembacaan data real-time."
+      }
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Servo punya tiga kabel:\n• Coklat/hitam → GND\n• Merah → 5 V\n• Oranye/kuning → sinyal ke pin 6"
+        "data": "Poin penting:\n• Interrupt: menghentikan sebentar program utama untuk menjalankan fungsi khusus (ISR) saat ada kejadian di pin.\n• Pin interrupt eksternal Arduino Uno (ATmega328): pin 2 dan 3.\n• Variabel yang diubah di ISR wajib volatile.\n• Jangan pakai delay() atau millis() di dalam ISR; buat ISR sesingkat mungkin."
       },
       {
-        "type": "code",
-        "data": "#include <Servo.h>\n\nServo servo;\n\nvoid setup() {\n  servo.attach(6);\n}\n\nvoid loop() {\n  for (int sudut = 0; sudut <= 180; sudut += 5) {\n    servo.write(sudut);\n    delay(30);\n  }\n  for (int sudut = 180; sudut >= 0; sudut -= 5) {\n    servo.write(sudut);\n    delay(30);\n  }\n}"
+        "type": "text",
+        "data": "Mode interrupt:\n• LOW: dipicu saat pin bernilai LOW.\n• CHANGE: dipicu saat sinyal berubah (naik atau turun).\n• RISING: dipicu saat sinyal naik dari LOW ke HIGH.\n• FALLING: dipicu saat sinyal turun dari HIGH ke LOW."
+      },
+      {
+        "type": "text",
+        "data": "Interrupt vs if biasa:\n• Interrupt: input langsung ditangani meski program utama sedang sibuk.\n• If biasa: input baru terbaca saat program sampai ke baris tersebut, sehingga bisa terlewat saat proses berat berjalan."
       }
     ]
   },
   {
-    "id": "l4_m5",
+    "id": "l4_debouncing",
     "type": "materi",
-    "title": "Timer Tanpa Henti dengan millis()",
-    "description": "Mengatasi masalah delay().",
-    "estimatedTime": "12 menit",
-    "content": [
+    "title": "Debouncing",
+    "description": "Mengatasi getaran mekanis tombol (bouncing) dengan logika state tanpa delay().",
+    "estimatedTime": "8 menit",
+    "heroImageUrl": "assets/images/materi/level_4/debouncing/hero_debouncing.jpeg",
+    "videoUrl": "https://www.youtube.com/watch?v=6K9mIMuwT3s",
+    "videoSummary": [
       {
-        "type": "text",
-        "data": "Saat delay() berjalan, mikrokontroler terhenti dan tidak bisa membaca tombol atau sensor.\n\nSolusinya millis(): jumlah milidetik sejak board menyala. Bandingkan waktu sekarang dengan waktu sebelumnya untuk menjalankan tugas berkala tanpa memblokir program."
+        "type": "heading",
+        "data": "Masalah Bouncing (Getaran Fisik Tombol)"
       },
       {
-        "type": "code",
-        "data": "const int LED = 8;\nunsigned long waktuSebelumnya = 0;\nconst unsigned long INTERVAL = 500;\nbool keadaanLED = false;\n\nvoid setup() {\n  pinMode(LED, OUTPUT);\n}\n\nvoid loop() {\n  unsigned long sekarang = millis();\n  if (sekarang - waktuSebelumnya >= INTERVAL) {\n    waktuSebelumnya = sekarang;\n    keadaanLED = !keadaanLED;\n    digitalWrite(LED, keadaanLED);\n  }\n  // kode lain tetap berjalan di sini tanpa terblokir\n}"
+        "type": "text",
+        "data": "Pada program counter sederhana (misalnya ledState++), angka counter sering melonjak hanya karena satu kali tekanan cepat pada tombol. Penyebabnya, mikrokontroler membaca getaran mekanis kecil pada tombol fisik sebagai tekanan berkali-kali dalam hitungan mikrodetik."
+      },
+      {
+        "type": "heading",
+        "data": "Solusi Debouncing via Software (Logika State)"
+      },
+      {
+        "type": "text",
+        "data": "Masalah ini tidak diselesaikan dengan delay(), tetapi dengan variabel kontrol boolean tambahan bernama btnState.\n• Mendeteksi tekanan: saat tombol ditekan, program memeriksa apakah btnState == true. Jika ya, counter (ledState) ditambah 1, lalu btnState langsung diubah menjadi false.\n• Mencegah looping: karena btnState sudah false, tombol yang ditahan atau getaran sisa (bouncing) tidak menambah counter lagi.\n• Reset state: saat tombol dilepas, bagian else mengembalikan btnState menjadi true sehingga tombol siap untuk tekanan berikutnya."
+      },
+      {
+        "type": "heading",
+        "data": "Metode Eksekusi Output"
+      },
+      {
+        "type": "text",
+        "data": "Setelah nilai counter stabil (0 sampai 3), ada dua metode untuk menyalakan LED:\n• If - Else If: cara logis standar dengan pemeriksaan kondisi bertingkat.\n• Switch - Case: hasilnya sama persis, tetapi struktur kodenya lebih rapi dan efisien dibaca."
+      },
+      {
+        "type": "heading",
+        "data": "Penyederhanaan Kode (Custom Void)"
+      },
+      {
+        "type": "text",
+        "data": "Agar perintah digitalWrite tidak ditulis berulang di setiap kondisi, dibuat fungsi kustom void runLed(byte a, byte b, byte c). Untuk mengatur lampu, program cukup memanggil satu baris fungsi ini beserta parameternya, sehingga kode akhir jauh lebih ringkas."
+      },
+      {
+        "type": "heading",
+        "data": "Kesimpulan"
+      },
+      {
+        "type": "text",
+        "data": "Logika debouncing berbasis state ini efisien karena tidak memblokir mikrokontroler seperti delay()."
       }
-    ]
-  },
-  {
-    "id": "l4_m6",
-    "type": "materi",
-    "title": "Interrupt & Debounce",
-    "description": "Merespons kejadian secara instan.",
-    "estimatedTime": "15 menit",
+    ],
     "content": [
       {
         "type": "text",
-        "data": "Interrupt membuat mikrokontroler segera menghentikan tugas utama untuk menjalankan fungsi khusus (ISR) saat suatu kejadian terjadi.\n• Pada Uno: pin 2 (INT0) dan pin 3 (INT1)\n• ISR harus singkat\n• Variabel yang dipakai bersama harus bertipe volatile"
-      },
-      {
-        "type": "code",
-        "data": "const int TOMBOL = 2;\nconst int LED = 8;\nconst unsigned long JEDA_DEBOUNCE = 200;  // milidetik\n\nvolatile bool keadaanLED = false;\nvolatile unsigned long waktuTerakhir = 0;\n\nvoid ubahLED() {\n  unsigned long sekarang = millis();\n  // Abaikan pemicu yang datang terlalu cepat (bouncing)\n  if (sekarang - waktuTerakhir >= JEDA_DEBOUNCE) {\n    keadaanLED = !keadaanLED;\n    waktuTerakhir = sekarang;\n  }\n}\n\nvoid setup() {\n  pinMode(LED, OUTPUT);\n  pinMode(TOMBOL, INPUT_PULLUP);\n  attachInterrupt(digitalPinToInterrupt(TOMBOL), ubahLED, FALLING);\n}\n\nvoid loop() {\n  digitalWrite(LED, keadaanLED);\n}"
+        "data": "Poin penting:\n• Bouncing: getaran mekanis tombol terbaca sebagai beberapa tekanan sekaligus.\n• Akibatnya counter bisa melonjak walau tombol ditekan sekali.\n• Solusi tanpa delay(): gunakan variabel boolean btnState sebagai penanda tombol siap ditekan."
       },
       {
         "type": "text",
-        "data": "Poin penting:\n• Tombol mekanis memantul (bouncing) beberapa milidetik sehingga satu tekanan bisa memicu interrupt berkali-kali. Kode di atas mengabaikan pemicu < 200 ms setelah pemicu sebelumnya.\n• Jangan pakai delay() di dalam ISR: delay() bergantung pada interrupt timer yang tertahan selama ISR sehingga program bisa macet.\n• Untuk rangkaian lebih andal, pasang kapasitor ± 100 nF paralel dengan tombol."
+        "data": "Logika btnState:\n1. Tombol ditekan dan btnState == true: tambah counter, lalu set btnState = false.\n2. Tombol masih ditahan atau bergetar: btnState false, counter tidak bertambah.\n3. Tombol dilepas: set btnState = true agar siap untuk tekanan berikutnya."
+      },
+      {
+        "type": "text",
+        "data": "Tips kode rapi:\n• Gunakan switch-case atau if-else if untuk memilih LED sesuai nilai counter.\n• Buat fungsi kustom runLed(byte a, byte b, byte c) agar digitalWrite tidak diulang-ulang."
       }
     ]
   },
@@ -149,32 +291,57 @@
     "questions": [
       {
         "id": "q1",
-        "question": "Kemampuan arus driver L298N sekitar...",
-        "options": ["600 mA per kanal", "2 A per kanal", "20 mA per kanal", "100 A per kanal"],
+        "question": "Sudut posisi motor servo dikendalikan menggunakan sinyal...",
+        "options": [
+          "ADC",
+          "PWM",
+          "I2C",
+          "UART"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
-        "question": "Pada praktikum L298N, GND baterai motor harus...",
-        "options": ["Dipisah total dari Arduino", "Disambung ke GND Arduino", "Disambung ke 5V", "Tidak dipakai"],
-        "correctAnswerIndex": 1
+        "question": "Fungsi millis() mengembalikan...",
+        "options": [
+          "Jumlah milidetik sejak board menyala",
+          "Jam dan tanggal sebenarnya",
+          "Nilai ADC terakhir",
+          "Duty cycle PWM"
+        ],
+        "correctAnswerIndex": 0
       },
       {
         "id": "q3",
-        "question": "Fungsi millis() mengembalikan...",
-        "options": ["Jumlah milidetik sejak board menyala", "Jam dan tanggal sebenarnya", "Nilai ADC terakhir", "Duty cycle PWM"],
+        "question": "Keunggulan menggunakan millis() dibanding delay() adalah...",
+        "options": [
+          "Program tidak terblokir dan bisa menjalankan tugas lain",
+          "Konsumsi memori menjadi nol",
+          "Tidak membutuhkan fungsi loop()",
+          "Tegangan pin menjadi 12 V"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q4",
-        "question": "Variabel yang dipakai bersama antara ISR dan loop() harus bertipe...",
-        "options": ["const", "volatile", "static", "extern"],
+        "question": "Mekanisme yang menghentikan sementara program utama untuk langsung merespons sinyal penting disebut...",
+        "options": [
+          "Polling",
+          "Interrupt",
+          "Debouncing",
+          "Mapping"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q5",
-        "question": "Cara mengatasi bouncing tombol pada program interrupt adalah...",
-        "options": ["Memakai delay() panjang di dalam ISR", "Mengabaikan pemicu yang datang kurang dari 200 ms setelah sebelumnya", "Menghapus INPUT_PULLUP", "Menaikkan baud rate"],
+        "question": "Cara mengatasi bouncing tombol tanpa memblokir program adalah...",
+        "options": [
+          "Memakai delay(5000)",
+          "Menggunakan logika variabel state (seperti btnState)",
+          "Menghapus fungsi setup()",
+          "Mengganti board Arduino"
+        ],
         "correctAnswerIndex": 1
       }
     ]

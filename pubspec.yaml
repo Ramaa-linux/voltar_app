@@ -17,6 +17,7 @@ dependencies:
   go_router: ^18.1.1
   flutter_svg: ^2.3.0
   avr8_dart: ^0.1.0
+  youtube_player_iframe: ^6.0.2
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +33,23 @@ flutter:
     - assets/icons/
     - assets/hex/
     - assets/data/
+    - assets/images/materi/level_1/pengenalan komponen/Breadboard/
+    - assets/images/materi/level_1/pengenalan komponen/Kapasitor/
+    - assets/images/materi/level_1/pengenalan komponen/Led/
+    - assets/images/materi/level_1/pengenalan komponen/push button tacticle/
+    - assets/images/materi/level_1/pengenalan komponen/resistor/
+    - assets/images/materi/level_2/array_pointer/
+    - assets/images/materi/level_2/input_output/
+    - assets/images/materi/level_2/operator_percabangan/
+    - assets/images/materi/level_2/relay/
+    - assets/images/materi/level_2/struktur_sketch/
+    - assets/images/materi/level_3/ADC/
+    - assets/images/materi/level_3/jenis_prinsip_kerja_sensor/
+    - assets/images/materi/level_3/PWM/
+    - assets/images/materi/level_4/debouncing/
+    - assets/images/materi/level_4/interrupt/
+    - assets/images/materi/level_4/jenis_motor/
+    - assets/images/materi/level_4/milis/
 
   # Fase 0: font dibundel (offline-first, tanpa google_fonts runtime fetch).
   # Lisensi: assets/licenses/OFL-PlusJakartaSans.txt
