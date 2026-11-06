@@ -8,6 +8,9 @@ import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_chip.dart';
 import 'package:voltar/pages/materi/detail/content_block_renderer.dart';
 import 'package:voltar/pages/materi/detail/bottom_action_bar.dart';
+import 'package:voltar/pages/materi/detail/praktik/led_animation.dart';
+import 'package:voltar/pages/materi/detail/praktik/push_button_sim.dart';
+import 'package:voltar/pages/materi/detail/praktik/resistor_calculator.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 /// Konten utama halaman detail materi (3 tab: Bacaan, Video, Praktik).
@@ -285,16 +288,21 @@ class _MateriDetailViewState extends State<MateriDetailView> {
   }
 
   Widget _buildPracticeTab(LearningStep step) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.pagePadding),
-      child: Center(
-        child: Text(
-          'Simulasi praktik untuk ${step.title} segera hadir.',
-          style: AppTypography.bodyMuted,
-          textAlign: TextAlign.center,
+    return switch (step.id) {
+      'l1_kom_resistor' => const ResistorCalculator(),
+      'l1_kom_led' => const LedAnimation(),
+      'l1_kom_tactile_switch' => const PushButtonSim(),
+      _ => Padding(
+          padding: const EdgeInsets.all(AppSpacing.pagePadding),
+          child: Center(
+            child: Text(
+              'Simulasi praktik untuk ${step.title} segera hadir.',
+              style: AppTypography.bodyMuted,
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
-      ),
-    );
+    };
   }
 
   void _showMarkDoneDialog(BuildContext context, LearningStep step) {
