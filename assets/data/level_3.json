@@ -1,0 +1,211 @@
+[
+  {
+    "id": "l3_pretest",
+    "type": "pretest",
+    "title": "Pre-Test Level 3",
+    "description": "Ukur pengetahuan awalmu tentang input analog dan sensor.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Pin input analog pada Arduino Uno adalah...",
+        "options": ["D0–D13", "A0–A5", "RX/TX", "RESET"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q2",
+        "question": "Sensor LDR digunakan untuk mengukur...",
+        "options": ["Suhu", "Jarak", "Intensitas cahaya", "Gas"],
+        "correctAnswerIndex": 2
+      },
+      {
+        "id": "q3",
+        "question": "Rentang nilai pada analogWrite() adalah...",
+        "options": ["0–100", "0–255", "0–1023", "0–5"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q4",
+        "question": "Sensor HC-SR04 digunakan untuk mengukur...",
+        "options": ["Jarak", "Kelembaban", "Tekanan", "Arus"],
+        "correctAnswerIndex": 0
+      }
+    ]
+  },
+  {
+    "id": "l3_m1",
+    "type": "materi",
+    "title": "ADC (Analog to Digital Converter)",
+    "description": "Mengubah tegangan analog menjadi angka.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Mikrokontroler hanya memproses data digital, sedangkan suhu, cahaya, dan gas menghasilkan tegangan analog. ADC mengubahnya lewat tiga tahap:\n• Sampling: mengambil cuplikan sinyal\n• Quantization: membulatkan ke level diskrit\n• Encoding: mengubah ke kode biner"
+      },
+      {
+        "type": "text",
+        "data": "ADC Arduino Uno: resolusi 10 bit = 1024 level (0–1023) untuk 0–5 V.\nResolusi tegangan = 5 / 1023 ≈ 4,9 mV per level.\n\nResolusi tinggi lebih akurat tetapi lebih lambat dan mahal."
+      },
+      {
+        "type": "code",
+        "data": "int adc = analogRead(A0);\nfloat tegangan = adc * (5.0 / 1023.0);"
+      }
+    ]
+  },
+  {
+    "id": "l3_m2",
+    "type": "materi",
+    "title": "PWM (Pulse Width Modulation)",
+    "description": "Meniru keluaran analog dengan sinyal digital.",
+    "estimatedTime": "8 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Arduino tidak punya DAC, tetapi dapat meniru keluaran analog dengan PWM: sinyal digital yang dinyalakan-dimatikan sangat cepat.\n\n• Duty cycle = perbandingan waktu ON terhadap periode\n• Duty cycle besar → tegangan rata-rata besar\n• analogWrite(pin, 0–255) pada pin bertanda ~ (3, 5, 6, 9, 10, 11)"
+      },
+      {
+        "type": "text",
+        "data": "Contoh:\n• analogWrite 0 → duty 0% → 0 V\n• analogWrite 128 → duty 50% → ± 2,5 V\n• analogWrite 255 → duty 100% → 5 V"
+      }
+    ]
+  },
+  {
+    "id": "l3_m3",
+    "type": "materi",
+    "title": "Praktikum 3: Dimmer LED dengan Potensiometer",
+    "description": "Mengatur terang LED dan membaca ADC di Serial Monitor.",
+    "estimatedTime": "15 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Rangkaian:\n• Potensiometer: kaki kiri → 5V, tengah → A0, kanan → GND\n• LED anoda (via 220 Ω) → D9 (PWM), katoda → GND"
+      },
+      {
+        "type": "code",
+        "data": "const int POT = A0;\nconst int LED = 9;\n\nvoid setup() {\n  pinMode(LED, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int adc = analogRead(POT);                // 0–1023\n  int pwm = map(adc, 0, 1023, 0, 255);      // skala ke 0–255\n  analogWrite(LED, pwm);\n\n  float tegangan = adc * (5.0 / 1023.0);\n  Serial.print(\"ADC: \");\n  Serial.print(adc);\n  Serial.print(\" | Tegangan: \");\n  Serial.print(tegangan, 2);\n  Serial.println(\" V\");\n  delay(100);\n}"
+      },
+      {
+        "type": "text",
+        "data": "Penjelasan:\n• analogRead: membaca tegangan A0 menjadi 0–1023\n• map(): mengubah skala 0–1023 ke 0–255\n• analogWrite: PWM sebanding nilai pwm\n• adc * (5.0 / 1023.0): mengubah ADC ke volt\n\nHasil: potensiometer di tengah → ADC ≈ 512, 2,50 V, LED setengah terang. Putar kiri → padam, putar kanan → terang penuh."
+      }
+    ]
+  },
+  {
+    "id": "l3_m4",
+    "type": "materi",
+    "title": "Jenis & Prinsip Kerja Sensor",
+    "description": "Sensor analog, digital, dan serial.",
+    "estimatedTime": "12 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Sensor mengubah besaran fisik menjadi sinyal listrik. Jenis keluaran:\n• Analog: tegangan sebanding besaran (LDR, LM35, MQ-135 pin AO)\n• Digital sederhana: HIGH/LOW (sensor gerak PIR, pin DO sensor gas)\n• Digital serial: data berformat khusus (DHT11, sensor I2C)"
+      },
+      {
+        "type": "text",
+        "data": "Sensor pada modul ini:\n• DHT11: suhu & kelembaban, digital serial, pin D2\n• MQ-135: kualitas udara, analog, A0\n• HC-SR04: jarak, lebar pulsa, TRIG D9 / ECHO D10\n• LDR: cahaya, analog via pembagi tegangan, A1"
+      },
+      {
+        "type": "text",
+        "data": "Prinsip kerja:\n• DHT11: elemen polimer untuk kelembaban, termistor NTC untuk suhu; chip mengirim data digital lewat satu kabel.\n• MQ-135: semikonduktor oksida logam yang dipanaskan; hambatan turun saat gas pencemar bertambah, modul mengubahnya jadi tegangan di pin AO.\n• HC-SR04: pemancar mengirim pulsa 40 kHz, penerima menangkap pantulan; jarak dihitung dari waktu pantulan.\n• LDR: hambatan turun saat cahaya bertambah; dibaca dengan pembagi tegangan."
+      }
+    ]
+  },
+  {
+    "id": "l3_m5",
+    "type": "materi",
+    "title": "Memilih Sensor yang Tepat",
+    "description": "Pertimbangan memilih sensor untuk proyekmu.",
+    "estimatedTime": "8 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Pertimbangan:\n• Besaran dan rentang: apa yang diukur dan sejauh apa? (HC-SR04 ± 2–400 cm)\n• Akurasi: DHT11 ± 2 °C; DHT22 ± 0,5 °C\n• Tegangan kerja: 5 V atau 3,3 V, sesuaikan dengan Arduino\n• Jenis keluaran: analog butuh A0–A5; sensor I2C hemat pin\n• Kecepatan baca: DHT11 maksimal 1 pembacaan per detik\n• Library dan harga: pastikan tersedia dan sesuai anggaran"
+      },
+      {
+        "type": "text",
+        "data": "Langkah praktis: tulis kebutuhan (besaran, rentang, akurasi) → cocokkan dengan datasheet beberapa kandidat → pilih yang paling sederhana yang memenuhi kebutuhan."
+      }
+    ]
+  },
+  {
+    "id": "l3_m6",
+    "type": "materi",
+    "title": "Praktikum 4: Pengukur Jarak Ultrasonik",
+    "description": "Mengukur jarak dengan HC-SR04.",
+    "estimatedTime": "15 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Jarak = (waktu × kecepatan suara) / 2, dengan kecepatan suara ≈ 0,0343 cm/µs. Dibagi 2 karena gelombang pergi-pulang.\n\nRangkaian: VCC → 5V, TRIG → D9, ECHO → D10, GND → GND."
+      },
+      {
+        "type": "code",
+        "data": "const int TRIG = 9;\nconst int ECHO = 10;\n\nvoid setup() {\n  Serial.begin(9600);\n  pinMode(TRIG, OUTPUT);\n  pinMode(ECHO, INPUT);\n}\n\nvoid loop() {\n  digitalWrite(TRIG, LOW);\n  delayMicroseconds(2);\n  digitalWrite(TRIG, HIGH);\n  delayMicroseconds(10);\n  digitalWrite(TRIG, LOW);\n\n  long durasi = pulseIn(ECHO, HIGH, 30000);  // timeout 30 ms\n  float jarak = durasi * 0.0343 / 2.0;\n\n  Serial.print(\"Jarak: \");\n  Serial.print(jarak);\n  Serial.println(\" cm\");\n  delay(300);\n}"
+      },
+      {
+        "type": "text",
+        "data": "Penjelasan:\n• Pulsa 10 µs di TRIG memicu sensor mengirim gelombang ultrasonik.\n• pulseIn mengukur lama ECHO bernilai HIGH (µs); 30 ms adalah batas tunggu.\n• Bila tidak ada penghalang dalam jangkauan, pulseIn mengembalikan 0 dan jarak tampil 0 cm."
+      }
+    ]
+  },
+  {
+    "id": "l3_m7",
+    "type": "materi",
+    "title": "Praktikum 5: Monitor Lingkungan dengan OLED",
+    "description": "Menampilkan suhu, kelembaban, dan kualitas udara di layar OLED.",
+    "estimatedTime": "25 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Alat: Arduino Uno, breadboard, jumper, DHT11, MQ-135, OLED 128×64 (I2C).\n\nRangkaian:\n• DHT11: VCC → 5V, GND → GND, DATA → D2\n• MQ-135: VCC → 5V, GND → GND, AO → A0\n• OLED: VCC → 5V (atau 3,3 V sesuai modul), GND → GND, SDA → A4, SCL → A5\n\nLibrary (Sketch → Include Library → Manage Libraries): DHT sensor library, Adafruit Unified Sensor, Adafruit GFX, Adafruit SSD1306."
+      },
+      {
+        "type": "code",
+        "data": "#include <Wire.h>\n#include <DHT.h>\n#include <Adafruit_GFX.h>\n#include <Adafruit_SSD1306.h>\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\n#define MQ135PIN A0\n\nDHT dht(DHTPIN, DHTTYPE);\nAdafruit_SSD1306 display(128, 64, &Wire, -1);\n\nconst char* klasifikasi(int adc) {\n  if (adc < 181) return \"BAIK\";\n  else if (adc < 225) return \"SEDANG\";\n  else if (adc < 300) return \"BURUK\";\n  else return \"SANGAT BURUK\";\n}\n\nvoid setup() {\n  Serial.begin(9600);\n  dht.begin();\n  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {\n    Serial.println(F(\"OLED tidak terdeteksi\"));\n    while (true);\n  }\n  display.setTextColor(WHITE);\n}\n\nvoid loop() {\n  int gas = analogRead(MQ135PIN);\n  float h = dht.readHumidity();\n  float t = dht.readTemperature();\n\n  display.clearDisplay();\n  display.setTextSize(1);\n  display.setCursor(0, 0);\n  display.println(F(\"Monitor Lingkungan\"));\n  display.setCursor(0, 16);\n  display.print(F(\"Udara: \"));\n  display.println(klasifikasi(gas));\n\n  if (isnan(h) || isnan(t)) {\n    display.setCursor(0, 40);\n    display.println(F(\"DHT gagal dibaca\"));\n  } else {\n    display.setCursor(0, 40);\n    display.print(F(\"Suhu : \"));\n    display.print(t, 1);\n    display.println(F(\" C\"));\n    display.setCursor(0, 52);\n    display.print(F(\"RH   : \"));\n    display.print(h, 0);\n    display.println(F(\" %\"));\n  }\n  display.display();\n  delay(2000);  // DHT11 maksimal 1 pembacaan per detik\n}"
+      },
+      {
+        "type": "text",
+        "data": "Catatan:\n• Nilai MQ-135 adalah ADC mentah (bukan ppm); ambang batas hanya relatif.\n• Sensor perlu dipanaskan beberapa menit sebelum pembacaan stabil.\n• Kalibrasi diperlukan bila ingin hasil dalam ppm."
+      }
+    ]
+  },
+  {
+    "id": "l3_posttest",
+    "type": "posttest",
+    "title": "Post-Test Level 3",
+    "description": "Uji pemahamanmu setelah belajar.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "ADC Arduino Uno 10 bit memiliki berapa level?",
+        "options": ["256", "1024", "4096", "10"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q2",
+        "question": "Jika analogRead menghasilkan 512, tegangan yang dibaca sekitar...",
+        "options": ["1,25 V", "2,5 V", "5 V", "0 V"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q3",
+        "question": "Pin berikut yang mendukung PWM adalah...",
+        "options": ["D2", "D4", "D9", "A0"],
+        "correctAnswerIndex": 2
+      },
+      {
+        "id": "q4",
+        "question": "Pada HC-SR04, durasi dibagi 2 karena...",
+        "options": ["Ada dua sensor", "Gelombang menempuh jarak pergi dan pulang", "Kecepatan suara berubah", "Pin menggunakan pull-up"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q5",
+        "question": "DHT11 maksimal dapat dibaca...",
+        "options": ["10 kali per detik", "1 kali per detik", "100 kali per detik", "Tanpa batas"],
+        "correctAnswerIndex": 1
+      }
+    ]
+  }
+]

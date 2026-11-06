@@ -22,6 +22,11 @@ enum AppIconName {
   arrowLeft,
   play,
   stop,
+  fileText,
+  checkSquare,
+  lock,
+  chevronDown,
+  helpCircle,
 }
 
 /// Ukuran ikon standar - jangan pakai angka lepas di widget.
@@ -148,6 +153,41 @@ class AppIcon extends StatelessWidget {
     this.semanticLabel,
   }) : name = AppIconName.stop;
 
+  const AppIcon.fileText({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.fileText;
+
+  const AppIcon.checkSquare({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.checkSquare;
+
+  const AppIcon.lock({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.lock;
+
+  const AppIcon.chevronDown({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.chevronDown;
+
+  const AppIcon.helpCircle({
+    super.key,
+    this.size = AppIconSize.md,
+    this.color = AppColors.textSecondary,
+    this.semanticLabel,
+  }) : name = AppIconName.helpCircle;
+
   final AppIconName name;
   final double size;
   final Color color;
@@ -171,6 +211,11 @@ class AppIcon extends StatelessWidget {
     AppIconName.arrowLeft => 'assets/icons/arrow-left.svg',
     AppIconName.play => 'assets/icons/play.svg',
     AppIconName.stop => 'assets/icons/stop.svg',
+    AppIconName.fileText => 'assets/icons/file-text.svg',
+    AppIconName.checkSquare => 'assets/icons/check-square.svg',
+    AppIconName.lock => 'assets/icons/lock.svg',
+    AppIconName.chevronDown => 'assets/icons/chevron-down.svg',
+    AppIconName.helpCircle => 'assets/icons/help-circle.svg',
   };
 
   @override

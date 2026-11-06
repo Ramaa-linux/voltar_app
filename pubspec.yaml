@@ -27,9 +27,11 @@ flutter:
   uses-material-design: true
 
   # Fase 2: ikon Lucide 24x24 (ISC). Lisensi: assets/licenses/ISC-Lucide.txt
+  # Fase 1 & 2: data materi JSON
   assets:
     - assets/icons/
     - assets/hex/
+    - assets/data/
 
   # Fase 0: font dibundel (offline-first, tanpa google_fonts runtime fetch).
   # Lisensi: assets/licenses/OFL-PlusJakartaSans.txt

@@ -11,6 +11,15 @@ abstract final class AppRoutes {
   /// Editor yang langsung dimuat dengan template Blink LED.
   static const String simulasiTemplateBlink = '/simulasi/template/blink';
 
+  /// Halaman detail level (peta perjalanan per level).
+  static const String levelDetail = '/materi/level';
+
+  /// Halaman detail materi: push ke root navigator (navbar tertutup).
+  static const String materiDetail = '/materi/detail';
+
+  /// Halaman kuis (pretest/posttest).
+  static const String kuis = '/materi/kuis';
+
   /// Halaman uji coba mesin AVR native (Fase 5A). Sementara, bukan nav utama.
   static const String avrDebug = '/debug-avr';
 

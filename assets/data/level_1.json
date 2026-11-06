@@ -1,0 +1,164 @@
+[
+  {
+    "id": "l1_pretest",
+    "type": "pretest",
+    "title": "Pre-Test Level 1",
+    "description": "Ukur pengetahuan awalmu tentang dasar elektronika.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Besaran yang mendorong muatan listrik mengalir disebut...",
+        "options": ["Hambatan", "Tegangan", "Daya", "Frekuensi"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q2",
+        "question": "Satuan hambatan listrik adalah...",
+        "options": ["Volt", "Ampere", "Ohm", "Watt"],
+        "correctAnswerIndex": 2
+      },
+      {
+        "id": "q3",
+        "question": "Pada LED, kaki yang lebih panjang adalah...",
+        "options": ["Katoda (−)", "Anoda (+)", "Ground", "Kaki tengah"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q4",
+        "question": "Chip mikrokontroler yang digunakan Arduino Uno adalah...",
+        "options": ["ATmega328P", "ESP32", "STM32", "PIC16F"],
+        "correctAnswerIndex": 0
+      }
+    ]
+  },
+  {
+    "id": "l1_m1",
+    "type": "materi",
+    "title": "Besaran Dasar & Hukum Ohm",
+    "description": "Tegangan, arus, hambatan, dan cara menghitung resistor LED.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Tiga besaran dasar di setiap rangkaian:\n• Tegangan (V): beda potensial yang mendorong muatan mengalir, satuan Volt.\n• Arus (I): aliran muatan listrik, satuan Ampere (mA untuk komponen kecil).\n• Hambatan (R): penghambat arus, satuan Ohm (Ω)."
+      },
+      {
+        "type": "text",
+        "data": "Hukum Ohm: V = I × R\n\nContoh: LED merah butuh sekitar 2 V dan 20 mA dari catu 5 V.\nR = (5 − 2) / 0,02 = 150 Ω → dipilih nilai standar aman terdekat: 220 Ω."
+      },
+      {
+        "type": "text",
+        "data": "Contoh perhitungan:\n• Arus LED sebenarnya dengan 220 Ω: (5 − 2) / 220 ≈ 13,6 mA (di bawah 20 mA, aman).\n• Daya resistor: P = I² × R ≈ 0,04 W, jadi resistor 1/4 W lebih dari cukup."
+      },
+      {
+        "type": "text",
+        "data": "Pembagi tegangan: Vout = Vin × R2 / (R1 + R2)\n\nDipakai pada sensor analog seperti LDR. Jika R1 = 10 kΩ, R2 (LDR) = 10 kΩ, Vin = 5 V maka Vout = 2,5 V (terbaca ADC ± 512).\n• Terang → hambatan LDR turun → tegangan A0 turun\n• Gelap → hambatan LDR naik → tegangan A0 naik"
+      }
+    ]
+  },
+  {
+    "id": "l1_m2",
+    "type": "materi",
+    "title": "Pengenalan Komponen",
+    "description": "Resistor, kapasitor, LED, transistor, breadboard, dan multimeter.",
+    "estimatedTime": "12 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Alat bantu wajib:\n• Breadboard: merangkai tanpa solder\n• Kabel jumper\n• Multimeter: mengukur tegangan, arus, dan kontinuitas"
+      },
+      {
+        "type": "text",
+        "data": "Fungsi komponen:\n• Resistor: membatasi arus, pembagi tegangan\n• Kapasitor: menyimpan muatan, meredam noise\n• Dioda/LED: arus satu arah / indikator cahaya\n• Transistor: saklar atau penguat\n• Push button: saklar sesaat\n• Potensiometer: resistor variabel untuk input analog manual"
+      },
+      {
+        "type": "text",
+        "data": "Cara mengenali komponen:\n• LED: kaki panjang = anoda (+), kaki pendek = katoda (−); sisi datar rumah LED di sisi katoda.\n• Resistor: dibaca dari gelang warna. 220 Ω = merah-merah-coklat, 10 kΩ = coklat-hitam-oranye. Gelang emas/perak = toleransi.\n• Breadboard: 5 lubang satu kolom (a–e atau f–j) saling terhubung; rel merah (+) dan biru (−) terhubung memanjang; kedua sisi dipisah alur tengah.\n• Potensiometer: dua kaki luar ke 5V dan GND, kaki tengah adalah keluaran.\n• Push button: pasang diagonal agar fungsi saklarnya terpakai."
+      }
+    ]
+  },
+  {
+    "id": "l1_m3",
+    "type": "materi",
+    "title": "Mikrokontroler & Arduino Uno",
+    "description": "Mengenal mikrokontroler, spesifikasi, dan fungsi pin Arduino Uno.",
+    "estimatedTime": "12 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Mikrokontroler adalah satu chip berisi CPU, memori (Flash, SRAM, EEPROM), dan pin I/O. Berbeda dengan mikroprosesor, ia self-contained sehingga cocok untuk sistem tertanam: kecil, murah, hemat daya.\n\nContoh: pengatur suhu setrika, mesin cuci, remote TV, lampu otomatis, robot sederhana."
+      },
+      {
+        "type": "text",
+        "data": "Arduino Uno (ATmega328P):\n• Tegangan kerja 5 V, clock 16 MHz\n• Flash 32 KB, SRAM 2 KB, EEPROM 1 KB\n• 14 pin digital (6 mendukung PWM), 6 pin analog (A0–A5)\n• Antarmuka UART, I2C (A4 = SDA, A5 = SCL), SPI\n\nKelebihan: mudah dipelajari, library banyak, murah.\nKeterbatasan: memori kecil, kode harus efisien."
+      },
+      {
+        "type": "text",
+        "data": "Fungsi pin penting:\n• D0 (RX), D1 (TX): UART, dipakai juga oleh USB\n• D2, D3: interrupt eksternal\n• D3, D5, D6, D9, D10, D11 (~): PWM\n• A0–A5: input analog (ADC 10 bit)\n• 5V, 3.3V: keluaran catu\n• VIN: masukan catu 7–12 V\n• GND: ground\n\nBatas arus: ± 20 mA aman per pin (maksimum mutlak 40 mA), total ± 200 mA untuk seluruh pin I/O."
+      }
+    ]
+  },
+  {
+    "id": "l1_m4",
+    "type": "materi",
+    "title": "Praktikum 1: Instalasi IDE & LED Berkedip",
+    "description": "Memasang Arduino IDE dan membuat LED berkedip.",
+    "estimatedTime": "20 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Instalasi Arduino IDE:\n1. Jalankan installer, klik I Agree.\n2. Centang semua komponen (termasuk USB driver), klik Next.\n3. Pilih folder, klik Install, lalu Close.\n\nUji LED bawaan:\n1. File → Examples → 01.Basics → Blink\n2. Tools → Board → Arduino Uno\n3. Tools → Port sesuai port USB\n4. Klik Upload. LED di pin 13 akan berkedip."
+      },
+      {
+        "type": "text",
+        "data": "Rangkaian LED eksternal:\nPin D8 → resistor 220 Ω → anoda LED (kaki panjang) → katoda LED (kaki pendek) → GND.\n\nLangkah:\n1. Cabut USB sebelum merangkai.\n2. Pasang LED, pastikan anoda dan katoda di baris berbeda.\n3. Sambung resistor ke baris anoda.\n4. Jumper dari ujung resistor ke D8.\n5. Jumper dari baris katoda ke GND.\n6. Periksa polaritas, sambung USB, upload."
+      },
+      {
+        "type": "code",
+        "data": "const int LED = 8;\n\nvoid setup() {\n  pinMode(LED, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED, HIGH);\n  delay(1000);\n  digitalWrite(LED, LOW);\n  delay(1000);\n}"
+      },
+      {
+        "type": "text",
+        "data": "Penjelasan kode:\n• const int LED = 8; konstanta nomor pin\n• setup(): dijalankan sekali, mengatur pin 8 sebagai keluaran\n• loop(): dijalankan berulang selamanya\n• HIGH = pin 5 V (LED menyala), LOW = 0 V (padam)\n• delay(1000): berhenti 1000 ms\n\nHasil: LED menyala 1 detik, padam 1 detik, berulang. Jika tidak menyala, balik posisi kaki LED."
+      }
+    ]
+  },
+  {
+    "id": "l1_posttest",
+    "type": "posttest",
+    "title": "Post-Test Level 1",
+    "description": "Uji pemahamanmu setelah belajar.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Rumus hukum Ohm adalah...",
+        "options": ["V = I / R", "V = I × R", "R = V × I", "I = V × R"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q2",
+        "question": "Hasil hitung resistor LED adalah 150 Ω. Nilai standar aman yang dipilih pada modul adalah...",
+        "options": ["10 Ω", "150 Ω", "220 Ω", "10 kΩ"],
+        "correctAnswerIndex": 2
+      },
+      {
+        "id": "q3",
+        "question": "Arus LED 2 V dengan resistor 220 Ω pada catu 5 V adalah sekitar...",
+        "options": ["13,6 mA", "20 mA", "36 mA", "1,36 A"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q4",
+        "question": "Batas arus yang aman per pin Arduino Uno adalah sekitar...",
+        "options": ["5 mA", "20 mA", "200 mA", "1 A"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q5",
+        "question": "Pada praktikum LED eksternal, resistor dan LED dihubungkan ke pin...",
+        "options": ["D13", "D8", "D2", "A0"],
+        "correctAnswerIndex": 1
+      }
+    ]
+  }
+]

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:voltar/pages/home/home_page.dart';
+import 'package:voltar/pages/materi/kuis_page.dart';
+import 'package:voltar/pages/materi/level_detail_page.dart';
+import 'package:voltar/pages/materi/materi_detail_page.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
 import 'package:voltar/pages/profil/profil_page.dart';
 import 'package:voltar/pages/simulasi/avr_debug_page.dart';
@@ -60,6 +63,34 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
                 path: AppRoutes.materi,
                 builder: (BuildContext context, GoRouterState state) =>
                     const MateriPage(),
+                routes: <RouteBase>[
+                  // Level detail: peta perjalanan per level (push root).
+                  GoRoute(
+                    path: 'level/:levelNumber',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (BuildContext context, GoRouterState state) =>
+                        LevelDetailPage(
+                          levelNumber: int.parse(
+                            state.pathParameters['levelNumber']!,
+                          ),
+                        ),
+                  ),
+                  // Detail materi: pakai parentNavigatorKey root supaya navbar
+                  // tertutup dan halaman tampil penuh (full-screen).
+                  GoRoute(
+                    path: 'detail/:stepId',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (BuildContext context, GoRouterState state) =>
+                        MateriDetailPage(stepId: state.pathParameters['stepId']!),
+                  ),
+                  // Kuis (pretest/posttest): pakai parentNavigatorKey root.
+                  GoRoute(
+                    path: 'kuis/:stepId',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (BuildContext context, GoRouterState state) =>
+                        KuisPage(stepId: state.pathParameters['stepId']!),
+                  ),
+                ],
               ),
             ],
           ),

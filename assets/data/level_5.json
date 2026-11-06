@@ -1,0 +1,144 @@
+[
+  {
+    "id": "l5_pretest",
+    "type": "pretest",
+    "title": "Pre-Test Level 5",
+    "description": "Ukur pengetahuan awalmu sebelum membuat proyek akhir.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Relay berfungsi sebagai...",
+        "options": ["Saklar yang dikendalikan sinyal kecil", "Penguat suara", "Sensor suhu", "Penyimpan data"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q2",
+        "question": "Sensor DHT11 mengukur...",
+        "options": ["Suhu dan kelembaban", "Jarak", "Kadar gas", "Cahaya"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q3",
+        "question": "OLED I2C pada Arduino Uno dihubungkan ke pin...",
+        "options": ["A4 (SDA) dan A5 (SCL)", "D0 dan D1", "D2 dan D3", "A0 dan A1"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q4",
+        "question": "Alamat I2C OLED SSD1306 yang umum adalah...",
+        "options": ["0x3C", "0xFF", "0x00", "0x68"],
+        "correctAnswerIndex": 0
+      }
+    ]
+  },
+  {
+    "id": "l5_m1",
+    "type": "materi",
+    "title": "Deskripsi Proyek & Histeresis",
+    "description": "Kipas pendingin otomatis berbasis suhu.",
+    "estimatedTime": "8 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Cara kerja sistem:\n• DHT11 membaca suhu.\n• Suhu mencapai batas atas → kipas ON lewat relay.\n• Suhu turun melewati batas bawah → kipas OFF.\n• OLED menampilkan suhu dan status kipas.\n\nPenggunaan dua batas (histeresis) mencegah relay menyala-mati terus-menerus di sekitar satu nilai suhu."
+      },
+      {
+        "type": "text",
+        "data": "Alat dan bahan:\n• Arduino Uno\n• DHT11\n• OLED I2C 128×64\n• Modul relay 5 V\n• Kipas DC kecil dengan catu terpisah\n• Breadboard dan kabel jumper"
+      }
+    ]
+  },
+  {
+    "id": "l5_m2",
+    "type": "materi",
+    "title": "Rangkaian Lengkap",
+    "description": "Sambungan sisi kontrol dan sisi beban.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Sisi kontrol (Arduino, 5 V):\n• DHT11: VCC → 5V, DATA → D2, GND → GND\n• OLED: VCC → 5V, GND → GND, SDA → A4, SCL → A5\n• Modul relay: VCC → 5V, GND → GND, IN → D7 (active LOW)"
+      },
+      {
+        "type": "text",
+        "data": "Sisi beban (catu kipas terpisah):\n• Catu kipas (+) → terminal COM relay\n• Terminal NO relay → kipas (+)\n• Kipas (−) → catu kipas (−), langsung tanpa relay\n\nRelay memisahkan kedua sisi: sisi beban tidak terhubung ke Arduino sama sekali. Gunakan terminal NO (normally open) agar kipas mati saat relay tidak aktif atau Arduino kehilangan daya."
+      }
+    ]
+  },
+  {
+    "id": "l5_m3",
+    "type": "materi",
+    "title": "Kode Program Kipas Otomatis",
+    "description": "Sketch lengkap dengan histeresis dan tampilan OLED.",
+    "estimatedTime": "15 menit",
+    "content": [
+      {
+        "type": "code",
+        "data": "#include <Wire.h>\n#include <DHT.h>\n#include <Adafruit_GFX.h>\n#include <Adafruit_SSD1306.h>\n\n#define DHTPIN 2\n#define DHTTYPE DHT11\n\nconst int RELAY = 7;               // active LOW\nconst float BATAS_ATAS = 30.0;     // kipas ON di atas suhu ini\nconst float BATAS_BAWAH = 28.0;    // kipas OFF di bawah suhu ini\n\nDHT dht(DHTPIN, DHTTYPE);\nAdafruit_SSD1306 display(128, 64, &Wire, -1);\nbool kipasNyala = false;\n\nvoid setup() {\n  pinMode(RELAY, OUTPUT);\n  digitalWrite(RELAY, HIGH);       // kipas mati\n  dht.begin();\n  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {\n    while (true);\n  }\n  display.setTextColor(WHITE);\n}\n\nvoid loop() {\n  float t = dht.readTemperature();\n\n  if (!isnan(t)) {\n    if (t >= BATAS_ATAS) kipasNyala = true;\n    else if (t <= BATAS_BAWAH) kipasNyala = false;\n    digitalWrite(RELAY, kipasNyala ? LOW : HIGH);\n  }\n\n  display.clearDisplay();\n  display.setTextSize(1);\n  display.setCursor(0, 0);\n  display.println(F(\"Kipas Otomatis\"));\n\n  display.setTextSize(2);\n  display.setCursor(0, 20);\n  if (isnan(t)) display.print(F(\"Error\"));\n  else { display.print(t, 1); display.print(F(\" C\")); }\n\n  display.setTextSize(1);\n  display.setCursor(0, 52);\n  display.print(F(\"Kipas: \"));\n  display.println(kipasNyala ? F(\"ON\") : F(\"OFF\"));\n  display.display();\n  delay(2000);\n}"
+      },
+      {
+        "type": "text",
+        "data": "Logika utama:\n• t ≥ 30 °C → kipasNyala = true\n• t ≤ 28 °C → kipasNyala = false\n• Di antara 28–30 °C status tidak berubah (histeresis)\n• Jika pembacaan gagal (isnan), status kipas dipertahankan dan OLED menampilkan Error"
+      }
+    ]
+  },
+  {
+    "id": "l5_m4",
+    "type": "materi",
+    "title": "Pengujian & Pengembangan",
+    "description": "Skenario uji, analisis galat, dan ide pengembangan.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Skenario pengujian:\n1. Suhu < 28 °C → kipas OFF, OLED menampilkan suhu\n2. Sensor dihangatkan ≥ 30 °C → kipas ON\n3. Suhu turun ke 28–30 °C → kipas tetap ON (histeresis)\n4. Suhu ≤ 28 °C → kipas OFF\n5. Kabel DATA DHT11 dicabut → OLED menampilkan Error, status kipas tidak berubah"
+      },
+      {
+        "type": "text",
+        "data": "Analisis ketelitian sensor (bandingkan dengan termometer pembanding di beberapa titik suhu):\n• Galat mutlak = |DHT11 − pembanding|\n• Galat (%) = galat mutlak / pembanding × 100%\n• Hitung rata-ratanya, bandingkan dengan akurasi pada datasheet.\n• Catat juga waktu kipas menyala setelah suhu mencapai 30 °C untuk menilai kecepatan respons."
+      },
+      {
+        "type": "text",
+        "data": "Ide pengembangan:\n• Kendali kecepatan kipas dengan PWM dan driver motor\n• Buzzer sebagai alarm suhu berlebih\n• Log suhu ke kartu SD lewat SPI"
+      }
+    ]
+  },
+  {
+    "id": "l5_posttest",
+    "type": "posttest",
+    "title": "Post-Test Level 5",
+    "description": "Uji pemahamanmu setelah menyelesaikan proyek akhir.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Tujuan penggunaan dua batas suhu (histeresis) adalah...",
+        "options": ["Mencegah relay menyala-mati terus-menerus", "Mempercepat pembacaan sensor", "Menghemat memori", "Mengganti sensor"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q2",
+        "question": "Pada proyek ini, kipas menyala ketika suhu...",
+        "options": ["≤ 28 °C", "≥ 30 °C", "Tepat 29 °C", "Tidak terbaca"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q3",
+        "question": "Mengapa dipilih terminal NO (normally open) pada relay?",
+        "options": ["Kipas mati saat relay tidak aktif atau Arduino kehilangan daya", "Lebih murah", "Lebih cepat", "Terminal NC pasti rusak"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q4",
+        "question": "Jika isnan(t) bernilai true, artinya...",
+        "options": ["Pembacaan sensor gagal", "Suhu sangat tinggi", "Kipas sedang ON", "OLED rusak"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q5",
+        "question": "Rumus galat (%) pada analisis sensor adalah...",
+        "options": ["Galat mutlak / pembanding × 100%", "Pembanding / galat mutlak", "DHT11 × 100%", "Galat mutlak − pembanding"],
+        "correctAnswerIndex": 0
+      }
+    ]
+  }
+]

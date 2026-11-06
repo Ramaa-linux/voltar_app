@@ -53,11 +53,8 @@ void main() {
 
     await tester.tap(navItem('Materi'));
     await tester.pumpAndSettle();
-    expect(
-      find.text('Belajar bertahap, dari komponen dasar sampai Arduino.'),
-      findsOneWidget,
-    );
-    expect(find.text('LEVEL 1'), findsOneWidget);
+    expect(find.text('Pilih Level'), findsOneWidget);
+    expect(find.text('Level 1'), findsOneWidget);
     // IndexedStack: Home offstage tapi tetap di widget tree (state terjaga).
     expect(find.byType(HomePage, skipOffstage: false), findsOneWidget);
 

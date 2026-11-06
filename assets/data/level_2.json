@@ -1,0 +1,202 @@
+[
+  {
+    "id": "l2_pretest",
+    "type": "pretest",
+    "title": "Pre-Test Level 2",
+    "description": "Ukur pengetahuan awalmu tentang pemrograman Arduino.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Fungsi setup() pada sketch Arduino dijalankan...",
+        "options": ["Berulang tanpa henti", "Sekali saat board menyala", "Setiap tombol ditekan", "Tidak pernah"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q2",
+        "question": "Tipe data untuk bilangan desimal adalah...",
+        "options": ["int", "bool", "float", "char"],
+        "correctAnswerIndex": 2
+      },
+      {
+        "id": "q3",
+        "question": "Dua keadaan pin digital adalah...",
+        "options": ["HIGH dan LOW", "ON dan 0", "1 dan 2", "VCC dan AC"],
+        "correctAnswerIndex": 0
+      },
+      {
+        "id": "q4",
+        "question": "Indeks elemen pertama sebuah array adalah...",
+        "options": ["1", "0", "-1", "Tergantung tipe data"],
+        "correctAnswerIndex": 1
+      }
+    ]
+  },
+  {
+    "id": "l2_m1",
+    "type": "materi",
+    "title": "Struktur Sketch, Variabel & Tipe Data",
+    "description": "Dasar penulisan program Arduino.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Struktur sketch:\n• setup(): dijalankan sekali saat board menyala\n• loop(): dijalankan berulang tanpa henti\n\nVariabel adalah lokasi memori bernama; harus dideklarasikan beserta tipe datanya."
+      },
+      {
+        "type": "text",
+        "data": "Tipe data (Uno):\n• bool: 1 byte, true/false\n• char: 1 byte, satu karakter\n• byte: 1 byte, 0–255\n• int: 2 byte, −32768 s.d. 32767\n• long: 4 byte, bilangan bulat besar\n• float: 4 byte, bilangan desimal"
+      },
+      {
+        "type": "code",
+        "data": "void setup() {\n  int angkaBulat = 10;\n  float angkaDesimal = 3.14;\n  char karakter = 'A';\n  bool nilaiLogika = true;\n}"
+      }
+    ]
+  },
+  {
+    "id": "l2_m2",
+    "type": "materi",
+    "title": "Operator, Percabangan & Perulangan",
+    "description": "Operator, if-else, dan for.",
+    "estimatedTime": "12 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Operator:\n• Aritmatika: + - * / %\n• Perbandingan: == != < > <= >= (hasil true/false)\n• Logika: && (AND), || (OR), ! (NOT)\n\nCatatan: di Arduino, keluaran ditampilkan dengan Serial.print(), bukan cout."
+      },
+      {
+        "type": "code",
+        "data": "void setup() {\n  Serial.begin(9600);\n  int a = 1, b = 0;\n  bool c = a && b;  // operasi AND\n  Serial.print(\"a AND b = \");\n  Serial.println(c);\n}\n\nvoid loop() {}"
+      },
+      {
+        "type": "code",
+        "data": "void setup() {\n  Serial.begin(9600);\n  int angka = 5;\n\n  if (angka > 0) {\n    Serial.println(\"Angka positif\");\n  } else if (angka < 0) {\n    Serial.println(\"Angka negatif\");\n  } else {\n    Serial.println(\"Nol\");\n  }\n\n  for (int i = 1; i <= 10; i++) {\n    Serial.println(i);\n  }\n}\n\nvoid loop() {}"
+      },
+      {
+        "type": "text",
+        "data": "Perulangan lain yang tersedia: while dan do ... while."
+      }
+    ]
+  },
+  {
+    "id": "l2_m3",
+    "type": "materi",
+    "title": "Fungsi, Array & Pointer",
+    "description": "Blok kode berulang, kumpulan data, dan alamat memori.",
+    "estimatedTime": "12 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Fungsi: blok kode yang bisa dipanggil berulang, menerima parameter, dan dapat mengembalikan nilai."
+      },
+      {
+        "type": "code",
+        "data": "int jumlah(int a, int b) {\n  return a + b;\n}\n\nvoid setup() {\n  Serial.begin(9600);\n  Serial.println(jumlah(10, 5));  // 15\n}\n\nvoid loop() {}"
+      },
+      {
+        "type": "text",
+        "data": "Array menyimpan banyak nilai bertipe sama; indeks dimulai dari 0.\nPointer menyimpan alamat memori variabel lain, berguna untuk menghemat memori yang terbatas."
+      },
+      {
+        "type": "code",
+        "data": "int angka[5] = {1, 2, 3, 4, 5};\nangka[3] = 10;  // elemen ke-4 menjadi 10\n\nint nilai = 10;\nint *ptr = &nilai;  // ptr menunjuk alamat nilai\n*ptr = 20;          // nilai sekarang 20"
+      }
+    ]
+  },
+  {
+    "id": "l2_m4",
+    "type": "materi",
+    "title": "Input & Output Digital",
+    "description": "pinMode, digitalWrite, digitalRead, dan pull-up.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Pin digital hanya punya dua keadaan: HIGH (5 V) dan LOW (0 V). Pin bisa jadi OUTPUT (LED, relay) atau INPUT (tombol, sensor digital).\n\n• pinMode(pin, mode): mengatur mode pin\n• digitalWrite(pin, nilai): menulis HIGH/LOW\n• digitalRead(pin): membaca keadaan pin"
+      },
+      {
+        "type": "text",
+        "data": "Pull-up:\n• Pin yang dibiarkan mengambang (floating) membaca nilai acak.\n• Solusinya resistor pull-up. Arduino punya yang internal lewat INPUT_PULLUP.\n• Tombol cukup dihubungkan antara pin dan GND.\n• Logika terbalik: tombol ditekan = LOW."
+      }
+    ]
+  },
+  {
+    "id": "l2_m5",
+    "type": "materi",
+    "title": "Praktikum 2: Tombol dan LED",
+    "description": "LED menyala hanya saat tombol ditekan.",
+    "estimatedTime": "15 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Rangkaian:\n• Tombol kaki 1 → D2, kaki 2 → GND\n• LED anoda (via resistor 220 Ω) → D8, katoda → GND"
+      },
+      {
+        "type": "code",
+        "data": "const int TOMBOL = 2;\nconst int LED = 8;\n\nvoid setup() {\n  pinMode(TOMBOL, INPUT_PULLUP);\n  pinMode(LED, OUTPUT);\n}\n\nvoid loop() {\n  if (digitalRead(TOMBOL) == LOW) {  // tombol ditekan\n    digitalWrite(LED, HIGH);\n  } else {\n    digitalWrite(LED, LOW);\n  }\n}"
+      },
+      {
+        "type": "text",
+        "data": "Hasil: LED menyala hanya selama tombol ditekan."
+      }
+    ]
+  },
+  {
+    "id": "l2_m6",
+    "type": "materi",
+    "title": "Relay",
+    "description": "Saklar elektromekanik untuk beban besar.",
+    "estimatedTime": "10 menit",
+    "content": [
+      {
+        "type": "text",
+        "data": "Relay adalah saklar elektromekanik yang dikendalikan sinyal kecil untuk memutus/menyambung beban besar (lampu, pompa, kipas AC).\n\nJenis:\n• Relay elektromagnetik (paling umum)\n• Solid state relay (lebih cepat dan awet, lebih mahal)\n• Relay termal (pengaman beban lebih)\n\nBanyak modul relay 5 V bersifat active LOW: relay menyala saat pin diberi LOW."
+      },
+      {
+        "type": "code",
+        "data": "const int RELAY = 7;\n\nvoid setup() {\n  pinMode(RELAY, OUTPUT);\n  digitalWrite(RELAY, HIGH);  // awal: relay mati (active LOW)\n}\n\nvoid loop() {\n  digitalWrite(RELAY, LOW);   // relay ON\n  delay(3000);\n  digitalWrite(RELAY, HIGH);  // relay OFF\n  delay(3000);\n}"
+      },
+      {
+        "type": "text",
+        "data": "⚠️ Keselamatan: tegangan jala-jala 220 V berbahaya. Pada praktikum gunakan beban tegangan rendah (misalnya lampu 12 V) atau dampingi instruktur."
+      }
+    ]
+  },
+  {
+    "id": "l2_posttest",
+    "type": "posttest",
+    "title": "Post-Test Level 2",
+    "description": "Uji pemahamanmu setelah belajar.",
+    "questions": [
+      {
+        "id": "q1",
+        "question": "Dengan INPUT_PULLUP, tombol yang ditekan akan terbaca...",
+        "options": ["HIGH", "LOW", "Acak", "Tidak berubah"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q2",
+        "question": "Operator logika AND ditulis...",
+        "options": ["||", "&&", "!", "=="],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q3",
+        "question": "Modul relay active LOW akan menyala ketika pin kontrol diberi...",
+        "options": ["HIGH", "LOW", "Dibiarkan floating", "delay()"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q4",
+        "question": "Perintah untuk menampilkan teks ke Serial Monitor adalah...",
+        "options": ["cout", "Serial.print()", "echo", "display()"],
+        "correctAnswerIndex": 1
+      },
+      {
+        "id": "q5",
+        "question": "Beban yang aman untuk praktikum relay adalah...",
+        "options": ["Listrik 220 V tanpa pendamping", "Lampu 12 V atau didampingi instruktur", "Motor besar tanpa pengaman", "Tidak boleh ada beban"],
+        "correctAnswerIndex": 1
+      }
+    ]
+  }
+]
