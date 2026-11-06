@@ -37,31 +37,40 @@ class VoltButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppIconName? iconName = icon;
-    final Widget button = ElevatedButton(
-      onPressed: onPressed,
-      style: _styleFor(variant),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (iconName != null) ...<Widget>[
-            AppIcon(
-              iconName,
-              size: AppIconSize.sm,
-              color: onPressed == null
-                  ? AppColors.textTertiary
-                  : _foregroundFor(variant),
-            ),
-            const SizedBox(width: AppSpacing.sm),
+    final bool isEnabled = onPressed != null;
+    final Widget button = DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.button),
+        boxShadow: isEnabled && variant == VoltButtonVariant.primary
+            ? AppShadows.buttonPrimary
+            : null,
+      ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: _styleFor(variant),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (iconName != null) ...<Widget>[
+              AppIcon(
+                iconName,
+                size: AppIconSize.sm,
+                color: !isEnabled
+                    ? AppColors.textTertiary
+                    : _foregroundFor(variant),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+            ],
+            Text(label),
           ],
-          Text(label),
-        ],
+        ),
       ),
     );
 
     // Animasi tekan hanya untuk tombol aktif; lebar penuh dibungkus dulu agar
     // scale terjadi di dalam constraint, bukan mengecilkan constraint.
     final Widget pressable = PressScale(
-      enabled: onPressed != null,
+      enabled: isEnabled,
       child: button,
     );
 
@@ -81,7 +90,7 @@ class VoltButton extends StatelessWidget {
   static ButtonStyle _styleFor(VoltButtonVariant variant) {
     final Color fill = switch (variant) {
       VoltButtonVariant.primary => AppColors.primary,
-      VoltButtonVariant.secondary => AppColors.background,
+      VoltButtonVariant.secondary => AppColors.surface,
       VoltButtonVariant.danger => AppColors.error,
     };
     final Color foreground = _foregroundFor(variant);
@@ -89,7 +98,7 @@ class VoltButton extends StatelessWidget {
     return ElevatedButton.styleFrom(
       backgroundColor: fill,
       foregroundColor: foreground,
-      disabledBackgroundColor: AppColors.surface,
+      disabledBackgroundColor: AppColors.border,
       disabledForegroundColor: AppColors.textTertiary,
       elevation: 0,
       shadowColor: Colors.transparent,

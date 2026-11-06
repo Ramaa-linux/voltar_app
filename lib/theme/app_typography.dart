@@ -8,23 +8,23 @@ import 'package:voltar/theme/app_colors.dart';
 abstract final class AppTypography {
   static const String fontFamily = 'PlusJakartaSans';
 
-  /// 28 / 700 - judul hero, angka besar.
+  /// 32 / 800 - judul hero, angka besar.
   static const TextStyle display = TextStyle(
     fontFamily: fontFamily,
-    fontSize: 28,
+    fontSize: 32,
     height: 1.2,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.5,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.8,
     color: AppColors.textPrimary,
   );
 
-  /// 24 / 700 - judul section.
+  /// 28 / 800 - judul section.
   static const TextStyle heading = TextStyle(
     fontFamily: fontFamily,
-    fontSize: 24,
+    fontSize: 28,
     height: 1.25,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.3,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -0.5,
     color: AppColors.textPrimary,
   );
 
@@ -34,6 +34,7 @@ abstract final class AppTypography {
     fontSize: 18,
     height: 1.3,
     fontWeight: FontWeight.w700,
+    letterSpacing: -0.2,
     color: AppColors.textPrimary,
   );
 
@@ -55,12 +56,12 @@ abstract final class AppTypography {
     color: AppColors.textSecondary,
   );
 
-  /// 14 / 500 - teks tombol.
+  /// 14 / 600 - teks tombol.
   static const TextStyle button = TextStyle(
     fontFamily: fontFamily,
     fontSize: 14,
     height: 1.2,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     letterSpacing: 0.1,
   );
 

@@ -44,7 +44,7 @@ abstract final class AppTheme {
       scaffoldBackgroundColor: AppColors.background,
       textTheme: AppTypography.textTheme,
       cardTheme: CardThemeData(
-        color: AppColors.background,
+        color: AppColors.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,

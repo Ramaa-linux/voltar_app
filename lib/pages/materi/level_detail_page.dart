@@ -82,6 +82,15 @@ class _LevelJourneyView extends StatelessWidget {
         final isFirst = index == 0;
         final isLast = index == level.steps.length - 1;
 
+        if (step.type == LearningStepType.folder) {
+          return _FolderStepTile(
+            step: step,
+            levelNumber: level.levelNumber,
+            isFirst: isFirst,
+            isLast: isLast,
+          );
+        }
+
         // Fase 2 UI-only lock logic:
         // Pre-test selalu aktif.
         // Materi selalu aktif.
@@ -122,6 +131,7 @@ class _StepTile extends StatelessWidget {
       LearningStepType.pretest => ('PRE-TEST', AppIconName.helpCircle),
       LearningStepType.materi => ('MATERI', AppIconName.bookOpen),
       LearningStepType.posttest => ('POST-TEST', AppIconName.checkSquare),
+      LearningStepType.folder => ('FOLDER', AppIconName.folder),
     };
 
     final VoltChipStatus status =
@@ -146,22 +156,22 @@ class _StepTile extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Container(
-              width: 2,
+              width: 3,
               color: isFirst ? Colors.transparent : AppColors.border,
             ),
           ),
           Container(
-            width: 14,
-            height: 14,
+            width: 16,
+            height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isLocked ? AppColors.border : AppColors.primary,
-              border: Border.all(color: AppColors.surface, width: 2),
+              border: Border.all(color: AppColors.surface, width: 3),
             ),
           ),
           Expanded(
             child: Container(
-              width: 2,
+              width: 3,
               color: isLast ? Colors.transparent : AppColors.border,
             ),
           ),
@@ -170,7 +180,7 @@ class _StepTile extends StatelessWidget {
     );
   }
 
-Widget _buildCard(
+  Widget _buildCard(
     BuildContext context,
     String badgeText,
     AppIconName iconName,
@@ -178,7 +188,7 @@ Widget _buildCard(
   ) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
         child: VoltCard(
           onTap: isLocked
               ? null
@@ -255,6 +265,193 @@ Widget _buildCard(
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+class _FolderStepTile extends StatelessWidget {
+  const _FolderStepTile({
+    required this.step,
+    required this.levelNumber,
+    required this.isFirst,
+    required this.isLast,
+  });
+
+  final LearningStep step;
+  final int levelNumber;
+  final bool isFirst;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final sub = step.subMateri ?? const <LearningStep>[];
+
+    // Use Stack to overlay timeline on the card without constraining card height
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: Stack(
+        children: [
+          // Timeline - positioned absolutely, doesn't affect card layout
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            child: _buildTimeline(context),
+          ),
+          // Card content - offset to make room for timeline
+          Padding(
+            padding: const EdgeInsets.only(left: 32 + AppSpacing.sm),
+            child: VoltCard(
+              padding: EdgeInsets.zero,
+              child: Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: ExpansionTile(
+                    tilePadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.xs,
+                    ),
+                    childrenPadding: const EdgeInsets.only(
+                      left: AppSpacing.md,
+                      right: AppSpacing.md,
+                      bottom: AppSpacing.md,
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryLight,
+                        borderRadius: BorderRadius.circular(AppRadius.card),
+                      ),
+                      child: const AppIcon(
+                        AppIconName.folder,
+                        size: AppIconSize.md,
+                        color: AppColors.primaryDark,
+                      ),
+                    ),
+                    title: Text(
+                      step.title,
+                      style: AppTypography.body.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${sub.length} materi • ${step.description}',
+                      style: AppTypography.caption,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    children: [
+                      for (int i = 0; i < sub.length; i++)
+                        _SubMateriTile(
+                          step: sub[i],
+                          levelNumber: levelNumber,
+                          index: i + 1,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimeline(BuildContext context) {
+    return SizedBox(
+      width: 32,
+      child: Column(
+        children: <Widget>[
+          // Top connector - fixed height matching header area (~24px)
+          Container(
+            width: 3,
+            height: 24,
+            color: isFirst ? Colors.transparent : AppColors.border,
+          ),
+          // Dot - centered in header area
+          Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primary,
+              border: Border.all(color: AppColors.surface, width: 3),
+            ),
+          ),
+          // Bottom connector - expands to fill remaining space
+          Expanded(
+            child: Container(
+              width: 3,
+              color: isLast ? Colors.transparent : AppColors.border,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SubMateriTile extends StatelessWidget {
+  const _SubMateriTile({
+    required this.step,
+    required this.levelNumber,
+    required this.index,
+  });
+
+  final LearningStep step;
+  final int levelNumber;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpacing.md),
+      child: VoltCard(
+        padding: EdgeInsets.zero,
+        onTap: () {
+          context.push(
+            '${AppRoutes.materi}/detail/${step.id}?level=$levelNumber',
+          );
+        },
+        child: ListTile(
+          dense: true,
+          leading: Container(
+            width: 28,
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(AppRadius.chip),
+            ),
+            child: Text(
+              '$index',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.primaryDark,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          title: Text(
+            step.title,
+            style: AppTypography.body.copyWith(
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+            ),
+          ),
+          subtitle: Text(
+            step.estimatedTime ?? '5 menit',
+            style: AppTypography.caption,
+          ),
+          trailing: const VoltChip(
+            label: 'Mulai',
+            status: VoltChipStatus.active,
           ),
         ),
       ),

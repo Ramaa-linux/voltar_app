@@ -4,11 +4,10 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/widgets/press_scale.dart';
 
-/// Kartu standar VoltAR: latar putih, border 1px, radius 12, tanpa shadow.
+/// Kartu standar VoltAR: latar putih bersih ([AppColors.surface]), radius 24,
+/// dan soft layered shadow ([AppShadows.card]).
 ///
-/// Shadow hanya dipakai [VoltFloatingNavBar] - jangan tambahkan elevation di
-/// sini. `onTap` opsional untuk kartu yang bisa dibuka (ripple di dalam area
-/// kartu).
+/// `onTap` opsional untuk kartu yang bisa dibuka (ripple di dalam area kartu).
 class VoltCard extends StatelessWidget {
   const VoltCard({
     super.key,
@@ -28,9 +27,9 @@ class VoltCard extends StatelessWidget {
 
     final Widget card = DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: AppColors.surface,
         borderRadius: radius,
-        border: AppBorders.standard,
+        boxShadow: AppShadows.card,
       ),
       child: onTap == null
           ? content

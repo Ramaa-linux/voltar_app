@@ -40,7 +40,7 @@ class VoltFloatingNavBar extends StatelessWidget {
       padding: margin,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.background,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.navBar),
           border: AppBorders.standard,
           boxShadow: AppShadows.navBar,

@@ -346,6 +346,6 @@ void main() {
     expect(theme.scaffoldBackgroundColor, AppColors.background);
     expect(theme.textTheme.bodyMedium?.fontFamily, AppTypography.fontFamily);
     expect(theme.textTheme.bodyMedium?.fontWeight, FontWeight.w400);
-    expect(theme.textTheme.headlineMedium?.fontWeight, FontWeight.w700);
+    expect(theme.textTheme.headlineMedium?.fontWeight, FontWeight.w800);
   });
 }

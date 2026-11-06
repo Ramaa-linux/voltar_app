@@ -24,16 +24,16 @@ abstract final class AppColors {
   static const Color accentLight = Color(0xFFFEF3C7);
 
   // --- Permukaan ---
-  static const Color background = Color(0xFFFFFFFF);
-  static const Color surface = Color(0xFFF9FAFB);
+  static const Color background = Color(0xFFF2F3F8);
+  static const Color surface = Color(0xFFFFFFFF);
   static const Color border = Color(0xFFE5E7EB);
 
   /// Border lebih tegas: garis dashed canvas Simulasi (Fase 5).
   static const Color borderStrong = Color(0xFFD1D5DB);
 
   // --- Teks ---
-  static const Color textPrimary = Color(0xFF111827);
-  static const Color textSecondary = Color(0xFF6B7280);
+  static const Color textPrimary = Color(0xFF17262A);
+  static const Color textSecondary = Color(0xFF4A6572);
   static const Color textTertiary = Color(0xFF9CA3AF);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
 
