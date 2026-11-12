@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:voltar/theme/app_colors.dart';
 
-/// Ikon Lucide yang dipakai VoltAR (sumber: assets/icons/*.svg, lisensi ISC).
+/// Ikon Lucide yang dipakai EduVolt (sumber: assets/icons/*.svg, lisensi ISC).
 ///
 /// Semua ikon 24x24, stroke 2, fill none, sehingga aman di-tint lewat
 /// [ColorFilter] dan tetap tajam di ukuran berapa pun.

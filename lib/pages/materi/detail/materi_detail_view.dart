@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:voltar/models/learning_step.dart';
+import 'package:voltar/repositories/progress_repository.dart';
 import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
@@ -9,9 +11,12 @@ import 'package:voltar/widgets/volt_chip.dart';
 import 'package:voltar/pages/materi/detail/content_block_renderer.dart';
 import 'package:voltar/pages/materi/detail/bottom_action_bar.dart';
 import 'package:voltar/pages/materi/detail/praktik/led_animation.dart';
+import 'package:voltar/pages/materi/detail/praktik/motor_simulation.dart';
 import 'package:voltar/pages/materi/detail/praktik/ohm_law_animation.dart';
 import 'package:voltar/pages/materi/detail/praktik/push_button_sim.dart';
+import 'package:voltar/pages/materi/detail/praktik/relay_simulation.dart';
 import 'package:voltar/pages/materi/detail/praktik/resistor_calculator.dart';
+import 'package:voltar/pages/materi/detail/praktik/sensor_simulation.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 /// Konten utama halaman detail materi (3 tab: Bacaan, Video, Praktik).
@@ -40,6 +45,15 @@ class _MateriDetailViewState extends State<MateriDetailView> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _initYoutube();
+    _loadCompletionState();
+  }
+
+  Future<void> _loadCompletionState() async {
+    final Set<String> completed =
+        await const ProgressRepository().getCompletedSteps();
+    if (mounted && completed.contains(widget.step.id)) {
+      setState(() => _isDone = true);
+    }
   }
 
   void _initYoutube() {
@@ -294,6 +308,9 @@ class _MateriDetailViewState extends State<MateriDetailView> {
       'l1_kom_led' => const LedAnimation(),
       'l1_kom_tactile_switch' => const PushButtonSim(),
       'l1_kom_hukum_ohm' => const OhmLawAnimation(),
+      'l2_relay' => const RelaySimulation(),
+      'l3_jenis_prinsip_kerja_sensor' => const SensorSimulation(),
+      'l4_jenis_motor' => const MotorSimulation(),
       _ => Padding(
           padding: const EdgeInsets.all(AppSpacing.pagePadding),
           child: Center(
@@ -324,12 +341,23 @@ class _MateriDetailViewState extends State<MateriDetailView> {
             onPressed: () {
               Navigator.of(context).pop();
               setState(() => _isDone = true);
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(this.context).showSnackBar(
                 SnackBar(
                   content: Text('${step.title} ditandai selesai!'),
                   backgroundColor: AppColors.success,
                 ),
               );
+              const ProgressRepository().markCompleted(step.id).then((_) {
+                if (!mounted) return;
+                try {
+                  ProviderScope.containerOf(
+                    this.context,
+                    listen: false,
+                  ).invalidate(completedStepsProvider);
+                } on Object {
+                  // Abaikan bila MateriDetailView di-mount tanpa ProviderScope.
+                }
+              });
             },
             child: const Text('Tandai Selesai'),
           ),

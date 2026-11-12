@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voltar/theme/app_colors.dart';
 
-/// Tipografi VoltAR - Plus Jakarta Sans (dibundel offline, tanpa google_fonts).
+/// Tipografi EduVolt - Plus Jakarta Sans (dibundel offline, tanpa google_fonts).
 ///
 /// Skala global hanya 400 / 500 / 700, maksimal 2 weight per layar.
 /// Caption dibedakan lewat ukuran + warna, bukan weight tambahan.

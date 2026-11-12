@@ -4,7 +4,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/widgets/press_scale.dart';
 
-/// Kartu standar VoltAR: latar putih bersih ([AppColors.surface]), radius 24,
+/// Kartu standar EduVolt: latar putih bersih ([AppColors.surface]), radius 24,
 /// dan soft layered shadow ([AppShadows.card]).
 ///
 /// `onTap` opsional untuk kartu yang bisa dibuka (ripple di dalam area kartu).

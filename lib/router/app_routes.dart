@@ -5,6 +5,9 @@ abstract final class AppRoutes {
   static const String simulasi = '/simulasi';
   static const String profil = '/profil';
 
+  /// Halaman edit profil pengguna (Fase 22A).
+  static const String profilEdit = '/profil/edit';
+
   /// Editor simulasi: halaman penuh di atas AppShell (navbar tidak tampil).
   static const String simulasiEditor = '/simulasi/editor';
 
@@ -25,6 +28,16 @@ abstract final class AppRoutes {
 
   /// Halaman uji canvas 2D rangkaian Blink (Fase 5A Hari 3).
   static const String canvasDebug = '/debug-canvas';
+
+  /// Mini-game Sirkuit Kilat (Fase 14B): halaman penuh tanpa navbar.
+  static const String circuitRush = '/game/circuit-rush';
+
+  /// Mini-game Sambung Kabel (Fase 15B): flow puzzle rangkaian tertutup.
+  static const String cableConnect = '/game/cable-connect';
+
+  /// Mini-game Tebak Komponen (Fase 19): halaman penuh tanpa navbar.
+  static const String guessComponent = '/game/guess-component';
+
 
   /// Editor untuk project yang sudah ada. Nama project dikirim sebagai query
   /// supaya editor tidak perlu state tambahan di router.

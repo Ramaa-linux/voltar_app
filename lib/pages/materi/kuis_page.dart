@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:voltar/models/learning_step.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
+import 'package:voltar/repositories/progress_repository.dart';
 import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
@@ -139,6 +140,8 @@ class _KuisPageState extends ConsumerState<KuisPage> {
             ),
           ),
           _buildBottomAction(
+            step: step,
+            questions: questions,
             isLast: isLast,
             hasSelection: selectedOption != null,
           ),
@@ -192,6 +195,8 @@ class _KuisPageState extends ConsumerState<KuisPage> {
   }
 
   Widget _buildBottomAction({
+    required LearningStep step,
+    required List<QuizQuestion> questions,
     required bool isLast,
     required bool hasSelection,
   }) {
@@ -218,7 +223,27 @@ class _KuisPageState extends ConsumerState<KuisPage> {
                   ? null
                   : () {
                       if (isLast) {
+                        int correct = 0;
+                        for (int i = 0; i < questions.length; i++) {
+                          if (_selectedAnswers[i] ==
+                              questions[i].correctAnswerIndex) {
+                            correct++;
+                          }
+                        }
+                        final int score =
+                            ((correct / questions.length) * 100).round();
+                        final bool passed = score >= 70;
                         setState(() => _isSubmitted = true);
+                        if (step.type == LearningStepType.pretest || passed) {
+                          ref
+                              .read(progressRepositoryProvider)
+                              .markCompleted(step.id)
+                              .then((_) {
+                            if (mounted) {
+                              ref.invalidate(completedStepsProvider);
+                            }
+                          });
+                        }
                       } else {
                         setState(() => _currentIndex++);
                       }

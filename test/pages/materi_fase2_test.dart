@@ -8,6 +8,8 @@ import 'package:voltar/pages/materi/kuis_page.dart';
 import 'package:voltar/pages/materi/level_detail_page.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
 import 'package:voltar/repositories/materi_repository.dart';
+import 'package:voltar/repositories/progress_repository.dart';
+import 'package:voltar/widgets/app_icon.dart';
 
 class _FakeMateriRepository extends MateriRepository {
   const _FakeMateriRepository();
@@ -81,13 +83,37 @@ class _FakeMateriRepository extends MateriRepository {
           ),
         ],
       ),
+      const LevelModel(
+        levelNumber: 2,
+        steps: <LearningStep>[
+          LearningStep(
+            id: 'l2_pre',
+            type: LearningStepType.pretest,
+            title: 'Pre-Test Level 2',
+            description: 'Uji awal Level 2',
+          ),
+          LearningStep(
+            id: 'l2_m1',
+            type: LearningStepType.materi,
+            title: 'Materi Level 2',
+            description: 'Konten Level 2',
+            estimatedTime: '8 menit',
+          ),
+          LearningStep(
+            id: 'l2_post',
+            type: LearningStepType.posttest,
+            title: 'Post-Test Level 2',
+            description: 'Uji akhir Level 2',
+          ),
+        ],
+      ),
     ];
   }
 
   @override
   Future<LevelModel> getLevelByNumber(int levelNumber) async {
     final levels = await getAllLevels();
-    return levels.first;
+    return levels.firstWhere((l) => l.levelNumber == levelNumber);
   }
 
   @override
@@ -122,7 +148,9 @@ void main() {
     expect(find.text('Pilih Level'), findsOneWidget);
     expect(find.text('Level 1'), findsOneWidget);
     // Caption now counts subMateri in folder: 2 materi • 10 menit
-    expect(find.textContaining('materi'), findsOneWidget);
+    expect(find.text('Level 2'), findsOneWidget);
+    expect(find.text('2 materi • 10 menit'), findsOneWidget);
+    expect(find.text('1 materi • 8 menit'), findsOneWidget);
   });
 
   testWidgets('LevelDetailPage merender timeline journey map', (WidgetTester tester) async {
@@ -142,13 +170,14 @@ void main() {
     expect(find.text('Level 1'), findsOneWidget);
     expect(find.text('Pre-Test Level 1'), findsOneWidget);
     expect(find.text('Post-Test Level 1'), findsOneWidget);
-    expect(find.text('Terkunci'), findsOneWidget); // Post-test terkunci
-    expect(find.text('Mulai'), findsNWidgets(2)); // Pre-test & materi aktif
+    expect(find.text('Terkunci'), findsNWidgets(2)); // Materi 1 & Post-test terkunci sebelum Pre-Test selesai
+    expect(find.text('Mulai'), findsOneWidget); // Hanya Pre-test yang aktif di awal
     // Folder ditampilkan
     expect(find.text('Pengenalan Komponen'), findsOneWidget);
     // Sub-materi belum muncul sebelum folder dibuka
     expect(find.text('LED (Light Emitting Diode)'), findsNothing);
   });
+
 
   testWidgets('LevelDetailPage expansion folder menampilkan subMateri', (WidgetTester tester) async {
     await tester.pumpWidget(
@@ -243,5 +272,112 @@ void main() {
     expect(find.text('Selamat!'), findsOneWidget);
     expect(find.text('Skor Kamu: 100'), findsOneWidget);
     expect(find.text('Kembali ke Level'), findsOneWidget);
+  });
+
+  group('Fase 17 - Sequential Level Unlocking UI', () {
+    testWidgets('MateriPage merender Level 1 terbuka dan Level 2 terkunci di awal', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
+            completedStepsProvider.overrideWith((ref) => Future.value(<String>{})),
+          ],
+          child: const MaterialApp(
+            home: MateriPage(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Level 1'), findsOneWidget);
+      expect(find.text('Level 2'), findsOneWidget);
+
+      // Level 2 memiliki label semantik terkunci dan ikon gembok
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is Semantics && widget.properties.label == 'Level 2, terkunci',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is AppIcon && widget.name == AppIconName.lock,
+        ),
+        findsOneWidget,
+      );
+
+      // Tap Level 2 menampilkan SnackBar pesan
+      await tester.tap(find.text('Level 2'));
+      await tester.pump();
+
+      expect(find.text('Selesaikan Level sebelumnya terlebih dahulu'), findsOneWidget);
+    });
+
+    testWidgets('MateriPage membuka Level 2 ketika seluruh langkah Level 1 selesai', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
+            completedStepsProvider.overrideWith(
+              (ref) => Future.value(<String>{'l1_pre', 'l1_m1', 'l1_kom_led', 'l1_post'}),
+            ),
+          ],
+          child: const MaterialApp(
+            home: MateriPage(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Level 2 sekarang terbuka, label semantik bukan "terkunci" dan chevron muncul
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is Semantics && widget.properties.label == 'Level 2',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is Semantics && widget.properties.label == 'Level 2, terkunci',
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is AppIcon && widget.name == AppIconName.lock,
+        ),
+        findsNothing,
+      );
+      expect(
+        find.byWidgetPredicate(
+          (widget) => widget is AppIcon && widget.name == AppIconName.chevronRight,
+        ),
+        findsNWidgets(2),
+      );
+    });
+
+    testWidgets('LevelDetailPage guard menampilkan pesan terkunci saat level dikunci', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
+            completedStepsProvider.overrideWith((ref) => Future.value(<String>{})),
+          ],
+          child: const MaterialApp(
+            home: LevelDetailPage(levelNumber: 2),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Level Terkunci'), findsOneWidget);
+      expect(find.text('Selesaikan Level sebelumnya terlebih dahulu'), findsOneWidget);
+      expect(find.text('Kembali ke Pilih Level'), findsOneWidget);
+      // Timeline materi tidak dirender
+      expect(find.text('Pre-Test Level 2'), findsNothing);
+    });
   });
 }

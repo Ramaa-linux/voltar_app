@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-/// Token warna VoltAR - sumber tunggal kebenaran.
+/// Token warna EduVolt - sumber tunggal kebenaran.
 ///
 /// Aturan keras: widget tidak boleh menulis `Color(0x...)` sendiri.
 /// Semua warna lewat [AppColors] agar konsistensi cukup dijaga di satu tempat.

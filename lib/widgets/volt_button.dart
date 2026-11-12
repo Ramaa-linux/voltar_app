@@ -9,7 +9,7 @@ import 'package:voltar/widgets/press_scale.dart';
 /// Varian visual [VoltButton].
 enum VoltButtonVariant { primary, secondary, danger }
 
-/// Tombol standar VoltAR: tinggi minimum 48, radius 8, tanpa elevation.
+/// Tombol standar EduVolt: tinggi minimum 48, radius 8, tanpa elevation.
 ///
 /// `onPressed == null` = disabled: latar [AppColors.surface], teks
 /// [AppColors.textTertiary]. Jangan bikin state disabled manual di halaman.
@@ -61,7 +61,13 @@ class VoltButton extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
             ],
-            Text(label),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ),

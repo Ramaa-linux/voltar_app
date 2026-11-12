@@ -1,11 +1,21 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:voltar/pages/auth/login_page.dart';
+import 'package:voltar/pages/auth/register_page.dart';
+import 'package:voltar/pages/game/cable_connect_page.dart';
+import 'package:voltar/pages/game/circuit_rush_page.dart';
+import 'package:voltar/pages/game/guess_component_page.dart';
 import 'package:voltar/pages/home/home_page.dart';
 import 'package:voltar/pages/materi/kuis_page.dart';
 import 'package:voltar/pages/materi/level_detail_page.dart';
 import 'package:voltar/pages/materi/materi_detail_page.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
+import 'package:voltar/pages/profil/edit_profil_page.dart';
 import 'package:voltar/pages/profil/profil_page.dart';
 import 'package:voltar/pages/simulasi/avr_debug_page.dart';
 import 'package:voltar/pages/simulasi/canvas_debug_page.dart';
@@ -22,16 +32,68 @@ const String _initialRoute = String.fromEnvironment(
   defaultValue: AppRoutes.home,
 );
 
+/// Mengubah [Stream] (mis. `FirebaseAuth.instance.authStateChanges()`) menjadi
+/// [Listenable] untuk `refreshListenable` pada [GoRouter].
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen((_) {
+      notifyListeners();
+    });
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
+/// Fungsi murni evaluasi redirect autentikasi [GoRouter].
+String? authRedirect({
+  required bool isLoggedIn,
+  required String matchedLocation,
+}) {
+  final bool isAuthRoute =
+      matchedLocation == '/login' || matchedLocation == '/register';
+
+  if (!isLoggedIn && !isAuthRoute) {
+    return '/login';
+  }
+  if (isLoggedIn && isAuthRoute) {
+    // TODO(fase-guru): arahkan berdasarkan role
+    return AppRoutes.home;
+  }
+  return null;
+}
+
 /// Router aplikasi lewat Riverpod: setiap ProviderScope (termasuk widget test)
 /// punya instance sendiri, jadi tidak ada state navigasi yang bocor antar test.
 final Provider<GoRouter> appRouterProvider = Provider<GoRouter>((Ref ref) {
-  final GoRouter router = createAppRouter(initialLocation: _initialRoute);
+  GoRouterRefreshStream? refreshStream;
+  if (Firebase.apps.isNotEmpty) {
+    refreshStream = GoRouterRefreshStream(
+      FirebaseAuth.instance.authStateChanges(),
+    );
+    ref.onDispose(refreshStream.dispose);
+  }
+  final GoRouter router = createAppRouter(
+    initialLocation: _initialRoute,
+    refreshListenable: refreshStream,
+  );
   ref.onDispose(router.dispose);
   return router;
 });
 
-/// Membuat router baru. [initialLocation] dipakai test dan screenshot otomatis.
-GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
+/// Membuat router baru. [initialLocation], [isLoggedIn], dan
+/// [refreshListenable] dipakai produksi maupun widget test.
+GoRouter createAppRouter({
+  String initialLocation = AppRoutes.home,
+  bool Function()? isLoggedIn,
+  Listenable? refreshListenable,
+}) {
   final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
     debugLabel: 'root',
   );
@@ -39,7 +101,33 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: initialLocation,
+    refreshListenable: refreshListenable,
+    redirect: (BuildContext context, GoRouterState state) {
+      if (isLoggedIn != null) {
+        return authRedirect(
+          isLoggedIn: isLoggedIn(),
+          matchedLocation: state.matchedLocation,
+        );
+      }
+      if (Firebase.apps.isEmpty) {
+        return null;
+      }
+      return authRedirect(
+        isLoggedIn: FirebaseAuth.instance.currentUser != null,
+        matchedLocation: state.matchedLocation,
+      );
+    },
     routes: <RouteBase>[
+      GoRoute(
+        path: '/login',
+        builder: (BuildContext context, GoRouterState state) =>
+            const LoginPage(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (BuildContext context, GoRouterState state) =>
+            const RegisterPage(),
+      ),
       // IndexedStack: keempat branch tetap hidup, scroll position tidak reset.
       StatefulShellRoute.indexedStack(
         builder: (
@@ -110,18 +198,10 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
                     parentNavigatorKey: rootNavigatorKey,
                     builder: (BuildContext context, GoRouterState state) =>
                         SimulasiEditorPage(
+                          initialUrl: state.uri.queryParameters['url'],
                           projectName:
                               state.uri.queryParameters['title'] ??
-                              SimulasiEditorPage.defaultProjectName,
-                        ),
-                  ),
-                  GoRoute(
-                    path: 'template/blink',
-                    parentNavigatorKey: rootNavigatorKey,
-                    builder: (BuildContext context, GoRouterState state) =>
-                        const SimulasiEditorPage(
-                          projectName: 'Blink LED Dasar',
-                          isTemplate: true,
+                              'Simulator Velxio',
                         ),
                   ),
                 ],
@@ -134,6 +214,14 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
                 path: AppRoutes.profil,
                 builder: (BuildContext context, GoRouterState state) =>
                     const ProfilPage(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    path: 'edit',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (BuildContext context, GoRouterState state) =>
+                        const EditProfilPage(),
+                  ),
+                ],
               ),
             ],
           ),
@@ -150,6 +238,24 @@ GoRouter createAppRouter({String initialLocation = AppRoutes.home}) {
         path: AppRoutes.canvasDebug,
         builder: (BuildContext context, GoRouterState state) =>
             const CanvasDebugPage(),
+      ),
+      // Mini-game Sirkuit Kilat (Fase 14B): tampil penuh tanpa navbar.
+      GoRoute(
+        path: AppRoutes.circuitRush,
+        builder: (BuildContext context, GoRouterState state) =>
+            const CircuitRushPage(),
+      ),
+      // Mini-game Sambung Kabel (Fase 15B): flow puzzle rangkaian tertutup.
+      GoRoute(
+        path: AppRoutes.cableConnect,
+        builder: (BuildContext context, GoRouterState state) =>
+            const CableConnectPage(),
+      ),
+      // Mini-game Tebak Komponen (Fase 19): kuis cepat komponen & resistor.
+      GoRoute(
+        path: AppRoutes.guessComponent,
+        builder: (BuildContext context, GoRouterState state) =>
+            const GuessComponentPage(),
       ),
     ],
   );

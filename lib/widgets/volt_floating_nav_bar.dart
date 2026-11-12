@@ -14,7 +14,7 @@ class VoltNavItem {
   final String label;
 }
 
-/// Navigasi mengambang VoltAR: radius 24, border 1px, shadow lembut.
+/// Navigasi mengambang EduVolt: radius 24, border 1px, shadow lembut.
 ///
 /// Fase 2: murni UI. Tanpa go_router - pemanggil yang mengatur [currentIndex]
 /// lewat [onTap]. `onTap == null` membuat seluruh item tidak bisa ditekan.

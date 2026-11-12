@@ -48,6 +48,31 @@ class LevelModel {
     return result;
   }
 
+  /// Seluruh ID langkah yang dapat diselesaikan pengguna di level ini
+  /// (pretest, materi reguler, sub-materi di dalam folder, dan posttest).
+  List<String> get completableStepIds {
+    final List<String> ids = <String>[];
+    void collect(LearningStep step) {
+      if (step.type == LearningStepType.folder) {
+        final List<LearningStep> sub = step.subMateri ?? const <LearningStep>[];
+        if (sub.isNotEmpty) {
+          for (final LearningStep item in sub) {
+            collect(item);
+          }
+        } else {
+          ids.add(step.id);
+        }
+      } else {
+        ids.add(step.id);
+      }
+    }
+
+    for (final LearningStep step in steps) {
+      collect(step);
+    }
+    return ids;
+  }
+
   /// Semua status penyelesaian: pretest/selesai untuk materi, posttest untuk level.
   /// Nilai placeholder murni UI untuk Fase 2.
   bool get allPretestsDone => true;

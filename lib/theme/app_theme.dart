@@ -4,7 +4,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 
-/// Tema Material 3 VoltAR - seluruh nilai berasal dari token di lib/theme/.
+/// Tema Material 3 EduVolt - seluruh nilai berasal dari token di lib/theme/.
 abstract final class AppTheme {
   static ThemeData get light {
     final ColorScheme scheme = ColorScheme.fromSeed(

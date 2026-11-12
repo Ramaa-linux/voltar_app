@@ -7,7 +7,7 @@ import 'package:voltar/theme/app_typography.dart';
 /// Status materi pada [VoltChip].
 enum VoltChipStatus { active, done, locked }
 
-/// Chip status VoltAR: titik 6px + label 12/500, radius 8, border 1px.
+/// Chip status EduVolt: titik 6px + label 12/500, radius 8, border 1px.
 ///
 /// Warna pasangan sudah ditetapkan token - jangan oper Color langsung.
 class VoltChip extends StatelessWidget {

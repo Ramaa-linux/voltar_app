@@ -3,13 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:voltar/models/learning_step.dart';
 import 'package:voltar/models/level_model.dart';
+import 'package:voltar/models/step_status.dart';
 import 'package:voltar/pages/materi/materi_page.dart';
+import 'package:voltar/repositories/progress_repository.dart';
 import 'package:voltar/router/app_routes.dart';
 import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/step_icon_resolver.dart';
 import 'package:voltar/widgets/app_icon.dart';
+import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 import 'package:voltar/widgets/volt_chip.dart';
 
@@ -30,6 +34,21 @@ class LevelDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<LevelModel> levelAsync =
         ref.watch(levelDetailProvider(levelNumber));
+    final AsyncValue<List<LevelModel>> allLevelsAsync =
+        ref.watch(levelsProvider);
+    final Set<String> completedIds =
+        ref.watch(completedStepsProvider).value ?? const <String>{};
+
+    // Guard: cek apakah level terbuka. Jika data level belum dimuat,
+    // anggap unlocked agar tidak flash guard sebelum data tersedia.
+    final bool isUnlocked = allLevelsAsync.whenOrNull(
+          data: (levels) => ProgressRepository.checkLevelUnlocked(
+            levelNumber: levelNumber,
+            completedSteps: completedIds,
+            levels: levels,
+          ),
+        ) ??
+        true;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -54,23 +73,95 @@ class LevelDetailPage extends ConsumerWidget {
           child: Container(color: AppColors.border, height: AppBorders.thin),
         ),
       ),
-      body: levelAsync.when(
-        data: (level) => _LevelJourneyView(level: level),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Text('Gagal memuat level: $error'),
-          ),
+      body: !isUnlocked
+          ? _LockedLevelGuardView(levelNumber: levelNumber)
+          : levelAsync.when(
+              data: (level) => _LevelJourneyView(
+                level: level,
+                completedIds: completedIds,
+                onStepReturn: () => ref.invalidate(completedStepsProvider),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xl),
+                  child: Text('Gagal memuat level: $error'),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+/// Tampilan guard saat level terkunci (deep link / direct nav).
+class _LockedLevelGuardView extends StatelessWidget {
+  const _LockedLevelGuardView({required this.levelNumber});
+
+  final int levelNumber;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              width: 72,
+              height: 72,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.border, width: 2),
+              ),
+              child: const AppIcon.lock(
+                size: AppIconSize.lg,
+                color: AppColors.textTertiary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'Level Terkunci',
+              style: AppTypography.title.copyWith(fontSize: 18),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              'Selesaikan Level sebelumnya terlebih dahulu',
+              style: AppTypography.body.copyWith(
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            VoltButton(
+              label: 'Kembali ke Pilih Level',
+              onPressed: () {
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  context.go(AppRoutes.materi);
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
 class _LevelJourneyView extends StatelessWidget {
-  const _LevelJourneyView({required this.level});
+  const _LevelJourneyView({
+    required this.level,
+    required this.completedIds,
+    required this.onStepReturn,
+  });
 
   final LevelModel level;
+  final Set<String> completedIds;
+  final VoidCallback onStepReturn;
 
   @override
   Widget build(BuildContext context) {
@@ -81,33 +172,38 @@ class _LevelJourneyView extends StatelessWidget {
         final step = level.steps[index];
         final isFirst = index == 0;
         final isLast = index == level.steps.length - 1;
+        final StepStatus stepStatus = resolveStepStatus(
+          step,
+          level.steps,
+          completedIds,
+        );
 
         if (step.type == LearningStepType.folder) {
           return _FolderStepTile(
             step: step,
+            allSteps: level.steps,
+            completedIds: completedIds,
+            stepStatus: stepStatus,
             levelNumber: level.levelNumber,
             isFirst: isFirst,
             isLast: isLast,
+            onStepReturn: onStepReturn,
           );
         }
-
-        // Fase 2 UI-only lock logic:
-        // Pre-test selalu aktif.
-        // Materi selalu aktif.
-        // Post-test terkunci untuk sementara sebagai preview tantangan akhir.
-        final bool isLocked = step.type == LearningStepType.posttest;
 
         return _StepTile(
           step: step,
           levelNumber: level.levelNumber,
           isFirst: isFirst,
           isLast: isLast,
-          isLocked: isLocked,
+          stepStatus: stepStatus,
+          onStepReturn: onStepReturn,
         );
       },
     );
   }
 }
+
 
 
 class _StepTile extends StatelessWidget {
@@ -116,26 +212,34 @@ class _StepTile extends StatelessWidget {
     required this.levelNumber,
     required this.isFirst,
     required this.isLast,
-    required this.isLocked,
+    required this.stepStatus,
+    required this.onStepReturn,
   });
 
   final LearningStep step;
   final int levelNumber;
   final bool isFirst;
   final bool isLast;
-  final bool isLocked;
+  final StepStatus stepStatus;
+  final VoidCallback onStepReturn;
+
+  bool get _isLocked => stepStatus == StepStatus.locked;
+  bool get _isCompleted => stepStatus == StepStatus.completed;
 
   @override
   Widget build(BuildContext context) {
-    final (String badgeText, AppIconName iconName) = switch (step.type) {
-      LearningStepType.pretest => ('PRE-TEST', AppIconName.helpCircle),
-      LearningStepType.materi => ('MATERI', AppIconName.bookOpen),
-      LearningStepType.posttest => ('POST-TEST', AppIconName.checkSquare),
-      LearningStepType.folder => ('FOLDER', AppIconName.folder),
+    final String badgeText = switch (step.type) {
+      LearningStepType.pretest => 'PRE-TEST',
+      LearningStepType.materi => 'MATERI',
+      LearningStepType.posttest => 'POST-TEST',
+      LearningStepType.folder => 'FOLDER',
     };
 
-    final VoltChipStatus status =
-        isLocked ? VoltChipStatus.locked : VoltChipStatus.active;
+    final (String chipLabel, VoltChipStatus status) = switch (stepStatus) {
+      StepStatus.completed => ('Selesai', VoltChipStatus.done),
+      StepStatus.unlocked => ('Mulai', VoltChipStatus.active),
+      StepStatus.locked => ('Terkunci', VoltChipStatus.locked),
+    };
 
     return IntrinsicHeight(
       child: Row(
@@ -143,13 +247,17 @@ class _StepTile extends StatelessWidget {
         children: <Widget>[
           _buildTimeline(context),
           const SizedBox(width: AppSpacing.sm),
-          _buildCard(context, badgeText, iconName, status),
+          _buildCard(context, badgeText, chipLabel, status),
         ],
       ),
     );
   }
 
   Widget _buildTimeline(BuildContext context) {
+    final Color dotColor = _isCompleted
+        ? AppColors.success
+        : (_isLocked ? AppColors.border : AppColors.primary);
+
     return SizedBox(
       width: 32,
       child: Column(
@@ -165,7 +273,7 @@ class _StepTile extends StatelessWidget {
             height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isLocked ? AppColors.border : AppColors.primary,
+              color: dotColor,
               border: Border.all(color: AppColors.surface, width: 3),
             ),
           ),
@@ -183,23 +291,33 @@ class _StepTile extends StatelessWidget {
   Widget _buildCard(
     BuildContext context,
     String badgeText,
-    AppIconName iconName,
+    String chipLabel,
     VoltChipStatus status,
   ) {
+    final Color iconBoxColor = _isLocked
+        ? AppColors.background
+        : (_isCompleted ? AppColors.successLight : AppColors.primaryLight);
+    final Color iconColor =
+        _isCompleted ? AppColors.success : AppColors.primaryDark;
+    final Color badgeColor = _isLocked
+        ? AppColors.textTertiary
+        : (_isCompleted ? AppColors.success : AppColors.primaryDark);
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.lg),
         child: VoltCard(
-          onTap: isLocked
+          onTap: _isLocked
               ? null
-              : () {
+              : () async {
                   if (step.type == LearningStepType.materi) {
-                    context.push(
+                    await context.push(
                       '${AppRoutes.materi}/detail/${step.id}?level=$levelNumber',
                     );
                   } else {
-                    context.push('${AppRoutes.materi}/kuis/${step.id}');
+                    await context.push('${AppRoutes.materi}/kuis/${step.id}');
                   }
+                  onStepReturn();
                 },
           child: Row(
             children: <Widget>[
@@ -208,18 +326,18 @@ class _StepTile extends StatelessWidget {
                 height: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isLocked ? AppColors.background : AppColors.primaryLight,
+                  color: iconBoxColor,
                   borderRadius: BorderRadius.circular(AppRadius.card),
                 ),
-                child: isLocked
+                child: _isLocked
                     ? const AppIcon.lock(
                         size: AppIconSize.md,
                         color: AppColors.textTertiary,
                       )
-                    : AppIcon(
-                        iconName,
+                    : StepIcon(
+                        step: step,
                         size: AppIconSize.md,
-                        color: AppColors.primaryDark,
+                        color: iconColor,
                       ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -232,14 +350,12 @@ class _StepTile extends StatelessWidget {
                         Text(
                           badgeText,
                           style: AppTypography.overline.copyWith(
-                            color: isLocked
-                                ? AppColors.textTertiary
-                                : AppColors.primaryDark,
+                            color: badgeColor,
                           ),
                         ),
                         const Spacer(),
                         VoltChip(
-                          label: isLocked ? 'Terkunci' : 'Mulai',
+                          label: chipLabel,
                           status: status,
                         ),
                       ],
@@ -249,7 +365,7 @@ class _StepTile extends StatelessWidget {
                       step.title,
                       style: AppTypography.body.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: isLocked
+                        color: _isLocked
                             ? AppColors.textSecondary
                             : AppColors.textPrimary,
                       ),
@@ -271,22 +387,40 @@ class _StepTile extends StatelessWidget {
     );
   }
 }
+
 class _FolderStepTile extends StatelessWidget {
   const _FolderStepTile({
     required this.step,
+    required this.allSteps,
+    required this.completedIds,
+    required this.stepStatus,
     required this.levelNumber,
     required this.isFirst,
     required this.isLast,
+    required this.onStepReturn,
   });
 
   final LearningStep step;
+  final List<LearningStep> allSteps;
+  final Set<String> completedIds;
+  final StepStatus stepStatus;
   final int levelNumber;
   final bool isFirst;
   final bool isLast;
+  final VoidCallback onStepReturn;
+
+  bool get _isLocked => stepStatus == StepStatus.locked;
+  bool get _isCompleted => stepStatus == StepStatus.completed;
 
   @override
   Widget build(BuildContext context) {
     final sub = step.subMateri ?? const <LearningStep>[];
+    final Color iconBoxColor = _isLocked
+        ? AppColors.background
+        : (_isCompleted ? AppColors.successLight : AppColors.primaryLight);
+    final Color iconColor = _isLocked
+        ? AppColors.textTertiary
+        : (_isCompleted ? AppColors.success : AppColors.primaryDark);
 
     // Use Stack to overlay timeline on the card without constraining card height
     return Padding(
@@ -324,13 +458,13 @@ class _FolderStepTile extends StatelessWidget {
                       height: 40,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: AppColors.primaryLight,
+                        color: iconBoxColor,
                         borderRadius: BorderRadius.circular(AppRadius.card),
                       ),
-                      child: const AppIcon(
+                      child: AppIcon(
                         AppIconName.folder,
                         size: AppIconSize.md,
-                        color: AppColors.primaryDark,
+                        color: iconColor,
                       ),
                     ),
                     title: Text(
@@ -350,8 +484,14 @@ class _FolderStepTile extends StatelessWidget {
                       for (int i = 0; i < sub.length; i++)
                         _SubMateriTile(
                           step: sub[i],
+                          stepStatus: resolveStepStatus(
+                            sub[i],
+                            allSteps,
+                            completedIds,
+                          ),
                           levelNumber: levelNumber,
                           index: i + 1,
+                          onStepReturn: onStepReturn,
                         ),
                     ],
                   ),
@@ -365,6 +505,10 @@ class _FolderStepTile extends StatelessWidget {
   }
 
   Widget _buildTimeline(BuildContext context) {
+    final Color dotColor = _isCompleted
+        ? AppColors.success
+        : (_isLocked ? AppColors.border : AppColors.primary);
+
     return SizedBox(
       width: 32,
       child: Column(
@@ -381,7 +525,7 @@ class _FolderStepTile extends StatelessWidget {
             height: 16,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.primary,
+              color: dotColor,
               border: Border.all(color: AppColors.surface, width: 3),
             ),
           ),
@@ -401,25 +545,47 @@ class _FolderStepTile extends StatelessWidget {
 class _SubMateriTile extends StatelessWidget {
   const _SubMateriTile({
     required this.step,
+    required this.stepStatus,
     required this.levelNumber,
     required this.index,
+    required this.onStepReturn,
   });
 
   final LearningStep step;
+  final StepStatus stepStatus;
   final int levelNumber;
   final int index;
+  final VoidCallback onStepReturn;
+
+  bool get _isLocked => stepStatus == StepStatus.locked;
+  bool get _isCompleted => stepStatus == StepStatus.completed;
 
   @override
   Widget build(BuildContext context) {
+    final (String chipLabel, VoltChipStatus status) = switch (stepStatus) {
+      StepStatus.completed => ('Selesai', VoltChipStatus.done),
+      StepStatus.unlocked => ('Mulai', VoltChipStatus.active),
+      StepStatus.locked => ('Terkunci', VoltChipStatus.locked),
+    };
+
+    final Color iconBoxColor = _isLocked
+        ? AppColors.background
+        : (_isCompleted ? AppColors.successLight : AppColors.primaryLight);
+    final Color iconColor =
+        _isCompleted ? AppColors.success : AppColors.primaryDark;
+
     return Padding(
       padding: const EdgeInsets.only(top: AppSpacing.md),
       child: VoltCard(
         padding: EdgeInsets.zero,
-        onTap: () {
-          context.push(
-            '${AppRoutes.materi}/detail/${step.id}?level=$levelNumber',
-          );
-        },
+        onTap: _isLocked
+            ? null
+            : () async {
+                await context.push(
+                  '${AppRoutes.materi}/detail/${step.id}?level=$levelNumber',
+                );
+                onStepReturn();
+              },
         child: ListTile(
           dense: true,
           leading: Container(
@@ -427,31 +593,37 @@ class _SubMateriTile extends StatelessWidget {
             height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppColors.primaryLight,
+              color: iconBoxColor,
               borderRadius: BorderRadius.circular(AppRadius.chip),
             ),
-            child: Text(
-              '$index',
-              style: AppTypography.caption.copyWith(
-                color: AppColors.primaryDark,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            child: _isLocked
+                ? const AppIcon.lock(
+                    size: AppIconSize.sm,
+                    color: AppColors.textTertiary,
+                  )
+                : StepIcon(
+                    step: step,
+                    size: AppIconSize.sm,
+                    color: iconColor,
+                  ),
           ),
           title: Text(
             step.title,
             style: AppTypography.body.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 13,
+              color: _isLocked
+                  ? AppColors.textSecondary
+                  : AppColors.textPrimary,
             ),
           ),
           subtitle: Text(
             step.estimatedTime ?? '5 menit',
             style: AppTypography.caption,
           ),
-          trailing: const VoltChip(
-            label: 'Mulai',
-            status: VoltChipStatus.active,
+          trailing: VoltChip(
+            label: chipLabel,
+            status: status,
           ),
         ),
       ),

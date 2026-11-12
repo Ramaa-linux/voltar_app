@@ -41,7 +41,8 @@ void main() {
 
     expect(find.text('Halo, Budi!'), findsOneWidget);
     expect(find.text('Lanjutkan Belajar'), findsOneWidget);
-    expect(find.text('Tantangan Harian'), findsOneWidget);
+    expect(find.text('Sirkuit Kilat'), findsOneWidget);
+    expect(find.text('Sambung Kabel'), findsOneWidget);
     expect(find.byType(VoltFloatingNavBar), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -60,8 +61,11 @@ void main() {
 
     await tester.tap(navItem('Simulasi'));
     await tester.pumpAndSettle();
-    expect(find.text('Buat Project Baru'), findsOneWidget);
-    expect(find.text('Project Saya'), findsOneWidget);
+    expect(find.text('Buka Simulator Velxio'), findsOneWidget);
+    expect(
+      find.text('Rancang dan uji sirkuit virtual langsung di browser.'),
+      findsOneWidget,
+    );
 
     await tester.tap(navItem('Profil'));
     await tester.pumpAndSettle();
@@ -159,117 +163,29 @@ void main() {
     expect(button.onPressed, isNull);
   });
 
-  testWidgets('dashboard simulasi push ke editor tanpa navbar', (
+  testWidgets('dashboard simulasi push ke editor Velxio tanpa navbar', (
     WidgetTester tester,
   ) async {
     await pumpApp(tester);
 
     await tester.tap(navItem('Simulasi'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Buat Project Baru'));
-    await tester.pumpAndSettle();
+    await tester.tap(find.text('Buka Simulator Velxio'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.text('Project Baru'), findsOneWidget);
-    // Kanvas rangkaian + panel kode hidup di halaman yang sama.
-    expect(
-      find.byWidgetPredicate(
-        (Widget widget) =>
-            widget is CustomPaint && widget.painter is ArduinoPainter,
-      ),
-      findsOneWidget,
-    );
-    expect(find.text('blink.ino'), findsOneWidget);
-    expect(find.byTooltip('Run'), findsOneWidget);
-    expect(find.byTooltip('Stop'), findsOneWidget);
-    expect(find.text('Simpan'), findsOneWidget);
+    expect(find.text('Simulator Velxio'), findsOneWidget);
+    expect(find.text('Muat Ulang'), findsOneWidget);
+    expect(find.byKey(const Key('velxio_loading_indicator')), findsOneWidget);
     // Editor tampil di atas shell: navbar tidak dirender.
     expect(find.byType(VoltFloatingNavBar), findsNothing);
-
-    await tester.tap(find.byTooltip('Kembali'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Project Saya'), findsOneWidget);
-    expect(find.byType(VoltFloatingNavBar), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('Simpan menampilkan dialog lalu kembali ke dashboard', (
-    WidgetTester tester,
-  ) async {
-    await pumpApp(tester);
-
-    await tester.tap(navItem('Simulasi'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Blink LED'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Simpan'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Project berhasil disimpan!'), findsOneWidget);
-    expect(find.text('Blink LED tersimpan di perangkat ini.'), findsOneWidget);
-
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Project berhasil disimpan!'), findsNothing);
-    expect(find.text('Project Saya'), findsOneWidget);
-    expect(find.byType(VoltFloatingNavBar), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('tombol kembali menghentikan simulasi sebelum pop', (
-    WidgetTester tester,
-  ) async {
-    await pumpApp(tester);
-
-    await tester.tap(navItem('Simulasi'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Buat Project Baru'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byTooltip('Run'));
-
-    // Sama seperti tes editor: runAsync agar aset hex + isolate punya waktu
-    // nyata. Jangan pumpAndSettle, stream pin tidak pernah selesai.
-    for (int i = 0; i < 100; i++) {
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 20)),
-      );
-      await tester.pump();
-      final IconButton stop = tester
-          .widgetList<IconButton>(find.byType(IconButton))
-          .firstWhere((IconButton button) => button.tooltip == 'Stop');
-      if (stop.onPressed != null) {
-        break;
-      }
-    }
-
-    expect(find.text('Berhenti'), findsNothing);
 
     await tester.tap(find.byTooltip('Kembali'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.text('Project Saya'), findsOneWidget);
+    expect(find.text('Buka Simulator Velxio'), findsOneWidget);
     expect(find.byType(VoltFloatingNavBar), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('kartu project membuka editor dengan nama project', (
-    WidgetTester tester,
-  ) async {
-    await pumpApp(tester);
-
-    await tester.tap(navItem('Simulasi'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Blink LED'));
-    await tester.pumpAndSettle();
-
-    // Judul AppBar memakai nama project dari query `?title=`.
-    expect(find.text('Blink LED'), findsOneWidget);
-    expect(find.text('Buat Project Baru'), findsNothing);
-    expect(find.text('Draft'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -277,17 +193,17 @@ void main() {
     WidgetTester tester,
   ) async {
     final GoRouter router = createAppRouter(
-      initialLocation: AppRoutes.simulasiTemplateBlink,
+      initialLocation: AppRoutes.simulasiEditor,
     );
     addTearDown(router.dispose);
 
     await tester.pumpWidget(
       MaterialApp.router(theme: AppTheme.light, routerConfig: router),
     );
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('Blink LED Dasar'), findsOneWidget);
-    expect(find.text('Template bawaan'), findsOneWidget);
+    expect(find.text('Simulator Velxio'), findsOneWidget);
     expect(find.byType(VoltFloatingNavBar), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -339,7 +255,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  test('theme memakai token warna dan font VoltAR', () {
+  test('theme memakai token warna dan font EduVolt', () {
     final ThemeData theme = AppTheme.light;
 
     expect(theme.colorScheme.primary, AppColors.primary);

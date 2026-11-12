@@ -1,16 +1,27 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:voltar/pages/simulasi/simulasi_editor_page.dart';
+import 'package:voltar/pages/simulasi/simulasi_page.dart';
+import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_theme.dart';
-import 'package:voltar/widgets/arduino_painter.dart';
-import 'package:voltar/widgets/grid_background_painter.dart';
+
+Future<void> _loadAppFonts() async {
+  final FontLoader loader = FontLoader('PlusJakartaSans')
+    ..addFont(rootBundle.load('assets/fonts/PlusJakartaSans-Regular.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/PlusJakartaSans-Medium.ttf'))
+    ..addFont(rootBundle.load('assets/fonts/PlusJakartaSans-Bold.ttf'));
+  await loader.load();
+}
 
 void main() {
-  /// Pump editor langsung (tanpa router) pada ukuran layar target.
-  Future<void> pumpEditor(
-    WidgetTester tester, {
-    bool isTemplate = false,
-  }) async {
+  testWidgets('SimulasiPage menampilkan header dan tombol Buka Simulator Velxio', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -19,137 +30,123 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
-        home: SimulasiEditorPage(
-          projectName: 'Blink LED',
-          isTemplate: isTemplate,
+        home: const Scaffold(
+          backgroundColor: AppColors.background,
+          body: SimulasiPage(),
         ),
       ),
     );
     await tester.pump();
-  }
 
-  /// IconButton AppBar dicari lewat tooltip-nya (Run/Stop).
-  IconButton buttonWithTooltip(WidgetTester tester, String tooltip) {
-    return tester
-        .widgetList<IconButton>(find.byType(IconButton))
-        .firstWhere((IconButton button) => button.tooltip == tooltip);
-  }
-
-  testWidgets('editor menampilkan kanvas, sketch, dan tombol Run/Stop', (
-    WidgetTester tester,
-  ) async {
-    await pumpEditor(tester);
-
+    expect(find.text('Simulasi'), findsOneWidget);
     expect(
-      find.byWidgetPredicate(
-        (Widget widget) =>
-            widget is CustomPaint && widget.painter is ArduinoPainter,
-      ),
+      find.text('Rancang dan uji sirkuit virtual langsung di browser.'),
       findsOneWidget,
     );
-
-    final TextField code = tester.widget<TextField>(find.byType(TextField));
-    expect(code.controller!.text, contains('void setup()'));
-    expect(code.controller!.text, contains('digitalWrite(LED, HIGH)'));
-    expect(code.controller!.text, contains('delay(1000)'));
-
-    expect(find.text('blink.ino'), findsOneWidget);
-    expect(find.text('Berhenti'), findsOneWidget);
-    expect(find.text('Pin 13: LOW'), findsOneWidget);
-
-    // Mesin belum jalan: Run aktif, Stop nonaktif.
-    expect(buttonWithTooltip(tester, 'Run').onPressed, isNotNull);
-    expect(buttonWithTooltip(tester, 'Stop').onPressed, isNull);
+    expect(find.text('Buka Project Baru'), findsOneWidget);
+    expect(find.text('Project yang sudah ada'), findsOneWidget);
+    expect(find.text('LED Blinker'), findsOneWidget);
+    expect(find.text('4-Way Traffic Light'), findsOneWidget);
     expect(tester.takeException(), isNull);
-
-    // Lepas widget agar AvrService.dispose() menutup stream.
-    await tester.pumpWidget(const SizedBox());
-    await tester.pump();
   });
 
-  testWidgets('grid sandbox digambar di belakang papan Arduino', (
+  testWidgets('SimulasiEditorPage menerima parameter initialUrl', (
     WidgetTester tester,
   ) async {
-    await pumpEditor(tester);
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
 
-    final Finder gridPaint = find.byWidgetPredicate(
-      (Widget widget) =>
-          widget is CustomPaint && widget.painter is GridBackgroundPainter,
-    );
-    final Finder boardPaint = find.byWidgetPredicate(
-      (Widget widget) =>
-          widget is CustomPaint && widget.painter is ArduinoPainter,
-    );
-
-    expect(gridPaint, findsOneWidget);
-    // CustomPaint.painter digambar sebelum child, jadi grid harus ancestor
-    // dari papan. Kalau urutan ini terbalik, papan menutupi grid.
-    expect(find.ancestor(of: boardPaint, matching: gridPaint), findsOneWidget);
-    expect(tester.takeException(), isNull);
-
-    await tester.pumpWidget(const SizedBox());
-    await tester.pump();
-  });
-
-  testWidgets('keyboard muncul tanpa overflow di 390x844', (
-    WidgetTester tester,
-  ) async {
-    await pumpEditor(tester);
-
-    // Tinggi papan ketik Android umum (~300 px) dipotong dari viewport.
-    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
-    addTearDown(tester.view.resetViewInsets);
-    await tester.pump();
-
-    expect(tester.takeException(), isNull);
-    expect(tester.getSize(find.byType(TextField)).height, greaterThan(0));
-    // Kanvas tetap ada saat panel kode menyusut.
-    expect(
-      find.byWidgetPredicate(
-        (Widget widget) =>
-            widget is CustomPaint && widget.painter is ArduinoPainter,
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: const SimulasiEditorPage(
+          initialUrl: 'https://velxio.dev/ramaa-linux/arduino-uno',
+          projectName: 'LED Blinker',
+        ),
       ),
-      findsOneWidget,
     );
-
-    await tester.pumpWidget(const SizedBox());
     await tester.pump();
+
+    expect(find.text('Simulator Velxio'), findsOneWidget);
+    expect(find.byKey(const Key('velxio_loading_indicator')), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Run menjalankan mesin AVR dan Stop menghentikannya', (
+  testWidgets('SimulasiEditorPage menampilkan AppBar dan indikator loading', (
     WidgetTester tester,
   ) async {
-    await pumpEditor(tester);
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.tap(find.byTooltip('Run'));
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: const SimulasiEditorPage(),
+      ),
+    );
+    await tester.pump();
 
-    // Tunggu start() selesai (muat aset hex + spawn isolate). runAsync memberi
-    // waktu nyata untuk I/O aset dan isolate, pump merangkai frame + microtask.
-    // Jangan pakai pumpAndSettle: stream pin terus mengalir selama mesin hidup.
-    for (int i = 0; i < 100; i++) {
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+    expect(
+      SimulasiEditorPage.velxioUrl,
+      'https://velxio.dev/project/0ccf9202-1d4b-4a26-b9d8-ea8d1a100c91',
+    );
+    expect(find.text('Simulator Velxio'), findsOneWidget);
+    expect(find.byTooltip('Kembali'), findsOneWidget);
+    expect(find.text('Muat Ulang'), findsOneWidget);
+    expect(find.byKey(const Key('velxio_loading_indicator')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Capture screenshots for Fase 11 Simulasi & Velxio WebView', (
+    WidgetTester tester,
+  ) async {
+    await tester.runAsync(_loadAppFonts);
+    tester.view.physicalSize = const Size(390 * 2.0, 844 * 2.0);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    Future<void> capture(Widget child, String filename) async {
+      final GlobalKey key = GlobalKey();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light,
+          home: RepaintBoundary(key: key, child: child),
+        ),
       );
-      await tester.pump();
-      if (buttonWithTooltip(tester, 'Stop').onPressed != null) {
-        break;
-      }
+      await tester.pump(const Duration(milliseconds: 200));
+      final RenderRepaintBoundary boundary =
+          key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final ui.Image image =
+          await tester.runAsync(() => boundary.toImage(pixelRatio: 1.0))
+              as ui.Image;
+      final byteData = await tester.runAsync(
+        () => image.toByteData(format: ui.ImageByteFormat.png),
+      );
+      await tester.runAsync(
+        () => File(
+          'docs/screenshots/$filename',
+        ).writeAsBytes(byteData!.buffer.asUint8List()),
+      );
     }
 
-    expect(buttonWithTooltip(tester, 'Stop').onPressed, isNotNull);
-    expect(buttonWithTooltip(tester, 'Run').onPressed, isNull);
-    expect(find.text('Berhenti'), findsNothing);
-    expect(tester.takeException(), isNull);
+    await capture(
+      const Scaffold(
+        backgroundColor: AppColors.background,
+        body: SimulasiPage(),
+      ),
+      'fase11-simulasi-page.png',
+    );
 
-    await tester.tap(find.byTooltip('Stop'));
-    await tester.pump();
-
-    expect(buttonWithTooltip(tester, 'Stop').onPressed, isNull);
-    expect(buttonWithTooltip(tester, 'Run').onPressed, isNotNull);
-    expect(find.text('Berhenti'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-
-    await tester.pumpWidget(const SizedBox());
-    await tester.pump();
+    await capture(
+      const SimulasiEditorPage(),
+      'fase11-velxio-webview.png',
+    );
   });
 }

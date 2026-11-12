@@ -1,7 +1,7 @@
 import 'package:flutter/painting.dart';
 import 'package:voltar/theme/app_colors.dart';
 
-/// Gradient siap pakai VoltAR - hanya aksen halus, bukan dekorasi berat.
+/// Gradient siap pakai EduVolt - hanya aksen halus, bukan dekorasi berat.
 ///
 /// Aturan: gradient tidak boleh dipakai untuk latar penuh satu halaman, cukup
 /// header/CTA. Semua warna tetap dari [AppColors].

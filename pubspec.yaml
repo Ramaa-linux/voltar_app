@@ -1,5 +1,5 @@
 name: voltar
-description: "VoltAR — aplikasi pembelajaran elektronika (Arduino/ESP) untuk siswa SMK."
+description: "EduVolt — aplikasi pembelajaran elektronika (Arduino/ESP) untuk siswa SMK."
 publish_to: 'none'
 
 # version: <build-name>+<build-number>
@@ -16,13 +16,23 @@ dependencies:
   flutter_riverpod: ^3.4.3
   go_router: ^18.1.1
   flutter_svg: ^2.3.0
+  shared_preferences: ^2.5.3
   avr8_dart: ^0.1.0
   youtube_player_iframe: ^6.0.2
+  webview_flutter: ^4.14.1
+  audioplayers: ^6.1.1
+  vibration: ^3.2.1
+  firebase_core: ^5.1.0
+  firebase_auth: ^7.0.1
+  cloud_firestore: ^7.1.0
+  firebase_storage: ^14.0.1
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -30,6 +40,7 @@ flutter:
   # Fase 2: ikon Lucide 24x24 (ISC). Lisensi: assets/licenses/ISC-Lucide.txt
   # Fase 1 & 2: data materi JSON
   assets:
+    - assets/audio/
     - assets/icons/
     - assets/hex/
     - assets/data/
@@ -62,3 +73,11 @@ flutter:
           weight: 500
         - asset: assets/fonts/PlusJakartaSans-Bold.ttf
           weight: 700
+
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/app_icon.png"

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "819401396463",
+    "project_id": "project-26874128-2469-4c10-8a2",
+    "storage_bucket": "project-26874128-2469-4c10-8a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:819401396463:android:22b4d56140495964100b1a",
+        "android_client_info": {
+          "package_name": "com.voltar.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_sWWQch56zmKmherytSXKZE1a6lYKmXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

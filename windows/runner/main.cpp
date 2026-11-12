@@ -28,7 +28,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   Win32Window::Point origin(10, 10);
   // Fase 0: ukuran default diset ke viewport review (390x844, skala iPhone 14).
   Win32Window::Size size(390, 844);
-  if (!window.Create(L"VoltAR", origin, size)) {
+  if (!window.Create(L"EduVolt", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
