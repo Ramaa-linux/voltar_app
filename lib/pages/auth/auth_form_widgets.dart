@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
@@ -7,11 +8,7 @@ import 'package:voltar/widgets/volt_button.dart';
 
 /// Header branding EduVolt untuk layar Login & Register.
 class AuthHeader extends StatelessWidget {
-  const AuthHeader({
-    super.key,
-    required this.title,
-    required this.subtitle,
-  });
+  const AuthHeader({super.key, required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -40,11 +37,7 @@ class AuthHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.lg),
-        Text(
-          title,
-          style: AppTypography.heading,
-          textAlign: TextAlign.center,
-        ),
+        Text(title, style: AppTypography.heading, textAlign: TextAlign.center),
         const SizedBox(height: AppSpacing.xs),
         Text(
           subtitle,
@@ -116,6 +109,7 @@ class AuthTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.enabled = true,
     this.fieldKey,
+    this.inputFormatters,
   });
 
   final String label;
@@ -134,6 +128,7 @@ class AuthTextField extends StatelessWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final bool enabled;
   final Key? fieldKey;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +155,7 @@ class AuthTextField extends StatelessWidget {
           validator: validator,
           onChanged: onChanged,
           onFieldSubmitted: onFieldSubmitted,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             hintText: hintText,
             prefixIcon: Icon(
@@ -252,4 +248,3 @@ class AuthSubmitButton extends StatelessWidget {
     );
   }
 }
-

@@ -3,7 +3,20 @@ abstract final class AppRoutes {
   static const String home = '/';
   static const String materi = '/materi';
   static const String simulasi = '/simulasi';
+  static const String kelas = '/kelas';
   static const String profil = '/profil';
+
+  /// Halaman autentikasi.
+  static const String login = '/login';
+  static const String register = '/register';
+  static const String verificationPending = '/verification-pending';
+  static const String authLoading = '/auth-loading';
+
+  /// Dashboard Guru (Fase 25A).
+  static const String guru = '/guru';
+  static const String guruKelas = '/guru/kelas';
+  static const String guruTugas = '/guru/tugas';
+  static const String guruProfil = '/guru/profil';
 
   /// Halaman edit profil pengguna (Fase 22A).
   static const String profilEdit = '/profil/edit';
@@ -37,7 +50,6 @@ abstract final class AppRoutes {
 
   /// Mini-game Tebak Komponen (Fase 19): halaman penuh tanpa navbar.
   static const String guessComponent = '/game/guess-component';
-
 
   /// Editor untuk project yang sudah ada. Nama project dikirim sebagai query
   /// supaya editor tidak perlu state tambahan di router.

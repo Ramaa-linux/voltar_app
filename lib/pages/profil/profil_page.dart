@@ -161,25 +161,7 @@ class ProfilPage extends ConsumerWidget {
           VoltCard(
             padding: EdgeInsets.zero,
             child: _LogoutRow(
-              onTap: () async {
-                try {
-                  await ref.read(authServiceProvider).logout();
-                  if (context.mounted) {
-                    context.go('/login');
-                  }
-                } on AuthException catch (e) {
-                  if (context.mounted) {
-                    showVoltSnackBar(context, e.message);
-                  }
-                } catch (_) {
-                  if (context.mounted) {
-                    showVoltSnackBar(
-                      context,
-                      'Gagal keluar dari akun. Silakan coba lagi.',
-                    );
-                  }
-                }
-              },
+              onTap: () => _showLogoutConfirmDialog(context, authService),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -190,6 +172,61 @@ class ProfilPage extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showLogoutConfirmDialog(
+    BuildContext context,
+    AuthService authService,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.card),
+          ),
+          title: Text(
+            'Konfirmasi Keluar',
+            style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
+          ),
+          content: Text(
+            'Apakah kamu yakin ingin keluar?',
+            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Batal',
+                style: AppTypography.label.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(dialogContext).pop();
+                try {
+                  await authService.logout();
+                  if (context.mounted) {
+                    context.go('/login');
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    showVoltSnackBar(context, 'Gagal keluar: $e');
+                  }
+                }
+              },
+              child: Text(
+                'Ya, Keluar',
+                style: AppTypography.label.copyWith(color: AppColors.error),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

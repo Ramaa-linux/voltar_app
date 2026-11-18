@@ -19,6 +19,7 @@ class AppShell extends StatelessWidget {
     VoltNavItem(icon: AppIconName.home, label: 'Home'),
     VoltNavItem(icon: AppIconName.bookOpen, label: 'Materi'),
     VoltNavItem(icon: AppIconName.cpu, label: 'Simulasi'),
+    VoltNavItem(icon: AppIconName.folder, label: 'Kelas'),
     VoltNavItem(icon: AppIconName.profile, label: 'Profil'),
   ];
 

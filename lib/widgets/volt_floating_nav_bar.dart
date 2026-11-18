@@ -18,6 +18,8 @@ class VoltNavItem {
 ///
 /// Fase 2: murni UI. Tanpa go_router - pemanggil yang mengatur [currentIndex]
 /// lewat [onTap]. `onTap == null` membuat seluruh item tidak bisa ditekan.
+/// 
+/// Fase 27: Expanding animation - tab terpilih menampilkan label dengan slide animation.
 class VoltFloatingNavBar extends StatelessWidget {
   const VoltFloatingNavBar({
     super.key,
@@ -107,20 +109,28 @@ class _VoltNavItemView extends StatelessWidget {
                 vertical: AppSpacing.sm,
                 horizontal: AppSpacing.xs,
               ),
-              child: Column(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   AppIcon(item.icon, size: AppIconSize.md, color: color),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    item.label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.overline.copyWith(
-                      color: color,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    child: selected
+                        ? Padding(
+                            padding: const EdgeInsets.only(left: AppSpacing.xs),
+                            child: Text(
+                              item.label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.overline.copyWith(
+                                color: color,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                 ],
               ),

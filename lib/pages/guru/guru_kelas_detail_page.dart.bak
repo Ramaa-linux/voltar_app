@@ -1,0 +1,169 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../router/app_routes.dart';
+import '../../services/auth_service.dart';
+import '../../shell/guru_shell.dart';
+import '../../theme/app_borders.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_spacing.dart';
+import '../../theme/app_typography.dart';
+import '../../utils/volt_feedback.dart';
+import '../../widgets/app_icon.dart';
+import '../../widgets/press_scale.dart';
+import '../../widgets/volt_button.dart';
+import '../../widgets/volt_card.dart';
+
+/// Halaman Detail Kelas Guru.
+/// Menampilkan nama kelas, statistik, dan daftar nama siswa (ListView.separated).
+/// AppBar: nama kelas + tombol "Edit Kelas" (SnackBar).
+class GuruKelasDetailPage extends StatelessWidget {
+  const GuruKelasDetailPage({super.key, required this.kelasId});
+
+  final String kelasId;
+
+  KelasDummy get _kelas => dummyKelasList.firstWhere(
+        (KelasDummy k) => k.id == kelasId,
+        orElse: () => dummyKelasList.first,
+      );
+
+  void _onEditKelas(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Segera hadir di pembaruan berikutnya'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final KelasDummy kelas = _kelas;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(kelas.nama, style: AppTypography.title.copyWith(fontWeight: FontWeight.w700)),
+        actions: <Widget>[
+          TextButton.icon(
+            onPressed: () => _onEditKelas(context),
+            icon: const AppIcon(AppIconName.pencil, size: 18, color: AppColors.primary),
+            label: Text('Edit Kelas', style: AppTypography.label.copyWith(color: AppColors.primary)),
+            style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md)),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+        ],
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: AppColors.background,
+      ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.pagePadding,
+                AppSpacing.lg,
+                AppSpacing.pagePadding,
+                AppSpacing.lg,
+              ),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppRadius.button),
+                    ),
+                    child: const Center(child: AppIcon(AppIconName.folder, size: 28, color: AppColors.primary)),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(kelas.nama, style: AppTypography.heading.copyWith(fontWeight: FontWeight.w800)),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text('${kelas.jumlahSiswa} siswa', style: AppTypography.bodyMuted),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
+              child: Divider(color: AppColors.border, height: 1, thickness: 1),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.pagePadding,
+                AppSpacing.lg,
+                AppSpacing.pagePadding,
+                AppSpacing.md,
+              ),
+              child: Text('Daftar Siswa (${kelas.siswa.length})', style: AppTypography.title.copyWith(fontWeight: FontWeight.w700)),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
+            sliver: SliverList.separated(
+              itemCount: kelas.siswa.length,
+              separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(height: AppSpacing.xs),
+              itemBuilder: (BuildContext context, int index) {
+                final String nama = kelas.siswa[index];
+                return _SiswaTile(nama: nama, index: index + 1);
+              },
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: GuruShell.bottomInset)),
+        ],
+      ),
+    );
+  }
+}
+/// Tile individual siswa dengan nomor urut.
+class _SiswaTile extends StatelessWidget {
+  const _SiswaTile({required this.nama, required this.index});
+
+  final String nama;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.button),
+        border: AppBorders.standard,
+      ),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 28,
+            height: 28,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+            ),
+            child: Text(
+              '$index',
+              style: AppTypography.label.copyWith(color: AppColors.primaryDark, fontWeight: FontWeight.w700),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(child: Text(nama, style: AppTypography.body.copyWith(color: AppColors.textPrimary))),
+        ],
+      ),
+    );
+  }
+}

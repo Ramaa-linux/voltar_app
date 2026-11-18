@@ -16,6 +16,7 @@ class FakeUser extends Fake implements User {
     required this.uid,
     this.email = 'test@example.com',
     this.displayName,
+    this.emailVerified = false,
   });
 
   @override
@@ -27,7 +28,21 @@ class FakeUser extends Fake implements User {
   @override
   String? displayName;
 
+  @override
+  bool emailVerified;
+
   bool deleted = false;
+
+  @override
+  Future<void> reload() async {}
+
+  @override
+  Future<String> getIdToken([bool forceRefresh = false]) async => 'mock_token';
+
+  @override
+  Future<void> sendEmailVerification([
+    ActionCodeSettings? actionCodeSettings,
+  ]) async {}
 
   @override
   Future<void> updateDisplayName(String? value) async {
@@ -84,13 +99,21 @@ class FakeCollectionReference extends Fake
 class FakeFirestore extends Fake implements FirebaseFirestore {
   final Map<String, Map<String, dynamic>> usersStore =
       <String, Map<String, dynamic>>{};
-  late final FakeCollectionReference usersCollection =
-      FakeCollectionReference(usersStore);
+  final Map<String, Map<String, dynamic>> adminCodesStore =
+      <String, Map<String, dynamic>>{};
+  late final FakeCollectionReference usersCollection = FakeCollectionReference(
+    usersStore,
+  );
+  late final FakeCollectionReference adminCodesCollection =
+      FakeCollectionReference(adminCodesStore);
 
   @override
   CollectionReference<Map<String, dynamic>> collection(String collectionPath) {
     if (collectionPath == 'users') {
       return usersCollection;
+    }
+    if (collectionPath == 'admin_codes') {
+      return adminCodesCollection;
     }
     throw UnimplementedError();
   }
@@ -151,6 +174,7 @@ class FakeFirebaseAuth extends Fake implements FirebaseAuth {
     _controller.add(null);
   }
 }
+
 class FakeDocumentReference extends Fake
     implements DocumentReference<Map<String, dynamic>> {
   FakeDocumentReference(this.id, this._store);
@@ -323,25 +347,29 @@ void main() {
   });
 
   group('GoRouterRefreshStream', () {
-    test('notifies on construction and stream events, cancels on dispose', () async {
-      final StreamController<int> streamCtrl =
-          StreamController<int>.broadcast();
-      int notifyCount = 0;
-      final GoRouterRefreshStream refreshStream =
-          GoRouterRefreshStream(streamCtrl.stream);
-      refreshStream.addListener(() => notifyCount++);
+    test(
+      'notifies on construction and stream events, cancels on dispose',
+      () async {
+        final StreamController<int> streamCtrl =
+            StreamController<int>.broadcast();
+        int notifyCount = 0;
+        final GoRouterRefreshStream refreshStream = GoRouterRefreshStream(
+          streamCtrl.stream,
+        );
+        refreshStream.addListener(() => notifyCount++);
 
-      expect(notifyCount, 0);
+        expect(notifyCount, 0);
 
-      streamCtrl.add(1);
-      await pumpEventQueue();
-      expect(notifyCount, 1);
+        streamCtrl.add(1);
+        await pumpEventQueue();
+        expect(notifyCount, 1);
 
-      refreshStream.dispose();
-      streamCtrl.add(2);
-      await pumpEventQueue();
-      expect(notifyCount, 1);
-    });
+        refreshStream.dispose();
+        streamCtrl.add(2);
+        await pumpEventQueue();
+        expect(notifyCount, 1);
+      },
+    );
   });
 
   group('AuthService', () {
@@ -394,42 +422,49 @@ void main() {
       );
     });
 
-    test('login with existing user creates default firestore doc if missing', () async {
-      fakeAuth.mockUser = FakeUser(
-        uid: 'uid_exist',
-        email: 'budi@smk.sch.id',
-        displayName: 'Budi Santoso',
-      );
+    test(
+      'login with existing user creates default firestore doc if missing',
+      () async {
+        fakeAuth.mockUser = FakeUser(
+          uid: 'uid_exist',
+          email: 'budi@smk.sch.id',
+          displayName: 'Budi Santoso',
+        );
 
-      final UserCredential cred = await service.login(
-        '  BUDI@SMK.SCH.ID  ',
-        'password123',
-      );
+        final UserCredential cred = await service.login(
+          '  BUDI@SMK.SCH.ID  ',
+          'password123',
+        );
 
-      expect(cred.user!.uid, 'uid_exist');
-      final Map<String, dynamic>? saved = fakeFirestore.usersStore['uid_exist'];
-      expect(saved, isNotNull);
-      expect(saved!['name'], 'Budi Santoso');
-      expect(saved['email'], 'budi@smk.sch.id');
-      expect(saved['role'], 'siswa');
-      expect(saved['coins'], 0);
-      expect(saved['completedSteps'], isEmpty);
-    });
+        expect(cred.user!.uid, 'uid_exist');
+        final Map<String, dynamic>? saved =
+            fakeFirestore.usersStore['uid_exist'];
+        expect(saved, isNotNull);
+        expect(saved!['name'], 'Budi Santoso');
+        expect(saved['email'], 'budi@smk.sch.id');
+        expect(saved['role'], 'siswa');
+        expect(saved['coins'], 0);
+        expect(saved['completedSteps'], isEmpty);
+      },
+    );
 
-    test('login throws mapped AuthException on FirebaseAuthException', () async {
-      fakeAuth.failSignInWithCode = 'wrong-password';
+    test(
+      'login throws mapped AuthException on FirebaseAuthException',
+      () async {
+        fakeAuth.failSignInWithCode = 'wrong-password';
 
-      expect(
-        () => service.login('user@test.com', 'badpass'),
-        throwsA(
-          isA<AuthException>().having(
-            (AuthException e) => e.message,
-            'message',
-            'Email atau password salah.',
+        expect(
+          () => service.login('user@test.com', 'badpass'),
+          throwsA(
+            isA<AuthException>().having(
+              (AuthException e) => e.message,
+              'message',
+              'Email atau password salah.',
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     test('register creates user and saves profile to firestore', () async {
       final UserCredential cred = await service.register(
@@ -451,26 +486,40 @@ void main() {
       expect(doc['completedSteps'], isEmpty);
     });
 
-    test('register retries 1x on firestore error and succeeds if retry works', () async {
-      final DocumentReference<Map<String, dynamic>> docRef =
-          fakeFirestore.collection('users').doc('new_uid_99');
-      (docRef as FakeDocumentReference).failSetTimes = 1;
+    test(
+      'register retries 1x on firestore error and succeeds if retry works',
+      () async {
+        final DocumentReference<Map<String, dynamic>> docRef = fakeFirestore
+            .collection('users')
+            .doc('new_uid_99');
+        (docRef as FakeDocumentReference).failSetTimes = 1;
 
-      final UserCredential cred = await service.register(
-        'Budi',
-        'budi@smk.sch.id',
-        'rahasia123',
-        'guru',
-      );
+        fakeFirestore.adminCodesStore['GURU-123'] = <String, dynamic>{
+          'isValid': true,
+        };
 
-      expect(cred.user!.uid, 'new_uid_99');
-      expect(docRef.setCallCount, 2);
-      expect(fakeFirestore.usersStore['new_uid_99']?['role'], 'guru');
-    });
+        final UserCredential cred = await service.register(
+          'Budi',
+          'budi@smk.sch.id',
+          'rahasia123',
+          'guru',
+          teacherCode: 'GURU-123',
+        );
+
+        expect(cred.user!.uid, 'new_uid_99');
+        expect(docRef.setCallCount, 2);
+        expect(fakeFirestore.usersStore['new_uid_99']?['role'], 'guru');
+        expect(
+          fakeFirestore.usersStore['new_uid_99']?['teacherCode'],
+          'GURU-123',
+        );
+      },
+    );
 
     test('register rolls back user when firestore fails after retry', () async {
-      final DocumentReference<Map<String, dynamic>> docRef =
-          fakeFirestore.collection('users').doc('new_uid_99');
+      final DocumentReference<Map<String, dynamic>> docRef = fakeFirestore
+          .collection('users')
+          .doc('new_uid_99');
       (docRef as FakeDocumentReference).failSetTimes = 2;
 
       try {
@@ -496,7 +545,10 @@ void main() {
     });
 
     test('userProfileStream emits user document data', () async {
-      fakeAuth.mockUser = FakeUser(uid: 'uid_stream_test', email: 'test@test.com');
+      fakeAuth.mockUser = FakeUser(
+        uid: 'uid_stream_test',
+        email: 'test@test.com',
+      );
       fakeFirestore.usersStore['uid_stream_test'] = <String, dynamic>{
         'name': 'Rama Pratama',
         'email': 'test@test.com',
@@ -504,8 +556,9 @@ void main() {
         'coins': 10,
       };
 
-      final Stream<Map<String, dynamic>?> stream =
-          service.userProfileStream('uid_stream_test');
+      final Stream<Map<String, dynamic>?> stream = service.userProfileStream(
+        'uid_stream_test',
+      );
       await expectLater(
         stream,
         emitsInOrder(<dynamic>[
@@ -536,7 +589,8 @@ void main() {
       await service.updateProfile(name: 'New Name');
 
       expect(fakeAuth.mockUser?.displayName, 'New Name');
-      final Map<String, dynamic>? stored = fakeFirestore.usersStore['uid_update_test'];
+      final Map<String, dynamic>? stored =
+          fakeFirestore.usersStore['uid_update_test'];
       expect(stored?['name'], 'New Name');
       expect(stored?['email'], 'test@test.com');
       expect(stored?['role'], 'siswa');
@@ -573,5 +627,233 @@ void main() {
       );
     });
   });
-}
 
+  group('Fase 25A Unit Tests (11.2)', () {
+    late FakeFirebaseAuth fakeAuth;
+    late FakeFirestore fakeFirestore;
+    late AuthService service;
+
+    setUp(() {
+      fakeAuth = FakeFirebaseAuth();
+      fakeFirestore = FakeFirestore();
+      service = AuthService(auth: fakeAuth, firestore: fakeFirestore);
+    });
+
+    test('normalizeTeacherCode handles various inputs', () {
+      expect(normalizeTeacherCode('  guru-1234  '), 'GURU-1234');
+      expect(normalizeTeacherCode('  guru_eduvolt  '), 'GURU_EDUVOLT');
+      expect(normalizeTeacherCode('abc1'), 'ABC1');
+      expect(normalizeTeacherCode('A1-B2-C3-D4'), 'A1-B2-C3-D4');
+      expect(normalizeTeacherCode(null), isNull);
+      expect(normalizeTeacherCode(''), isNull);
+      expect(normalizeTeacherCode('   '), isNull);
+      expect(normalizeTeacherCode('abc'), isNull); // too short (< 4)
+      expect(normalizeTeacherCode('A' * 65), isNull); // too long (> 64)
+      expect(normalizeTeacherCode('guru/1234'), isNull); // invalid slash
+      expect(normalizeTeacherCode('guru@1234'), isNull); // invalid symbol
+      expect(normalizeTeacherCode('gürü1234'), isNull); // Unicode umlaut
+    });
+
+    test('friendlyAuthError maps all table 5.2 codes accurately', () {
+      expect(
+        friendlyAuthError(FirebaseAuthException(code: 'email-already-in-use')),
+        'Email ini sudah terdaftar. Coba masuk atau gunakan email lain.',
+      );
+      expect(
+        friendlyAuthError(FirebaseAuthException(code: 'invalid-email')),
+        'Format email tidak valid.',
+      );
+      expect(
+        friendlyAuthError(FirebaseAuthException(code: 'weak-password')),
+        'Kata sandi terlalu lemah. Gunakan minimal 8 karakter.',
+      );
+      expect(
+        friendlyAuthError(
+          FirebaseAuthException(code: 'network-request-failed'),
+        ),
+        'Tidak ada koneksi internet. Periksa jaringanmu lalu coba lagi.',
+      );
+      expect(
+        friendlyAuthError(FirebaseAuthException(code: 'too-many-requests')),
+        'Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.',
+      );
+      expect(
+        friendlyAuthError(FirebaseAuthException(code: 'operation-not-allowed')),
+        'Pendaftaran email sedang dinonaktifkan. Hubungi admin.',
+      );
+      expect(
+        friendlyAuthError(FirebaseAuthException(code: 'user-token-expired')),
+        'Sesi kamu berakhir. Silakan masuk kembali.',
+      );
+      expect(
+        friendlyAuthError(
+          FirebaseException(plugin: 'firestore', code: 'unavailable'),
+        ),
+        'Server sedang sibuk atau koneksi terputus. Coba lagi sebentar.',
+      );
+      expect(
+        friendlyAuthError(
+          FirebaseException(plugin: 'firestore', code: 'permission-denied'),
+        ),
+        'Kamu tidak punya izin untuk tindakan ini.',
+      );
+      expect(
+        friendlyAuthError(const AuthException('Pesan khusus')),
+        'Pesan khusus',
+      );
+      expect(
+        friendlyAuthError(Exception('error asing')),
+        'Terjadi kesalahan. Silakan coba lagi.',
+      );
+    });
+
+    test('register with invalid teacher code rejects before user creation (Fase 25C)', () async {
+      fakeAuth.mockUser = null;
+      fakeFirestore.adminCodesStore['VALID-CODE'] = <String, dynamic>{
+        'isValid': true,
+      };
+
+      // 1. Kode tidak ditemukan
+      try {
+        await service.register(
+          'Guru Budi',
+          'budi@guru.sch.id',
+          'rahasia123',
+          'guru',
+          teacherCode: 'SALAH-CODE',
+        );
+        fail('Should throw');
+      } on AuthException catch (e) {
+        expect(e.message, 'Kode Verifikasi Guru tidak ditemukan.');
+        expect(e.code, 'teacher-code-not-found');
+      }
+
+      // Akun tidak dibuat (pre-validation)
+      expect(fakeAuth.mockUser, isNull);
+      expect(fakeFirestore.usersStore.containsKey('new_uid_99'), isFalse);
+
+      // 2. Kode ada tapi isValid = false
+      fakeFirestore.adminCodesStore['INVALID-FLAG'] = <String, dynamic>{
+        'isValid': false,
+      };
+
+      try {
+        await service.register(
+          'Guru Budi',
+          'budi@guru.sch.id',
+          'rahasia123',
+          'guru',
+          teacherCode: 'INVALID-FLAG',
+        );
+        fail('Should throw');
+      } on AuthException catch (e) {
+        expect(e.message, 'Kode Verifikasi Guru tidak valid (isValid = false).');
+        expect(e.code, 'teacher-code-invalid');
+      }
+
+      expect(fakeAuth.mockUser, isNull);
+    });
+
+    test(
+      'register with valid teacher code (including GURU_EDUVOLT) saves teacherCode in document',
+      () async {
+        fakeAuth.mockUser = null;
+        fakeFirestore.adminCodesStore['GURU_EDUVOLT'] = <String, dynamic>{
+          'isValid': true,
+        };
+
+        final UserCredential cred = await service.register(
+          'Guru Budi',
+          'budi@guru.sch.id',
+          'rahasia123',
+          'guru',
+          teacherCode: 'guru_eduvolt',
+        );
+
+        expect(cred.user!.uid, 'new_uid_99');
+        final Map<String, dynamic>? doc =
+            fakeFirestore.usersStore['new_uid_99'];
+        expect(doc, isNotNull);
+        expect(doc!['role'], 'guru');
+        expect(doc['teacherCode'], 'GURU_EDUVOLT');
+        expect(service.snapshot.status, AuthStatus.unverified);
+        expect(service.snapshot.role, UserRole.guru);
+      },
+    );
+
+    test('register as siswa does NOT save teacherCode', () async {
+      fakeAuth.mockUser = null;
+
+      final UserCredential cred = await service.register(
+        'Siswa Ani',
+        'ani@siswa.sch.id',
+        'rahasia123',
+        'siswa',
+      );
+
+      expect(cred.user!.uid, 'new_uid_99');
+      final Map<String, dynamic>? doc = fakeFirestore.usersStore['new_uid_99'];
+      expect(doc, isNotNull);
+      expect(doc!['role'], 'siswa');
+      expect(doc.containsKey('teacherCode'), isFalse);
+      expect(service.snapshot.status, AuthStatus.unverified);
+      expect(service.snapshot.role, UserRole.siswa);
+    });
+
+    test('reloadAndCheckVerified updates snapshot to ready when emailVerified becomes true', () async {
+      final FakeUser user = FakeUser(uid: 'uid_verify', emailVerified: false);
+      fakeAuth.mockUser = user;
+      fakeFirestore.usersStore['uid_verify'] = <String, dynamic>{
+        'role': 'guru',
+        'name': 'Pak Guru',
+      };
+
+      await service.reloadAndCheckVerified();
+      expect(service.snapshot.status, AuthStatus.unverified);
+
+      // Now simulate user verified email
+      user.emailVerified = true;
+      final bool result = await service.reloadAndCheckVerified();
+      expect(result, isTrue);
+      expect(service.snapshot.status, AuthStatus.ready);
+      expect(service.snapshot.role, UserRole.guru);
+    });
+
+    test(
+      'reloadAndCheckVerified defaults legacy account without role to siswa',
+      () async {
+        final FakeUser user = FakeUser(uid: 'uid_legacy', emailVerified: true);
+        fakeAuth.mockUser = user;
+        fakeFirestore.usersStore['uid_legacy'] = <String, dynamic>{
+          'name': 'Akun Lama',
+          // role field omitted
+        };
+
+        await service.reloadAndCheckVerified();
+        expect(service.snapshot.status, AuthStatus.ready);
+        expect(service.snapshot.role, UserRole.siswa);
+        // Ensure it did NOT write role back to Firestore (D10)
+        expect(
+          fakeFirestore.usersStore['uid_legacy']!.containsKey('role'),
+          isFalse,
+        );
+      },
+    );
+
+    test(
+      'reloadAndCheckVerified sets roleError when user doc is missing',
+      () async {
+        final FakeUser user = FakeUser(uid: 'uid_ghost', emailVerified: true);
+        fakeAuth.mockUser = user;
+        // no firestore document
+
+        await service.reloadAndCheckVerified();
+        expect(service.snapshot.status, AuthStatus.roleError);
+        expect(
+          service.snapshot.errorMessage,
+          contains('Profil akun tidak ditemukan'),
+        );
+      },
+    );
+  });
+}

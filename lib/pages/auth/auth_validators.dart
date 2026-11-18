@@ -70,6 +70,16 @@ abstract final class AuthValidators {
     return null;
   }
 
+  /// Validasi kode verifikasi guru (Fase 25A Bagian 6.3 & Fase 25B).
+  static String? validateTeacherCode(String? value, {bool isGuru = true}) {
+    if (!isGuru) return null;
+    final String clean = (value ?? '').trim();
+    if (clean.isEmpty) {
+      return 'Kode Verifikasi wajib diisi';
+    }
+    return null;
+  }
+
   static PasswordStrength evaluatePasswordStrength(String password) {
     if (password.isEmpty) {
       return PasswordStrength.none;

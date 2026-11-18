@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:voltar/models/learning_step.dart';
 import 'package:voltar/pages/alat/ohm_calculator_sheet.dart';
 import 'package:voltar/pages/alat/resistor_calculator_sheet.dart';
@@ -12,6 +13,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_gradients.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/volt_feedback.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/spark_progress_bar.dart';
 import 'package:voltar/widgets/volt_button.dart';
@@ -65,6 +67,8 @@ class _HomePageState extends ConsumerState<HomePage>
             children: <Widget>[
               const SizedBox(height: AppSpacing.xl),
               const _ProgressCard(),
+              const SizedBox(height: AppSpacing.lg),
+              const _JoinClassCard(),
               const SizedBox(height: AppSpacing.xl),
               Text('Lanjutkan Belajar', style: AppTypography.title),
               const SizedBox(height: AppSpacing.md),
@@ -811,3 +815,285 @@ class _QuickShortcutCard extends StatelessWidget {
     );
   }
 }
+
+/// Card untuk siswa bergabung ke kelas menggunakan kode kelas.
+class _JoinClassCard extends ConsumerWidget {
+  const _JoinClassCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AuthService authService = ref.watch(authServiceProvider);
+    final AsyncValue<Map<String, dynamic>?> profileAsync = ref.watch(
+      userProfileProvider,
+    );
+    final String? classId = profileAsync.value?['classId'] as String?;
+
+    // Jika sudah punya kelas, tampilkan info kelas
+    if (classId != null && classId.isNotEmpty) {
+      return _JoinedClassCard(classId: classId);
+    }
+
+    // Belum punya kelas - tampilkan form join
+    return _JoinClassForm(authService: authService);
+  }
+}
+
+/// Form bergabung ke kelas.
+class _JoinClassForm extends ConsumerStatefulWidget {
+  const _JoinClassForm({required this.authService});
+
+  final AuthService authService;
+
+  @override
+  ConsumerState<_JoinClassForm> createState() => _JoinClassFormState();
+}
+
+class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
+  final TextEditingController _controller = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return VoltCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                ),
+                child: const AppIcon(AppIconName.folder, size: 20, color: AppColors.primary),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Gabung Kelas', style: AppTypography.title),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Masukkan kode kelas dari guru Anda',
+                      style: AppTypography.bodyMuted,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    labelText: 'Kode Kelas',
+                    hintText: 'Contoh: ABC123',
+                    border: OutlineInputBorder(),
+                  ),
+                  textCapitalization: TextCapitalization.characters,
+                  maxLength: 6,
+                  enabled: !_isLoading,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              VoltButton(
+                label: 'Gabung',
+                onPressed: _isLoading ? null : _handleJoinClass,
+                variant: VoltButtonVariant.primary,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleJoinClass() async {
+    final String code = _controller.text.trim().toUpperCase();
+    if (code.isEmpty) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await widget.authService.joinClass(code);
+      if (mounted) {
+        showVoltSnackBar(context, 'Berhasil bergabung ke kelas!');
+        _controller.clear();
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        showVoltSnackBar(context, e.message);
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+}
+
+/// Card menampilkan info kelas yang sudah digabung.
+class _JoinedClassCard extends ConsumerWidget {
+  const _JoinedClassCard({required this.classId});
+
+  final String classId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance.collection('classes').doc(classId).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _JoinClassCardSkeleton();
+        }
+
+        if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+          return _JoinClassCardError();
+        }
+
+        final data = snapshot.data!.data()!;
+        final String className = data['name'] as String? ?? 'Tanpa Nama';
+        final String classCode = data['classCode'] as String? ?? '-';
+
+        return VoltCard(
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryLight,
+                  borderRadius: BorderRadius.circular(AppRadius.input),
+                ),
+                child: const AppIcon(AppIconName.folder, size: 20, color: AppColors.primary),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(className, style: AppTypography.title),
+                    const SizedBox(height: AppSpacing.xs),
+                    Row(
+                      children: <Widget>[
+                        Text('Kode: ', style: AppTypography.bodyMuted),
+                        Text(
+                          classCode,
+                          style: AppTypography.label.copyWith(
+                            color: AppColors.primaryDark,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const AppIcon(AppIconName.chevronRight, size: 20, color: AppColors.textTertiary),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Skeleton untuk _JoinedClassCard.
+class _JoinClassCardSkeleton extends StatelessWidget {
+  const _JoinClassCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return VoltCard(
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.border,
+              borderRadius: BorderRadius.circular(AppRadius.input),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 120,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(AppRadius.input),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Container(
+                  width: 80,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(AppRadius.input),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Error state untuk _JoinedClassCard.
+class _JoinClassCardError extends StatelessWidget {
+  const _JoinClassCardError();
+
+  @override
+  Widget build(BuildContext context) {
+    return VoltCard(
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.errorLight,
+              borderRadius: BorderRadius.circular(AppRadius.input),
+            ),
+            child: const Icon(Icons.error_outline, size: 20, color: AppColors.error),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Kelas tidak ditemukan', style: AppTypography.title),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Hubungi guru Anda untuk kode kelas yang benar',
+                  style: AppTypography.bodyMuted,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

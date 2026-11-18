@@ -10,7 +10,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_card.dart';
 
-/// Halaman Daftar Akun Baru (Register) EduVolt.
+/// Halaman Daftar Akun Baru (Register) EduVolt — Fase 25A.
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
 
@@ -18,24 +18,44 @@ class RegisterPage extends ConsumerStatefulWidget {
   ConsumerState<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends ConsumerState<RegisterPage> {
+class _RegisterPageState extends ConsumerState<RegisterPage>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _teacherCodeController = TextEditingController();
 
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmPasswordFocus = FocusNode();
+  final FocusNode _teacherCodeFocus = FocusNode();
+
+  late final AnimationController _animController;
+  late final Animation<double> _expandAnimation;
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
   String? _errorMessage;
   PasswordStrength _passwordStrength = PasswordStrength.none;
+  String _selectedRole = 'siswa';
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _animController,
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   void dispose() {
@@ -43,11 +63,28 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _teacherCodeController.dispose();
     _nameFocus.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
     _confirmPasswordFocus.dispose();
+    _teacherCodeFocus.dispose();
+    _animController.dispose();
     super.dispose();
+  }
+
+  void _onRoleChanged(String role) {
+    if (_selectedRole == role) return;
+    setState(() {
+      _selectedRole = role;
+      if (role == 'guru') {
+        _animController.forward();
+      } else {
+        _animController.reverse();
+        _teacherCodeController.clear();
+        _formKey.currentState?.validate();
+      }
+    });
   }
 
   Future<void> _handleRegister() async {
@@ -64,24 +101,86 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     });
 
     try {
-      await ref.read(authServiceProvider).register(
+      await ref
+          .read(authServiceProvider)
+          .register(
             _nameController.text,
             _emailController.text,
             _passwordController.text,
-            'siswa',
+            _selectedRole,
+            teacherCode: _selectedRole == 'guru'
+                ? _teacherCodeController.text.trim().toUpperCase()
+                : null,
           );
       if (!mounted) return;
-      // TODO(fase-guru): arahkan berdasarkan role
-      context.go('/');
+      final String email = _emailController.text.trim().toLowerCase();
+      context.go(
+        Uri(
+          path: '/verification-pending',
+          queryParameters: {'email': email},
+        ).toString(),
+      );
     } on AuthException catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = e.message);
-    } catch (_) {
+      if (e.code == 'permission-denied') {
+        const String msg =
+            'Gagal memeriksa kode (Akses Ditolak). Pastikan Firestore Rules sudah benar.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(msg),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        setState(() => _errorMessage = msg);
+        _teacherCodeFocus.requestFocus();
+      } else if (e.code == 'teacher-code-not-found') {
+        const String msg = 'Kode Verifikasi Guru tidak ditemukan.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(msg),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        setState(() => _errorMessage = msg);
+        _teacherCodeFocus.requestFocus();
+      } else if (e.code == 'teacher-code-invalid') {
+        const String msg = 'Kode Verifikasi Guru tidak valid (isValid = false).';
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(msg),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        setState(() => _errorMessage = msg);
+        _teacherCodeFocus.requestFocus();
+      } else if (e.code == 'teacher-code-empty') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: AppColors.error,
+          ),
+        );
+        setState(() => _errorMessage = e.message);
+        _teacherCodeFocus.requestFocus();
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message),
+            backgroundColor: AppColors.error,
+            action: SnackBarAction(
+              label: 'Masuk',
+              textColor: Colors.white,
+              onPressed: () => context.go('/login'),
+            ),
+          ),
+        );
+        setState(() => _errorMessage = e.message);
+      } else {
+        setState(() => _errorMessage = e.message);
+      }
+    } catch (e) {
       if (!mounted) return;
-      setState(
-        () => _errorMessage =
-            'Terjadi kesalahan saat mendaftar. Silakan coba lagi.',
-      );
+      setState(() => _errorMessage = friendlyAuthError(e));
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
@@ -182,8 +281,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               validator: AuthValidators.validatePassword,
               onChanged: (String val) {
                 setState(() {
-                  _passwordStrength =
-                      AuthValidators.evaluatePasswordStrength(val);
+                  _passwordStrength = AuthValidators.evaluatePasswordStrength(
+                    val,
+                  );
                 });
               },
               suffixIcon: PasswordVisibilityButton(
@@ -221,6 +321,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                 },
               ),
             ),
+            const SizedBox(height: AppSpacing.lg),
+            _buildRoleSelector(),
+            _buildTeacherCodeField(),
             const SizedBox(height: AppSpacing.xl),
             AuthSubmitButton(
               buttonKey: const Key('register_submit_button'),
@@ -234,15 +337,138 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     );
   }
 
+  Widget _buildRoleSelector() {
+    final bool isSiswa = _selectedRole == 'siswa';
+    final bool disableAnim = MediaQuery.disableAnimationsOf(context);
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Daftar Sebagai',
+          style: AppTypography.label.copyWith(color: AppColors.textPrimary),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Container(
+          height: 52,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.border),
+          ),
+          padding: const EdgeInsets.all(4),
+          child: Stack(
+            children: <Widget>[
+              // ponytail: 2-tab sliding pill via AnimatedAlign. Upgrade to LayoutBuilder if tabs > 2.
+              Positioned.fill(
+                child: AnimatedAlign(
+                  alignment: isSiswa
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  duration: disableAnim
+                      ? Duration.zero
+                      : const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.5,
+                    heightFactor: 1.0,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.25),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: _RoleSegment(
+                        optionKey: const Key('role_option_siswa'),
+                        label: 'Siswa',
+                        icon: Icons.school_rounded,
+                        isSelected: isSiswa,
+                        onTap: () => _onRoleChanged('siswa'),
+                      ),
+                    ),
+                    Expanded(
+                      child: _RoleSegment(
+                        optionKey: const Key('role_option_guru'),
+                        label: 'Guru',
+                        icon: Icons.badge_rounded,
+                        isSelected: !isSiswa,
+                        onTap: () => _onRoleChanged('guru'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTeacherCodeField() {
+    if (_selectedRole != 'guru') {
+      return const SizedBox.shrink();
+    }
+    return SizeTransition(
+      sizeFactor: _expandAnimation,
+      alignment: Alignment.topCenter,
+      child: FadeTransition(
+        opacity: _expandAnimation,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const SizedBox(height: AppSpacing.lg),
+            AuthTextField(
+              fieldKey: const Key('register_teacher_code_field'),
+              label: 'Kode Verifikasi Guru',
+              hintText: 'Masukkan kode verifikasi',
+              controller: _teacherCodeController,
+              focusNode: _teacherCodeFocus,
+              prefixIcon: Icons.verified_user_rounded,
+              textInputAction: TextInputAction.done,
+              autofillHints: const <String>[],
+              enabled: !_isLoading,
+              validator: (String? val) =>
+                  AuthValidators.validateTeacherCode(val, isGuru: true),
+              onFieldSubmitted: (_) => _handleRegister(),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              'Kode verifikasi diberikan oleh pihak Admin. Jangan bagikan kode kepada siswa.',
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.pagePadding,
               vertical: AppSpacing.xxl,
@@ -278,6 +504,65 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                   ),
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Widget privat untuk opsi role Siswa/Guru di dalam segmented control.
+class _RoleSegment extends StatelessWidget {
+  const _RoleSegment({
+    this.optionKey,
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final Key? optionKey;
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color fgColor = isSelected ? Colors.white : AppColors.textSecondary;
+
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: Material(
+        key: optionKey,
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(8),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(icon, size: 20, color: fgColor),
+                const SizedBox(width: AppSpacing.sm),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: AppTypography.button.copyWith(
+                      color: fgColor,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

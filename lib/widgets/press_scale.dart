@@ -13,6 +13,7 @@ class PressScale extends StatefulWidget {
     this.enabled = true,
     this.scale = 0.97,
     this.duration = const Duration(milliseconds: 90),
+    this.onTap,
   });
 
   final Widget child;
@@ -24,6 +25,9 @@ class PressScale extends StatefulWidget {
   final double scale;
 
   final Duration duration;
+
+  /// Callback ketika widget di-tap (klik/tekan lalu lepas di area yang sama).
+  final VoidCallback? onTap;
 
   @override
   State<PressScale> createState() => _PressScaleState();
@@ -39,11 +43,18 @@ class _PressScaleState extends State<PressScale> {
     setState(() => _pressed = value);
   }
 
+  void _handlePointerUp(PointerUpEvent event) {
+    _setPressed(false);
+    if (widget.enabled && widget.onTap != null) {
+      widget.onTap!();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Listener(
       onPointerDown: (PointerDownEvent event) => _setPressed(true),
-      onPointerUp: (PointerUpEvent event) => _setPressed(false),
+      onPointerUp: _handlePointerUp,
       onPointerCancel: (PointerCancelEvent event) => _setPressed(false),
       child: AnimatedScale(
         scale: _pressed ? widget.scale : 1,

@@ -51,21 +51,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
 
     try {
-      await ref.read(authServiceProvider).login(
-            _emailController.text,
-            _passwordController.text,
-          );
+      await ref
+          .read(authServiceProvider)
+          .login(_emailController.text, _passwordController.text);
       if (!mounted) return;
-      // TODO(fase-guru): arahkan berdasarkan role
+      // Auth Guard router mengarahkan ke rute yang sesuai (pending/guru/home)
       context.go('/');
-    } on AuthException catch (e) {
+    } on Object catch (e) {
       if (!mounted) return;
-      setState(() => _errorMessage = e.message);
-    } catch (_) {
-      if (!mounted) return;
-      setState(
-        () => _errorMessage = 'Terjadi kesalahan saat masuk. Silakan coba lagi.',
-      );
+      setState(() => _errorMessage = friendlyAuthError(e));
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
