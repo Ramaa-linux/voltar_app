@@ -19,6 +19,7 @@ import 'package:voltar/widgets/spark_progress_bar.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 import 'package:voltar/widgets/volt_chip.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Beranda: sapaan, ringkasan progress, lanjutkan belajar, mini-game.
 ///
@@ -70,15 +71,15 @@ class _HomePageState extends ConsumerState<HomePage>
               const SizedBox(height: AppSpacing.lg),
               const _JoinClassCard(),
               const SizedBox(height: AppSpacing.xl),
-              Text('Lanjutkan Belajar', style: AppTypography.title),
+              Text(context.t('homeContinueLearning'), style: AppTypography.title),
               const SizedBox(height: AppSpacing.md),
               const _ContinueLearningCard(),
               const SizedBox(height: AppSpacing.xl),
-              Text('Pintasan Cepat', style: AppTypography.title),
+              Text(context.t('homeQuickShortcuts'), style: AppTypography.title),
               const SizedBox(height: AppSpacing.md),
               const _QuickShortcutsSection(),
               const SizedBox(height: AppSpacing.xl),
-              Text('Mini-Game', style: AppTypography.title),
+              Text(context.t('homeMiniGames'), style: AppTypography.title),
               const SizedBox(height: AppSpacing.md),
               _CircuitRushCard(
                 onTap: () => context.push(AppRoutes.circuitRush),
@@ -149,10 +150,10 @@ class _HomeHeader extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Halo, $firstName!', style: AppTypography.display),
+                Text(context.t('homeGreeting', args: [firstName]), style: AppTypography.display),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Siap belajar elektronika hari ini?',
+                  context.t('homeStudyReady'),
                   style: AppTypography.bodyMuted,
                 ),
               ],
@@ -240,7 +241,7 @@ class _ProgressCaption extends ConsumerWidget {
       ),
     );
     return Text(
-      '${counts.completed} dari ${counts.total} materi selesai',
+      context.t('homeProgressCaption', args: [counts.completed, counts.total]),
       style: AppTypography.caption,
     );
   }
@@ -257,12 +258,12 @@ class _ProgressStreakStat extends ConsumerWidget {
       ),
     );
     return Semantics(
-      label: 'Streak $streakDays hari',
+      label: context.t('homeStreakDays', args: [streakDays]),
       child: _ProgressStat(
         icon: AppIconName.zap,
         iconColor: AppColors.accent,
-        value: '$streakDays hari',
-        label: 'Streak',
+        value: context.t('homeStreakDays', args: [streakDays]),
+        label: context.t('homeStreakLabel'),
       ),
     );
   }
@@ -279,12 +280,12 @@ class _ProgressCoinsStat extends ConsumerWidget {
       ),
     );
     return Semantics(
-      label: '$coins Koin',
+      label: context.t('homeCoinsCount', args: [coins]),
       child: _ProgressStat(
         icon: AppIconName.lightbulb,
         iconColor: AppColors.accent,
         value: '$coins',
-        label: 'Koin',
+        label: context.t('homeCoinsLabel'),
       ),
     );
   }
@@ -301,12 +302,12 @@ class _ProgressModuleStat extends ConsumerWidget {
       ),
     );
     return Semantics(
-      label: '$completedCount Modul selesai',
+      label: context.t('homeModuleText', args: [completedCount]),
       child: _ProgressStat(
         icon: AppIconName.bookOpen,
         iconColor: AppColors.primaryDark,
         value: '$completedCount',
-        label: 'Modul',
+        label: context.t('homeModuleLabel'),
       ),
     );
   }
@@ -329,8 +330,10 @@ class _ProgressCard extends ConsumerWidget {
         );
 
     return Semantics(
-      label:
-          'Progres belajar ${sem.percentLabel} persen, ${sem.completedCount} dari ${sem.totalSteps} materi selesai',
+      label: context.t(
+        'homeProgressSemantics',
+        args: [sem.percentLabel, sem.completedCount, sem.totalSteps],
+      ),
       child: VoltCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,13 +346,13 @@ class _ProgressCard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'PROGRESS BELAJAR',
+                        context.t('homeProgressLabel'),
                         style: AppTypography.overline.copyWith(
                           color: AppColors.primaryDark,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
-                      Text('Dasar Elektronika', style: AppTypography.title),
+                      Text(context.t('homeCourseTitle'), style: AppTypography.title),
                     ],
                   ),
                 ),
@@ -440,28 +443,31 @@ class _ContinueLearningCard extends ConsumerWidget {
 
     final bool allCompleted = summary.allCompleted;
     final String title = allCompleted
-        ? 'Semua materi selesai 🎉'
-        : (summary.nextStepTitle ?? 'Lanjutkan belajar');
+        ? context.t('homeAllCompleted')
+        : (summary.nextStepTitle ?? context.t('homeContinue'));
 
     final String subtitle;
     if (allCompleted) {
-      subtitle = 'Level ${summary.currentLevel} • Semua modul tuntas';
+      subtitle = context.t('homeSubtitleDone', args: [summary.currentLevel]);
     } else if (summary.completedCount == 0) {
-      subtitle = 'Level ${summary.currentLevel} • Mulai Belajar';
+      subtitle = context.t('homeSubtitleStart', args: [summary.currentLevel]);
     } else if (summary.nextStepLevel != null &&
         summary.nextStepLevelTotal > 0) {
-      subtitle =
-          'Level ${summary.currentLevel} • ${summary.nextStepLevelCompleted} dari ${summary.nextStepLevelTotal} materi';
+      subtitle = context.t('homeSubtitleProgress', args: [
+        summary.currentLevel,
+        summary.nextStepLevelCompleted,
+        summary.nextStepLevelTotal,
+      ]);
     } else {
-      subtitle = 'Level ${summary.currentLevel} • Materi berikutnya';
+      subtitle = context.t('homeSubtitleNext', args: [summary.currentLevel]);
     }
 
     final String chipLabel = allCompleted
-        ? 'Selesai'
-        : 'Level ${summary.currentLevel}';
+        ? context.t('homeLevelCompleted')
+        : context.t('homeLevelCurrent', args: [summary.currentLevel]);
     final String buttonLabel = allCompleted
-        ? 'Jelajahi Materi'
-        : (summary.completedCount == 0 ? 'Mulai Belajar' : 'Lanjutkan');
+        ? context.t('homeExploreMateri')
+        : (summary.completedCount == 0 ? context.t('homeStartLearning') : context.t('homeContinue'));
 
     final double barValue = allCompleted
         ? 1.0
@@ -471,7 +477,7 @@ class _ContinueLearningCard extends ConsumerWidget {
               : (summary.overallPercent / 100.0).clamp(0.0, 1.0));
 
     return Semantics(
-      label: 'Lanjutkan belajar: $title',
+      label: context.t('homeContinueLearning', args: [title]),
       child: VoltCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -585,21 +591,21 @@ class _CircuitRushCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Sirkuit Kilat',
+                  context.t('homeCircuitRush'),
                   style: AppTypography.body.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Pandu elektron melewati rintangan resistor!',
+                  context.t('homeCircuitRushDesc'),
                   style: AppTypography.bodyMuted,
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          const VoltChip(label: 'Main'),
+          VoltChip(label: context.t('homePlay')),
         ],
       ),
     );
@@ -636,21 +642,21 @@ class _CableConnectCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Sambung Kabel',
+                  context.t('homeCableConnect'),
                   style: AppTypography.body.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Rangkai jalur kabel tertutup melewati komponen!',
+                  context.t('homeCableConnectDesc'),
                   style: AppTypography.bodyMuted,
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          const VoltChip(label: 'Main'),
+          VoltChip(label: context.t('homePlay')),
         ],
       ),
     );
@@ -687,21 +693,21 @@ class _GuessComponentCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Tebak Komponen',
+                  context.t('homeGuessComponent'),
                   style: AppTypography.body.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Tebak komponen & baca gelang warna resistor!',
+                  context.t('homeGuessDesc'),
                   style: AppTypography.bodyMuted,
                 ),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          const VoltChip(label: 'Main'),
+          VoltChip(label: context.t('homePlay')),
         ],
       ),
     );
@@ -719,9 +725,9 @@ class _QuickShortcutsSection extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: _QuickShortcutCard(
-              semanticsLabel: 'Buka Kalkulator Resistor',
-              title: 'Kalkulator Resistor',
-              subtitle: 'Baca warna gelang',
+              semanticsLabel: context.t('homeCalcResistor'),
+              title: context.t('homeCalcResistor'),
+              subtitle: context.t('homeCalcResistorDesc'),
               icon: const AppIcon.zap(
                 size: AppIconSize.lg,
                 color: AppColors.primaryDark,
@@ -732,8 +738,8 @@ class _QuickShortcutsSection extends StatelessWidget {
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: _QuickShortcutCard(
-              semanticsLabel: 'Buka Kalkulator Hukum Ohm',
-              title: 'Kalkulator Ohm',
+              semanticsLabel: context.t('homeCalcOhm'),
+              title: context.t('homeCalcOhm'),
               subtitle: 'Hitung V, I, R',
               icon: const Icon(
                 Icons.calculate_outlined,
@@ -881,10 +887,10 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Gabung Kelas', style: AppTypography.title),
+                    Text(context.t('homeJoinClass'), style: AppTypography.title),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'Masukkan kode kelas dari guru Anda',
+                      context.t('homeJoinClassDesc'),
                       style: AppTypography.bodyMuted,
                     ),
                   ],
@@ -898,9 +904,9 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
               Expanded(
                 child: TextField(
                   controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Kode Kelas',
-                    hintText: 'Contoh: ABC123',
+                  decoration: InputDecoration(
+                    labelText: context.t('homeClassCodeLabel'),
+                    hintText: context.t('homeClassCodeHint'),
                     border: OutlineInputBorder(),
                   ),
                   textCapitalization: TextCapitalization.characters,
@@ -910,7 +916,7 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
               ),
               const SizedBox(width: AppSpacing.md),
               VoltButton(
-                label: 'Gabung',
+                label: context.t('homeGabung'),
                 onPressed: _isLoading ? null : _handleJoinClass,
                 variant: VoltButtonVariant.primary,
               ),
@@ -930,7 +936,7 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
     try {
       await widget.authService.joinClass(code);
       if (mounted) {
-        showVoltSnackBar(context, 'Berhasil bergabung ke kelas!');
+        showVoltSnackBar(context, context.t('homeJoinSuccess'));
         _controller.clear();
       }
     } on AuthException catch (e) {
@@ -963,7 +969,7 @@ class _JoinedClassCard extends ConsumerWidget {
         }
 
         final data = snapshot.data!.data()!;
-        final String className = data['name'] as String? ?? 'Tanpa Nama';
+        final String className = data['name'] as String? ?? context.t('homeNoClassName');
         final String classCode = data['classCode'] as String? ?? '-';
 
         return VoltCard(
@@ -988,7 +994,7 @@ class _JoinedClassCard extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Row(
                       children: <Widget>[
-                        Text('Kode: ', style: AppTypography.bodyMuted),
+                        Text(context.t('homeKode') + ' ', style: AppTypography.bodyMuted),
                         Text(
                           classCode,
                           style: AppTypography.label.copyWith(
@@ -1082,10 +1088,10 @@ class _JoinClassCardError extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Kelas tidak ditemukan', style: AppTypography.title),
+                Text(context.t('homeClassNotFound'), style: AppTypography.title),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Hubungi guru Anda untuk kode kelas yang benar',
+                  context.t('homeContactTeacher'),
                   style: AppTypography.bodyMuted,
                 ),
               ],
@@ -1096,4 +1102,7 @@ class _JoinClassCardError extends StatelessWidget {
     );
   }
 }
+
+
+
 

@@ -16,6 +16,7 @@ import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 import 'package:voltar/widgets/volt_chip.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Provider untuk memuat satu level berdasarkan levelNumber.
 final levelDetailProvider =
@@ -64,7 +65,7 @@ class LevelDetailPage extends ConsumerWidget {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          'Level $levelNumber',
+          '${context.t('levelPrefix')} $levelNumber',
           style: AppTypography.title.copyWith(fontSize: 18),
         ),
         centerTitle: true,
@@ -85,7 +86,7 @@ class LevelDetailPage extends ConsumerWidget {
               error: (error, _) => Center(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: Text('Gagal memuat level: $error'),
+                  child: Text(context.t('materiGagalMemuatLevel', args: [error])),
                 ),
               ),
             ),
@@ -123,12 +124,12 @@ class _LockedLevelGuardView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Level Terkunci',
+              context.t('levelLocked'),
               style: AppTypography.title.copyWith(fontSize: 18),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Selesaikan Level sebelumnya terlebih dahulu',
+              context.t('completePrevLevel'),
               style: AppTypography.body.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -136,7 +137,7 @@ class _LockedLevelGuardView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xl),
             VoltButton(
-              label: 'Kembali ke Pilih Level',
+              label: context.t('kembaliKePilihLevel'),
               onPressed: () {
                 if (context.canPop()) {
                   context.pop();
@@ -229,16 +230,16 @@ class _StepTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String badgeText = switch (step.type) {
-      LearningStepType.pretest => 'PRE-TEST',
-      LearningStepType.materi => 'MATERI',
-      LearningStepType.posttest => 'POST-TEST',
-      LearningStepType.folder => 'FOLDER',
+      LearningStepType.pretest => context.t('badgePretest'),
+      LearningStepType.materi => context.t('badgeMateri'),
+      LearningStepType.posttest => context.t('badgePosttest'),
+      LearningStepType.folder => context.t('badgeFolder'),
     };
 
     final (String chipLabel, VoltChipStatus status) = switch (stepStatus) {
-      StepStatus.completed => ('Selesai', VoltChipStatus.done),
-      StepStatus.unlocked => ('Mulai', VoltChipStatus.active),
-      StepStatus.locked => ('Terkunci', VoltChipStatus.locked),
+      StepStatus.completed => (context.t('chipSelesai'), VoltChipStatus.done),
+      StepStatus.unlocked => (context.t('chipMulai'), VoltChipStatus.active),
+      StepStatus.locked => (context.t('levelLocked'), VoltChipStatus.locked),
     };
 
     return IntrinsicHeight(
@@ -374,7 +375,7 @@ class _StepTile extends StatelessWidget {
                     Text(
                       step.type == LearningStepType.materi
                           ? (step.estimatedTime ?? '5 menit')
-                          : '${step.questions?.length ?? 5} pertanyaan',
+                          : context.t('pertanyaan', args: [(step.questions?.length ?? 5).toString()]),
                       style: AppTypography.caption,
                     ),
                   ],
@@ -563,9 +564,9 @@ class _SubMateriTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (String chipLabel, VoltChipStatus status) = switch (stepStatus) {
-      StepStatus.completed => ('Selesai', VoltChipStatus.done),
-      StepStatus.unlocked => ('Mulai', VoltChipStatus.active),
-      StepStatus.locked => ('Terkunci', VoltChipStatus.locked),
+      StepStatus.completed => (context.t('chipSelesai'), VoltChipStatus.done),
+      StepStatus.unlocked => (context.t('chipMulai'), VoltChipStatus.active),
+      StepStatus.locked => (context.t('levelLocked'), VoltChipStatus.locked),
     };
 
     final Color iconBoxColor = _isLocked

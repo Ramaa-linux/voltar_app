@@ -2345,4 +2345,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profilLanguageDialogTitle => 'Choose Language';
+
+  @override
+  String homeProgressCaption(Object completed, Object total) {
+    return '$completed of $total materials completed';
+  }
+
+  @override
+  String homeCoinsCount(Object coins) {
+    return '$coins Coins';
+  }
+
+  @override
+  String homeProgressSemantics(Object completed, Object percent, Object total) {
+    return 'Learning progress $percent%, $completed of $total materials completed';
+  }
+
+  @override
+  String get homeAllCompleted => 'All materials completed 🎉';
+
+  @override
+  String homeSubtitleDone(Object level) {
+    return 'Level $level • All modules completed';
+  }
+
+  @override
+  String homeSubtitleStart(Object level) {
+    return 'Level $level • Start Learning';
+  }
+
+  @override
+  String homeSubtitleProgress(Object completed, Object level, Object total) {
+    return 'Level $level • $completed of $total materials';
+  }
+
+  @override
+  String homeSubtitleNext(Object level) {
+    return 'Level $level • Next material';
+  }
+
+  @override
+  String materiGagalMemuatLevel(Object error) {
+    return 'Failed to load level: $error';
+  }
+
+  @override
+  String homeLevelLocked(Object level) {
+    return 'Level $level, locked';
+  }
+
+  @override
+  String materiLevelHeader(Object level) {
+    return 'LEVEL $level';
+  }
+
+  @override
+  String get materiChipBelajar => 'Studying';
+
+  @override
+  String get materiChipLocked => 'Locked';
+
+  @override
+  String get materiGambarTidakDitemukan => 'Image not found';
+
+  @override
+  String get materiTabBacaan => 'Reading';
+
+  @override
+  String get materiTabVideo => 'Video';
+
+  @override
+  String get materiTabPraktik => 'Practice';
 }

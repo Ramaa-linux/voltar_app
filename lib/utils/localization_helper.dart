@@ -339,6 +339,35 @@ extension LocalizationHelper on BuildContext {
       case 'homeCalcResistorDesc': return l10n.homeCalcResistorDesc;
       case 'homeCalcOhm': return l10n.homeCalcOhm;
       case 'homeCalcOhmDesc': return l10n.homeCalcOhmDesc;
+      case 'homeProgressCaption':
+        return l10n.homeProgressCaption(args?.first ?? '', args?[1] ?? '');
+      case 'homeCoinsCount': return l10n.homeCoinsCount(args?.first ?? '');
+      case 'homeProgressSemantics':
+        return l10n.homeProgressSemantics(
+          args?.first ?? '',
+          args?[1] ?? '',
+          args?[2] ?? '',
+        );
+      case 'homeAllCompleted': return l10n.homeAllCompleted;
+      case 'homeSubtitleDone': return l10n.homeSubtitleDone(args?.first ?? '');
+      case 'homeSubtitleStart': return l10n.homeSubtitleStart(args?.first ?? '');
+      case 'homeSubtitleProgress':
+        return l10n.homeSubtitleProgress(
+          args?.first ?? '',
+          args?[1] ?? '',
+          args?[2] ?? '',
+        );
+      case 'homeSubtitleNext': return l10n.homeSubtitleNext(args?.first ?? '');
+      case 'materiGagalMemuatLevel':
+        return l10n.materiGagalMemuatLevel(args?.first ?? '');
+      case 'homeLevelLocked': return l10n.homeLevelLocked(args?.first ?? '');
+      case 'materiLevelHeader': return l10n.materiLevelHeader(args?.first ?? '');
+      case 'materiChipBelajar': return l10n.materiChipBelajar;
+      case 'materiChipLocked': return l10n.materiChipLocked;
+      case 'materiGambarTidakDitemukan': return l10n.materiGambarTidakDitemukan;
+      case 'materiTabBacaan': return l10n.materiTabBacaan;
+      case 'materiTabVideo': return l10n.materiTabVideo;
+      case 'materiTabPraktik': return l10n.materiTabPraktik;
       case 'defaultName': return l10n.defaultName;
       case 'defaultEmail': return l10n.defaultEmail;
       case 'fotoProfilDiperbarui': return l10n.fotoProfilDiperbarui;

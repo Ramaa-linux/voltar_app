@@ -718,6 +718,23 @@
   "profilFallbackName": "Teacher",
   "profilFallbackRoleLabel": "Teacher",
   "profilNIPUnavailable": "NIP not available",
-  "profilLanguageDialogTitle": "Choose Language"
+  "profilLanguageDialogTitle": "Choose Language",
+  "homeProgressCaption": "{completed} of {total} materials completed",
+  "homeCoinsCount": "{coins} Coins",
+  "homeProgressSemantics": "Learning progress {percent}%, {completed} of {total} materials completed",
+  "homeAllCompleted": "All materials completed 🎉",
+  "homeSubtitleDone": "Level {level} • All modules completed",
+  "homeSubtitleStart": "Level {level} • Start Learning",
+  "homeSubtitleProgress": "Level {level} • {completed} of {total} materials",
+  "homeSubtitleNext": "Level {level} • Next material",
+  "materiGagalMemuatLevel": "Failed to load level: {error}",
+  "homeLevelLocked": "Level {level}, locked",
+  "materiLevelHeader": "LEVEL {level}",
+  "materiChipBelajar": "Studying",
+  "materiChipLocked": "Locked",
+  "materiGambarTidakDitemukan": "Image not found",
+  "materiTabBacaan": "Reading",
+  "materiTabVideo": "Video",
+  "materiTabPraktik": "Practice"
 }
 

@@ -4405,6 +4405,108 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Pilih Bahasa'**
   String get profilLanguageDialogTitle;
+
+  /// No description provided for @homeProgressCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'{completed} dari {total} materi selesai'**
+  String homeProgressCaption(Object completed, Object total);
+
+  /// No description provided for @homeCoinsCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{coins} Koin'**
+  String homeCoinsCount(Object coins);
+
+  /// No description provided for @homeProgressSemantics.
+  ///
+  /// In id, this message translates to:
+  /// **'Progres belajar {percent} persen, {completed} dari {total} materi selesai'**
+  String homeProgressSemantics(Object completed, Object percent, Object total);
+
+  /// No description provided for @homeAllCompleted.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua materi selesai 🎉'**
+  String get homeAllCompleted;
+
+  /// No description provided for @homeSubtitleDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level} • Semua modul tuntas'**
+  String homeSubtitleDone(Object level);
+
+  /// No description provided for @homeSubtitleStart.
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level} • Mulai Belajar'**
+  String homeSubtitleStart(Object level);
+
+  /// No description provided for @homeSubtitleProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level} • {completed} dari {total} materi'**
+  String homeSubtitleProgress(Object completed, Object level, Object total);
+
+  /// No description provided for @homeSubtitleNext.
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level} • Materi berikutnya'**
+  String homeSubtitleNext(Object level);
+
+  /// No description provided for @materiGagalMemuatLevel.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat level: {error}'**
+  String materiGagalMemuatLevel(Object error);
+
+  /// No description provided for @homeLevelLocked.
+  ///
+  /// In id, this message translates to:
+  /// **'Level {level}, terkunci'**
+  String homeLevelLocked(Object level);
+
+  /// No description provided for @materiLevelHeader.
+  ///
+  /// In id, this message translates to:
+  /// **'LEVEL {level}'**
+  String materiLevelHeader(Object level);
+
+  /// No description provided for @materiChipBelajar.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedang Belajar'**
+  String get materiChipBelajar;
+
+  /// No description provided for @materiChipLocked.
+  ///
+  /// In id, this message translates to:
+  /// **'Terkunci'**
+  String get materiChipLocked;
+
+  /// No description provided for @materiGambarTidakDitemukan.
+  ///
+  /// In id, this message translates to:
+  /// **'Gambar tidak ditemukan'**
+  String get materiGambarTidakDitemukan;
+
+  /// No description provided for @materiTabBacaan.
+  ///
+  /// In id, this message translates to:
+  /// **'Bacaan'**
+  String get materiTabBacaan;
+
+  /// No description provided for @materiTabVideo.
+  ///
+  /// In id, this message translates to:
+  /// **'Video'**
+  String get materiTabVideo;
+
+  /// No description provided for @materiTabPraktik.
+  ///
+  /// In id, this message translates to:
+  /// **'Praktik'**
+  String get materiTabPraktik;
 }
 
 class _AppLocalizationsDelegate

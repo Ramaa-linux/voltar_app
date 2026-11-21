@@ -719,5 +719,22 @@
   "profilFallbackName": "Guru",
   "profilFallbackRoleLabel": "Guru",
   "profilNIPUnavailable": "NIP tidak tersedia",
-  "profilLanguageDialogTitle": "Pilih Bahasa"
+  "profilLanguageDialogTitle": "Pilih Bahasa",
+  "homeProgressCaption": "{completed} dari {total} materi selesai",
+  "homeCoinsCount": "{coins} Koin",
+  "homeProgressSemantics": "Progres belajar {percent} persen, {completed} dari {total} materi selesai",
+  "homeAllCompleted": "Semua materi selesai 🎉",
+  "homeSubtitleDone": "Level {level} • Semua modul tuntas",
+  "homeSubtitleStart": "Level {level} • Mulai Belajar",
+  "homeSubtitleProgress": "Level {level} • {completed} dari {total} materi",
+  "homeSubtitleNext": "Level {level} • Materi berikutnya",
+  "materiGagalMemuatLevel": "Gagal memuat level: {error}",
+  "homeLevelLocked": "Level {level}, terkunci",
+  "materiLevelHeader": "LEVEL {level}",
+  "materiChipBelajar": "Sedang Belajar",
+  "materiChipLocked": "Terkunci",
+  "materiGambarTidakDitemukan": "Gambar tidak ditemukan",
+  "materiTabBacaan": "Bacaan",
+  "materiTabVideo": "Video",
+  "materiTabPraktik": "Praktik"
 }

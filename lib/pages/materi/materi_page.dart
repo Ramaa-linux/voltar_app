@@ -11,6 +11,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Provider untuk repository materi (singleton).
 final materiRepositoryProvider = Provider<MateriRepository>((ref) {
@@ -39,8 +40,8 @@ class MateriPage extends ConsumerWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: const Text(
-          'Pilih Level',
+        title: Text(
+          context.t('selectLevel'),
           style: AppTypography.title,
         ),
         centerTitle: true,
@@ -75,7 +76,7 @@ class MateriPage extends ConsumerWidget {
         error: (error, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Text('Gagal memuat level: $error'),
+            child: Text(context.t('gagalMemuatLevel', args: [error.toString()])),
           ),
         ),
       ),
@@ -108,9 +109,9 @@ class _LevelCard extends StatelessWidget {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                  const SnackBar(
+                  SnackBar(
                     content: Text(
-                      'Selesaikan Level sebelumnya terlebih dahulu',
+                      context.t('completePrevLevel'),
                     ),
                     duration: Duration(seconds: 2),
                   ),
@@ -145,7 +146,7 @@ class _LevelCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Level ${level.levelNumber}',
+                  context.t('homeLevelCurrent', args: [level.levelNumber]),
                   style: AppTypography.body.copyWith(
                     fontWeight: FontWeight.w600,
                     color: isUnlocked
@@ -182,8 +183,8 @@ class _LevelCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Semantics(
         label: isUnlocked
-            ? 'Level ${level.levelNumber}'
-            : 'Level ${level.levelNumber}, terkunci',
+            ? context.t('homeLevelCurrent', args: [level.levelNumber])
+            : context.t('homeLevelLocked', args: [level.levelNumber]),
         child: isUnlocked
             ? card
             : Opacity(

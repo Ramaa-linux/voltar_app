@@ -10,6 +10,7 @@ import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_chip.dart';
 import 'package:voltar/pages/materi/detail/content_block_renderer.dart';
 import 'package:voltar/pages/materi/detail/bottom_action_bar.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/pages/materi/detail/praktik/led_animation.dart';
 import 'package:voltar/pages/materi/detail/praktik/motor_simulation.dart';
 import 'package:voltar/pages/materi/detail/praktik/ohm_law_animation.dart';
@@ -131,7 +132,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'LEVEL ${widget.levelNumber}',
+                            context.t('materiLevelHeader', args: [widget.levelNumber]),
                             style: AppTypography.overline.copyWith(
                               color: AppColors.primaryDark,
                             ),
@@ -143,9 +144,9 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                     ),
                     VoltChip(
                       label: switch (chipStatus) {
-                        VoltChipStatus.done => 'Selesai',
-                        VoltChipStatus.active => 'Sedang Belajar',
-                        VoltChipStatus.locked => 'Terkunci',
+                        VoltChipStatus.done => context.t('chipSelesai'),
+                        VoltChipStatus.active => context.t('materiChipBelajar'),
+                        VoltChipStatus.locked => context.t('materiChipLocked'),
                       },
                       status: chipStatus,
                     ),
@@ -174,7 +175,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                             color: Colors.grey.shade200,
                             alignment: Alignment.center,
                             child: Text(
-                              'Gambar tidak ditemukan',
+                              context.t('materiGambarTidakDitemukan'),
                               style: AppTypography.caption,
                             ),
                           ),
@@ -199,14 +200,14 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
-              const TabBar(
+              TabBar(
                 labelColor: AppColors.primaryDark,
                 unselectedLabelColor: AppColors.textTertiary,
                 indicatorColor: AppColors.primary,
                 tabs: <Widget>[
-                  Tab(text: 'Bacaan'),
-                  Tab(text: 'Video'),
-                  Tab(text: 'Praktik'),
+                  Tab(text: context.t('materiTabBacaan')),
+                  Tab(text: context.t('materiTabVideo')),
+                  Tab(text: context.t('materiTabPraktik')),
                 ],
               ),
               Expanded(
@@ -269,13 +270,13 @@ class _MateriDetailViewState extends State<MateriDetailView> {
               ),
               alignment: Alignment.center,
               child: Text(
-                step.videoUrl ?? 'Video tidak tersedia',
+                step.videoUrl ?? context.t('videoTidakTersedia'),
                 style: AppTypography.bodyMuted,
               ),
             ),
           const SizedBox(height: AppSpacing.lg),
           if (summary.isNotEmpty) ...<Widget>[
-            const Text('Ringkasan Video', style: AppTypography.title),
+            Text(context.t('ringkasanVideo'), style: AppTypography.title),
             const SizedBox(height: AppSpacing.sm),
             Container(
               height: 250,
@@ -315,7 +316,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
           padding: const EdgeInsets.all(AppSpacing.pagePadding),
           child: Center(
             child: Text(
-              'Simulasi praktik untuk ${step.title} segera hadir.',
+              context.t('simulasiSegeraHadir', args: [step.title]),
               style: AppTypography.bodyMuted,
               textAlign: TextAlign.center,
             ),
@@ -328,14 +329,14 @@ class _MateriDetailViewState extends State<MateriDetailView> {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Tandai Selesai?'),
+        title: Text(context.t('tandaiSelesaiDialog')),
         content: Text(
-          'Apakah kamu yakin ingin menandai "${step.title}" sebagai selesai?',
+          context.t('konfirmasiTandaiSelesai', args: [step.title]),
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Batal'),
+            child: Text(context.t('cancel')),
           ),
           FilledButton(
             onPressed: () {
@@ -343,7 +344,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
               setState(() => _isDone = true);
               ScaffoldMessenger.of(this.context).showSnackBar(
                 SnackBar(
-                  content: Text('${step.title} ditandai selesai!'),
+                  content: Text(context.t('ditandaiSelesai', args: [step.title])),
                   backgroundColor: AppColors.success,
                 ),
               );
@@ -359,7 +360,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                 }
               });
             },
-            child: const Text('Tandai Selesai'),
+            child: Text(context.t('tandaiSelesai')),
           ),
         ],
       ),

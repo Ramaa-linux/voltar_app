@@ -2354,4 +2354,75 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get profilLanguageDialogTitle => 'Pilih Bahasa';
+
+  @override
+  String homeProgressCaption(Object completed, Object total) {
+    return '$completed dari $total materi selesai';
+  }
+
+  @override
+  String homeCoinsCount(Object coins) {
+    return '$coins Koin';
+  }
+
+  @override
+  String homeProgressSemantics(Object completed, Object percent, Object total) {
+    return 'Progres belajar $percent persen, $completed dari $total materi selesai';
+  }
+
+  @override
+  String get homeAllCompleted => 'Semua materi selesai 🎉';
+
+  @override
+  String homeSubtitleDone(Object level) {
+    return 'Level $level • Semua modul tuntas';
+  }
+
+  @override
+  String homeSubtitleStart(Object level) {
+    return 'Level $level • Mulai Belajar';
+  }
+
+  @override
+  String homeSubtitleProgress(Object completed, Object level, Object total) {
+    return 'Level $level • $completed dari $total materi';
+  }
+
+  @override
+  String homeSubtitleNext(Object level) {
+    return 'Level $level • Materi berikutnya';
+  }
+
+  @override
+  String materiGagalMemuatLevel(Object error) {
+    return 'Gagal memuat level: $error';
+  }
+
+  @override
+  String homeLevelLocked(Object level) {
+    return 'Level $level, terkunci';
+  }
+
+  @override
+  String materiLevelHeader(Object level) {
+    return 'LEVEL $level';
+  }
+
+  @override
+  String get materiChipBelajar => 'Sedang Belajar';
+
+  @override
+  String get materiChipLocked => 'Terkunci';
+
+  @override
+  String get materiGambarTidakDitemukan => 'Gambar tidak ditemukan';
+
+  @override
+  String get materiTabBacaan => 'Bacaan';
+
+  @override
+  String get materiTabVideo => 'Video';
+
+  @override
+  String get materiTabPraktik => 'Praktik';
 }
