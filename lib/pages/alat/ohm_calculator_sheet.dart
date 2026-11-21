@@ -5,6 +5,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 
@@ -229,12 +230,12 @@ class _OhmCalculatorSheetState extends State<OhmCalculatorSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Kalkulator Hukum Ohm',
+                          context.t('ohmCalcTitle'),
                           style: AppTypography.title,
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          'Isi 2 nilai, nilai ketiga dihitung otomatis',
+                          context.t('ohmCalcDesc'),
                           style: AppTypography.bodyMuted,
                         ),
                       ],
@@ -243,7 +244,7 @@ class _OhmCalculatorSheetState extends State<OhmCalculatorSheet> {
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close_rounded),
-                    tooltip: 'Tutup',
+                    tooltip: context.t('resistorCalcCloseTooltip'),
                   ),
                 ],
               ),
@@ -259,12 +260,15 @@ class _OhmCalculatorSheetState extends State<OhmCalculatorSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    const VoltCard(
+                    VoltCard(
                       padding: EdgeInsets.all(AppSpacing.md),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('Rumus Dasar', style: AppTypography.label),
+                          Text(
+                            context.t('ohmCalcBasicFormulas'),
+                            style: AppTypography.label,
+                          ),
                           SizedBox(height: AppSpacing.xs),
                           Wrap(
                             spacing: AppSpacing.sm,
@@ -295,7 +299,7 @@ class _OhmCalculatorSheetState extends State<OhmCalculatorSheet> {
                     }),
                     const SizedBox(height: AppSpacing.md),
                     VoltButton(
-                      label: 'Reset',
+                      label: context.t('ohmCalcResetButton'),
                       variant: VoltButtonVariant.secondary,
                       fullWidth: true,
                       onPressed: _resetAll,
@@ -366,7 +370,7 @@ class _OhmInputField extends StatelessWidget {
         : AppColors.background;
 
     return Semantics(
-      label: '${variable.label}: ${variable.unit}',
+      label: '${context.t(variable.labelKey)}: ${context.t(variable.unitKey)}',
       child: Padding(
         padding: const EdgeInsets.only(bottom: AppSpacing.md),
         child: Column(
@@ -376,7 +380,7 @@ class _OhmInputField extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
-                  variable.label,
+                  context.t(variable.labelKey),
                   style: AppTypography.label.copyWith(
                     fontWeight: FontWeight.w600,
                     color: hasError ? AppColors.error : AppColors.textPrimary,
@@ -393,7 +397,7 @@ class _OhmInputField extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.chip),
                     ),
                     child: Text(
-                      'Hasil otomatis',
+                      context.t('ohmCalcAutoResult'),
                       style: AppTypography.overline.copyWith(
                         color: AppColors.textOnPrimary,
                         fontWeight: FontWeight.w700,
@@ -422,11 +426,11 @@ class _OhmInputField extends StatelessWidget {
                     : AppColors.textPrimary,
               ),
               decoration: InputDecoration(
-                hintText: '0',
+                hintText: context.t('ohmCalcHintValue'),
                 hintStyle: AppTypography.body.copyWith(
                   color: AppColors.textTertiary,
                 ),
-                suffixText: variable.unit,
+                suffixText: context.t(variable.unitKey),
                 suffixStyle: AppTypography.caption.copyWith(
                   color: isAutoCalculated
                       ? AppColors.primaryDark
@@ -460,7 +464,7 @@ class _OhmInputField extends StatelessWidget {
             if (hasError) ...<Widget>[
               const SizedBox(height: AppSpacing.xs),
               Text(
-                errorMessage!,
+                context.t(errorMessage!),
                 style: AppTypography.caption.copyWith(
                   color: AppColors.error,
                   fontWeight: FontWeight.w600,
@@ -472,4 +476,5 @@ class _OhmInputField extends StatelessWidget {
       ),
     );
   }
+
 }

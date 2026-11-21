@@ -4,6 +4,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Menampilkan Kalkulator Resistor ([ResistorCalculator]) sebagai modal bottom sheet.
 Future<void> showResistorCalculator(BuildContext context) {
@@ -63,7 +64,7 @@ class ResistorCalculatorSheet extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'Alat Bantu Cepat',
+                    context.t('resistorCalcSheetTitle'),
                     style: AppTypography.label.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -71,7 +72,7 @@ class ResistorCalculatorSheet extends StatelessWidget {
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close_rounded),
-                    tooltip: 'Tutup',
+                    tooltip: context.t('resistorCalcCloseTooltip'),
                   ),
                 ],
               ),

@@ -10,16 +10,18 @@ enum OhmVariable {
     OhmVariable.resistance => 'R',
   };
 
-  String get unit => switch (this) {
-    OhmVariable.voltage => 'Volt (V)',
-    OhmVariable.current => 'Ampere (A)',
-    OhmVariable.resistance => 'Ohm (Ω)',
+  /// ARB translation key for the unit suffix (translated in the UI layer).
+  String get unitKey => switch (this) {
+    OhmVariable.voltage => 'ohmCalcVoltageUnit',
+    OhmVariable.current => 'ohmCalcCurrentUnit',
+    OhmVariable.resistance => 'ohmCalcResistanceUnit',
   };
 
-  String get label => switch (this) {
-    OhmVariable.voltage => 'Tegangan (V)',
-    OhmVariable.current => 'Arus (I)',
-    OhmVariable.resistance => 'Hambatan (R)',
+  /// ARB translation key for the variable label (translated in the UI layer).
+  String get labelKey => switch (this) {
+    OhmVariable.voltage => 'ohmCalcVoltageLabel',
+    OhmVariable.current => 'ohmCalcCurrentLabel',
+    OhmVariable.resistance => 'ohmCalcResistanceLabel',
   };
 }
 
@@ -133,7 +135,7 @@ abstract final class OhmCalculator {
         if (rVal == 0) {
           return const OhmCalculationResult(
             targetVariable: OhmVariable.current,
-            errorMessage: 'Hambatan (R) tidak boleh 0',
+            errorMessage: 'ohmCalcErrRZero',
           );
         }
         final double res = vVal / rVal;
@@ -149,7 +151,7 @@ abstract final class OhmCalculator {
         if (iVal == 0) {
           return const OhmCalculationResult(
             targetVariable: OhmVariable.resistance,
-            errorMessage: 'Arus (I) tidak boleh 0',
+            errorMessage: 'ohmCalcErrIZero',
           );
         }
         final double res = vVal / iVal;
