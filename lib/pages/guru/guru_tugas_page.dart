@@ -8,6 +8,7 @@ import '../../theme/app_typography.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/press_scale.dart';
 import '../../widgets/volt_button.dart';
+import '../../utils/localization_helper.dart';
 import 'data/guru_dummy_data.dart';
 
 /// Halaman Daftar Tugas Guru.
@@ -32,18 +33,28 @@ class _GuruTugasPageState extends State<GuruTugasPage> {
     }
   }
 
-  String _formatTanggal(DateTime date) {
-    const List<String> bulan = <String>[
-      'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
-      'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des',
+  String _formatTanggal(BuildContext context, DateTime date) {
+    final List<String> bulan = <String>[
+      context.t('monthJan'),
+      context.t('monthFeb'),
+      context.t('monthMar'),
+      context.t('monthApr'),
+      context.t('monthMei'),
+      context.t('monthJun'),
+      context.t('monthJul'),
+      context.t('monthAgu'),
+      context.t('monthSep'),
+      context.t('monthOkt'),
+      context.t('monthNov'),
+      context.t('monthDes'),
     ];
     return '${date.day} ${bulan[date.month - 1]} ${date.year}';
   }
 
   void _onBuatTugas(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Segera hadir di pembaruan berikutnya'),
+      SnackBar(
+        content: Text(context.t('guruKelasComingSoon')),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -52,7 +63,7 @@ class _GuruTugasPageState extends State<GuruTugasPage> {
   void _onTapTugas(BuildContext context, TugasDummy tugas) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Detail "${tugas.judul}" - Segera hadir'),
+        content: Text(context.t('guruTugasDetailSnack', args: [tugas.judul])),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -77,13 +88,13 @@ class _GuruTugasPageState extends State<GuruTugasPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Daftar Tugas', style: AppTypography.heading.copyWith(fontWeight: FontWeight.w800)),
+                        Text(context.t('guruTugasTitle'), style: AppTypography.heading.copyWith(fontWeight: FontWeight.w800)),
                         const SizedBox(height: AppSpacing.xs),
-                        Text('${_filteredTugas.length} tugas', style: AppTypography.bodyMuted),
+                        Text(context.t('guruTugasCount', args: [_filteredTugas.length]), style: AppTypography.bodyMuted),
                       ],
                     ),
                   ),
-                  VoltButton(label: '+ Buat Tugas', onPressed: () => _onBuatTugas(context), variant: VoltButtonVariant.primary),
+                  VoltButton(label: context.t('guruTugasCreate'), onPressed: () => _onBuatTugas(context), variant: VoltButtonVariant.primary),
                 ],
               ),
             ),
@@ -93,11 +104,11 @@ class _GuruTugasPageState extends State<GuruTugasPage> {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
               child: Row(
                 children: <Widget>[
-                  _FilterChip(label: 'Semua', selected: _selectedFilter == 0, onTap: () => setState(() => _selectedFilter = 0)),
+                  _FilterChip(label: context.t('guruTugasFilterAll'), selected: _selectedFilter == 0, onTap: () => setState(() => _selectedFilter = 0)),
                   const SizedBox(width: AppSpacing.sm),
-                  _FilterChip(label: 'Aktif', selected: _selectedFilter == 1, onTap: () => setState(() => _selectedFilter = 1)),
+                  _FilterChip(label: context.t('guruTugasFilterActive'), selected: _selectedFilter == 1, onTap: () => setState(() => _selectedFilter = 1)),
                   const SizedBox(width: AppSpacing.sm),
-                  _FilterChip(label: 'Selesai', selected: _selectedFilter == 2, onTap: () => setState(() => _selectedFilter = 2)),
+                  _FilterChip(label: context.t('guruTugasFilterCompleted'), selected: _selectedFilter == 2, onTap: () => setState(() => _selectedFilter = 2)),
                 ],
               ),
             ),
@@ -110,7 +121,7 @@ class _GuruTugasPageState extends State<GuruTugasPage> {
               separatorBuilder: (BuildContext context, int index) => const SizedBox(height: AppSpacing.md),
               itemBuilder: (BuildContext context, int index) {
                 final TugasDummy tugas = _filteredTugas[index];
-                return _TugasCard(tugas: tugas, onTap: () => _onTapTugas(context, tugas), formatTanggal: _formatTanggal);
+                return _TugasCard(tugas: tugas, onTap: () => _onTapTugas(context, tugas), formatTanggal: (date) => _formatTanggal(context, date));
               },
             ),
           ),
@@ -182,12 +193,12 @@ class _TugasCard extends StatelessWidget {
                     color: isAktif ? AppColors.successLight : AppColors.accentLight,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
-                  child: Text(isAktif ? 'Aktif' : 'Selesai', style: AppTypography.caption.copyWith(color: isAktif ? AppColors.success : AppColors.accent, fontWeight: FontWeight.w700)),
+                  child: Text(isAktif ? context.t('guruTugasStatusActive') : context.t('guruTugasStatusCompleted'), style: AppTypography.caption.copyWith(color: isAktif ? AppColors.success : AppColors.accent, fontWeight: FontWeight.w700)),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Row(children: <Widget>[const AppIcon(AppIconName.bell, size: 16, color: AppColors.textTertiary), const SizedBox(width: AppSpacing.xs), Text('Deadline: ${formatTanggal(tugas.deadline)}', style: AppTypography.bodyMuted)]),
+            Row(children: <Widget>[const AppIcon(AppIconName.bell, size: 16, color: AppColors.textTertiary), const SizedBox(width: AppSpacing.xs), Text(context.t('guruTugasDeadline', args: [formatTanggal(tugas.deadline)]), style: AppTypography.bodyMuted)]),
           ],
         ),
       ),
