@@ -374,7 +374,7 @@ class _StepTile extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       step.type == LearningStepType.materi
-                          ? (step.estimatedTime ?? '5 menit')
+                          ? (step.estimatedTime ?? context.t('estimatedTimeShort', args: ['5']))
                           : context.t('pertanyaan', args: [(step.questions?.length ?? 5).toString()]),
                       style: AppTypography.caption,
                     ),
@@ -619,7 +619,7 @@ class _SubMateriTile extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            step.estimatedTime ?? '5 menit',
+            step.estimatedTime ?? context.t('estimatedTimeShort', args: ['5']),
             style: AppTypography.caption,
           ),
           trailing: VoltChip(

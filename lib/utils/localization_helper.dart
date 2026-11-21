@@ -339,6 +339,31 @@ extension LocalizationHelper on BuildContext {
       case 'homeCalcResistorDesc': return l10n.homeCalcResistorDesc;
       case 'homeCalcOhm': return l10n.homeCalcOhm;
       case 'homeCalcOhmDesc': return l10n.homeCalcOhmDesc;
+      case 'levelCaption':
+        return l10n.levelCaption(args?.first ?? '0', args?[1] ?? '0');
+      case 'levelCaptionEmpty': return l10n.levelCaptionEmpty;
+      case 'estimatedTimeShort': return l10n.estimatedTimeShort(args?.first ?? '5');
+      case 'estimatedTimeMedium': return l10n.estimatedTimeMedium(args?.first ?? '10');
+      case 'estimatedTimeLong': return l10n.estimatedTimeLong(args?.first ?? '15');
+      case 'dayMinggu': return l10n.dayMinggu;
+      case 'daySenin': return l10n.daySenin;
+      case 'daySelasa': return l10n.daySelasa;
+      case 'dayRabu': return l10n.dayRabu;
+      case 'dayKamis': return l10n.dayKamis;
+      case 'dayJumat': return l10n.dayJumat;
+      case 'daySabtu': return l10n.daySabtu;
+      case 'monthJan': return l10n.monthJan;
+      case 'monthFeb': return l10n.monthFeb;
+      case 'monthMar': return l10n.monthMar;
+      case 'monthApr': return l10n.monthApr;
+      case 'monthMei': return l10n.monthMei;
+      case 'monthJun': return l10n.monthJun;
+      case 'monthJul': return l10n.monthJul;
+      case 'monthAgu': return l10n.monthAgu;
+      case 'monthSep': return l10n.monthSep;
+      case 'monthOkt': return l10n.monthOkt;
+      case 'monthNov': return l10n.monthNov;
+      case 'monthDes': return l10n.monthDes;
       case 'homeProgressCaption':
         return l10n.homeProgressCaption(args?.first ?? '', args?[1] ?? '');
       case 'homeCoinsCount': return l10n.homeCoinsCount(args?.first ?? '');

@@ -740,7 +740,7 @@ class _QuickShortcutsSection extends StatelessWidget {
             child: _QuickShortcutCard(
               semanticsLabel: context.t('homeCalcOhm'),
               title: context.t('homeCalcOhm'),
-              subtitle: 'Hitung V, I, R',
+              subtitle: context.t('homeCalcOhmDesc'),
               icon: const Icon(
                 Icons.calculate_outlined,
                 size: AppIconSize.lg,

@@ -4507,6 +4507,150 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Praktik'**
   String get materiTabPraktik;
+
+  /// No description provided for @levelCaption.
+  ///
+  /// In id, this message translates to:
+  /// **'{totalMateri} materi • {totalMinutes} menit'**
+  String levelCaption(Object totalMateri, Object totalMinutes);
+
+  /// No description provided for @levelCaptionEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada materi'**
+  String get levelCaptionEmpty;
+
+  /// No description provided for @estimatedTimeShort.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} menit'**
+  String estimatedTimeShort(Object value);
+
+  /// No description provided for @estimatedTimeMedium.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} menit'**
+  String estimatedTimeMedium(Object value);
+
+  /// No description provided for @estimatedTimeLong.
+  ///
+  /// In id, this message translates to:
+  /// **'{value} menit'**
+  String estimatedTimeLong(Object value);
+
+  /// No description provided for @dayMinggu.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu'**
+  String get dayMinggu;
+
+  /// No description provided for @daySenin.
+  ///
+  /// In id, this message translates to:
+  /// **'Senin'**
+  String get daySenin;
+
+  /// No description provided for @daySelasa.
+  ///
+  /// In id, this message translates to:
+  /// **'Selasa'**
+  String get daySelasa;
+
+  /// No description provided for @dayRabu.
+  ///
+  /// In id, this message translates to:
+  /// **'Rabu'**
+  String get dayRabu;
+
+  /// No description provided for @dayKamis.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamis'**
+  String get dayKamis;
+
+  /// No description provided for @dayJumat.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumat'**
+  String get dayJumat;
+
+  /// No description provided for @daySabtu.
+  ///
+  /// In id, this message translates to:
+  /// **'Sabtu'**
+  String get daySabtu;
+
+  /// No description provided for @monthJan.
+  ///
+  /// In id, this message translates to:
+  /// **'Januari'**
+  String get monthJan;
+
+  /// No description provided for @monthFeb.
+  ///
+  /// In id, this message translates to:
+  /// **'Februari'**
+  String get monthFeb;
+
+  /// No description provided for @monthMar.
+  ///
+  /// In id, this message translates to:
+  /// **'Maret'**
+  String get monthMar;
+
+  /// No description provided for @monthApr.
+  ///
+  /// In id, this message translates to:
+  /// **'April'**
+  String get monthApr;
+
+  /// No description provided for @monthMei.
+  ///
+  /// In id, this message translates to:
+  /// **'Mei'**
+  String get monthMei;
+
+  /// No description provided for @monthJun.
+  ///
+  /// In id, this message translates to:
+  /// **'Juni'**
+  String get monthJun;
+
+  /// No description provided for @monthJul.
+  ///
+  /// In id, this message translates to:
+  /// **'Juli'**
+  String get monthJul;
+
+  /// No description provided for @monthAgu.
+  ///
+  /// In id, this message translates to:
+  /// **'Agustus'**
+  String get monthAgu;
+
+  /// No description provided for @monthSep.
+  ///
+  /// In id, this message translates to:
+  /// **'September'**
+  String get monthSep;
+
+  /// No description provided for @monthOkt.
+  ///
+  /// In id, this message translates to:
+  /// **'Oktober'**
+  String get monthOkt;
+
+  /// No description provided for @monthNov.
+  ///
+  /// In id, this message translates to:
+  /// **'November'**
+  String get monthNov;
+
+  /// No description provided for @monthDes.
+  ///
+  /// In id, this message translates to:
+  /// **'Desember'**
+  String get monthDes;
 }
 
 class _AppLocalizationsDelegate

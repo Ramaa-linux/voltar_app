@@ -2425,4 +2425,84 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get materiTabPraktik => 'Praktik';
+
+  @override
+  String levelCaption(Object totalMateri, Object totalMinutes) {
+    return '$totalMateri materi • $totalMinutes menit';
+  }
+
+  @override
+  String get levelCaptionEmpty => 'Belum ada materi';
+
+  @override
+  String estimatedTimeShort(Object value) {
+    return '$value menit';
+  }
+
+  @override
+  String estimatedTimeMedium(Object value) {
+    return '$value menit';
+  }
+
+  @override
+  String estimatedTimeLong(Object value) {
+    return '$value menit';
+  }
+
+  @override
+  String get dayMinggu => 'Minggu';
+
+  @override
+  String get daySenin => 'Senin';
+
+  @override
+  String get daySelasa => 'Selasa';
+
+  @override
+  String get dayRabu => 'Rabu';
+
+  @override
+  String get dayKamis => 'Kamis';
+
+  @override
+  String get dayJumat => 'Jumat';
+
+  @override
+  String get daySabtu => 'Sabtu';
+
+  @override
+  String get monthJan => 'Januari';
+
+  @override
+  String get monthFeb => 'Februari';
+
+  @override
+  String get monthMar => 'Maret';
+
+  @override
+  String get monthApr => 'April';
+
+  @override
+  String get monthMei => 'Mei';
+
+  @override
+  String get monthJun => 'Juni';
+
+  @override
+  String get monthJul => 'Juli';
+
+  @override
+  String get monthAgu => 'Agustus';
+
+  @override
+  String get monthSep => 'September';
+
+  @override
+  String get monthOkt => 'Oktober';
+
+  @override
+  String get monthNov => 'November';
+
+  @override
+  String get monthDes => 'Desember';
 }
