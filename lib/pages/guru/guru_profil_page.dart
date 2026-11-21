@@ -13,6 +13,9 @@ import '../../utils/volt_feedback.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/press_scale.dart';
 import '../../widgets/volt_card.dart';
+import '../../utils/localization_helper.dart';
+import '../../providers/locale_provider.dart';
+import 'package:voltar/l10n/app_localizations.dart';
 
 /// Halaman Profil Guru.
 /// Menggunakan data real dari Firestore via [userProfileProvider].
@@ -52,9 +55,9 @@ class GuruProfilPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
               child: Row(
                 children: <Widget>[ 
-                  Expanded(child: _StatItem(label: 'Kelas', value: '2')),
-                  Expanded(child: _StatItem(label: 'Siswa', value: '60')),
-                  Expanded(child: _StatItem(label: 'Tugas', value: '12')),
+                  Expanded(child: _StatItem(label: context.t('profilStatClasses'), value: '2')),
+                  Expanded(child: _StatItem(label: context.t('profilStatStudents'), value: '60')),
+                  Expanded(child: _StatItem(label: context.t('profilStatAssignments'), value: '12')),
                 ],
               ),
             ),
@@ -77,14 +80,16 @@ class GuruProfilPage extends ConsumerWidget {
                 return _MenuTile(
                   item: item,
                   onTap: () {
-                    if (item.title == 'Edit Profil') {
+                    if (item.titleKey == 'profilMenuEditProfil') {
                       context.push(AppRoutes.profilEdit);
-                    } else if (item.title == 'Keluar') {
+                    } else if (item.titleKey == 'profilLogout') {
                       _showLogoutConfirmDialog(context, authService);
+                    } else if (item.titleKey == 'profilMenuBahasa') {
+                      _showLanguageSheet(context, ref);
                     } else {
                       showVoltSnackBar(
                         context,
-                        'Fitur segera hadir',
+                        context.t('profilComingSoon'),
                       );
                     }
                   },
@@ -127,18 +132,18 @@ class GuruProfilPage extends ConsumerWidget {
             borderRadius: BorderRadius.circular(AppRadius.card),
           ),
           title: Text(
-            'Konfirmasi Keluar',
+            context.t('profilLogoutConfirmTitle'),
             style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
           ),
           content: Text(
-            'Apakah kamu yakin ingin keluar?',
+            context.t('profilLogoutConfirmMsg'),
             style: AppTypography.body.copyWith(color: AppColors.textSecondary),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: Text(
-                'Batal',
+                context.t('profilCancel'),
                 style: AppTypography.label.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -160,17 +165,74 @@ class GuruProfilPage extends ConsumerWidget {
                   if (context.mounted) {
                     showVoltSnackBar(
                       context,
-                      'Gagal keluar dari akun. Silakan coba lagi.',
+                      context.t('profilLogoutFailed'),
                     );
                   }
                 }
               },
               child: Text(
-                'Ya, Keluar',
+                context.t('profilLogoutYes'),
                 style: AppTypography.label.copyWith(color: AppColors.error),
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  /// Bottom Sheet: memilih bahasa aplikasi (Indonesia / English).
+  void _showLanguageSheet(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    String selectedLang = ref.read(localeProvider).locale.languageCode;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.card),
+          topRight: Radius.circular(AppRadius.card),
+        ),
+      ),
+      builder: (BuildContext ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom +
+                  AppSpacing.navBarClearance,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  l10n?.languageDialogTitle ?? context.t('profilLanguageDialogTitle'),
+                  style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                RadioListTile<String>(
+                  title: Text(l10n?.langIndonesian ?? 'Indonesia'),
+                  value: 'id',
+                  groupValue: selectedLang,
+                  onChanged: (String? value) {
+                    selectedLang = value!;
+                    ref.read(localeProvider.notifier).setLocale(value);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+                RadioListTile<String>(
+                  title: Text(l10n?.langEnglish ?? 'English'),
+                  value: 'en',
+                  groupValue: selectedLang,
+                  onChanged: (String? value) {
+                    selectedLang = value!;
+                    ref.read(localeProvider.notifier).setLocale(value);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -190,7 +252,7 @@ class _ProfileHeader extends StatelessWidget {
         ? (data!['name'] as String).trim()
         : (currentUser?.displayName?.toString().trim().isNotEmpty == true
               ? currentUser!.displayName!.toString().trim()
-              : 'Guru');
+              : context.t('profilFallbackName'));
     final String email = (data?['email'] as String?)?.trim().isNotEmpty == true
         ? (data!['email'] as String).trim()
         : (currentUser?.email?.toString().trim().isNotEmpty == true
@@ -200,14 +262,14 @@ class _ProfileHeader extends StatelessWidget {
         ? (data!['role'] as String).trim()
         : 'guru';
     final String roleLabel = role.isEmpty
-        ? 'Guru'
+        ? context.t('profilFallbackRoleLabel')
         : role[0].toUpperCase() + role.substring(1).toLowerCase();
     final String? photoUrl = (data?['photoUrl'] as String?)?.trim().isNotEmpty == true
         ? (data!['photoUrl'] as String).trim()
         : (currentUser?.photoURL?.toString().trim().isNotEmpty == true
               ? currentUser!.photoURL!.toString().trim()
               : null);
-    final String nip = (data?['nip'] as String?)?.trim() ?? 'NIP tidak tersedia';
+    final String nip = (data?['nip'] as String?)?.trim() ?? context.t('profilNIPUnavailable');
     final String mapel = (data?['subject'] as String?)?.trim() ?? 'TKJ';
     final bool hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
 
@@ -291,9 +353,9 @@ class _ProfileHeaderError extends StatelessWidget {
           child: Icon(Icons.error_outline, size: 50, color: AppColors.error),
         ),
         const SizedBox(height: AppSpacing.lg),
-        Text('Gagal memuat profil', style: AppTypography.title.copyWith(color: AppColors.error)),
+        Text(context.t('profilLoadFailed'), style: AppTypography.title.copyWith(color: AppColors.error)),
         const SizedBox(height: AppSpacing.xs),
-        Text('Periksa koneksi internet Anda', style: AppTypography.bodyMuted),
+        Text(context.t('profilLoadFailedMsg'), style: AppTypography.bodyMuted),
       ],
     );
   }
@@ -358,33 +420,38 @@ class _StatItem extends StatelessWidget {
 
 /// Item menu profil.
 class _MenuItem {
-  const _MenuItem({required this.icon, required this.title, required this.subtitle});
+  const _MenuItem({required this.icon, required this.titleKey, required this.subtitleKey});
   final AppIconName icon;
-  final String title;
-  final String subtitle;
+  final String titleKey;
+  final String subtitleKey;
 }
 
 /// Daftar menu statis.
 const List<_MenuItem> _menuItems = <_MenuItem>[
   _MenuItem(
     icon: AppIconName.pencil,
-    title: 'Edit Profil',
-    subtitle: 'Ubah nama, foto, dan informasi akun',
+    titleKey: 'profilMenuEditProfil',
+    subtitleKey: 'profilMenuEditProfilSub',
   ),
   _MenuItem(
     icon: AppIconName.bell,
-    title: 'Notifikasi',
-    subtitle: 'Kelola preferensi notifikasi',
+    titleKey: 'profilMenuNotifikasi',
+    subtitleKey: 'profilMenuNotifikasiSub',
   ),
   _MenuItem(
     icon: AppIconName.helpCircle,
-    title: 'Bantuan & Dukungan',
-    subtitle: 'FAQ, panduan, dan hubungi kami',
+    titleKey: 'profilMenuBantuan',
+    subtitleKey: 'profilMenuBantuanSub',
   ),
   _MenuItem(
     icon: AppIconName.lock,
-    title: 'Keamanan',
-    subtitle: 'Ubah kata sandi dan keamanan akun',
+    titleKey: 'profilMenuKeamanan',
+    subtitleKey: 'profilMenuKeamananSub',
+  ),
+  _MenuItem(
+    icon: AppIconName.globe,
+    titleKey: 'profilMenuBahasa',
+    subtitleKey: 'profilMenuBahasaSub',
   ),
 ];
 
@@ -430,9 +497,9 @@ class _MenuTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(item.title, style: AppTypography.body.copyWith(fontWeight: FontWeight.w600)),
+                      Text(context.t(item.titleKey), style: AppTypography.body.copyWith(fontWeight: FontWeight.w600)),
                       const SizedBox(height: AppSpacing.xs),
-                      Text(item.subtitle, style: AppTypography.caption),
+                      Text(context.t(item.subtitleKey), style: AppTypography.caption),
                     ],
                   ),
                 ),
@@ -488,7 +555,7 @@ class _LogoutRow extends StatelessWidget {
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
-                    'Keluar',
+                    context.t('profilLogout'),
                     style: AppTypography.body.copyWith(
                       color: AppColors.error,
                       fontWeight: FontWeight.w600,

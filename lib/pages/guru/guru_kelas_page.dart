@@ -11,6 +11,7 @@ import "../../theme/app_colors.dart";
 import "../../theme/app_spacing.dart";
 import "../../theme/app_typography.dart";
 import "../../utils/volt_feedback.dart";
+import "../../utils/localization_helper.dart";
 import "../../widgets/app_icon.dart";
 import "../../widgets/press_scale.dart";
 import "../../widgets/volt_button.dart";
@@ -43,21 +44,21 @@ class GuruKelasPage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "Daftar Kelas",
+                          context.t("daftarKelas"),
                           style: AppTypography.heading.copyWith(
                             fontWeight: FontWeight.w800,
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          "Kelola kelas yang Anda ampu",
+                          context.t("kelolaKelasYangAndaAmpu"),
                           style: AppTypography.bodyMuted,
                         ),
                       ],
                     ),
                   ),
                   VoltButton(
-                    label: "+ Buat Kelas",
+                    label: context.t("guruCreateClass"),
                     onPressed: () => _showCreateClassDialog(context, ref),
                     variant: VoltButtonVariant.primary,
                   ),
@@ -71,8 +72,8 @@ class GuruKelasPage extends ConsumerWidget {
                 ? SliverToBoxAdapter(
                     child: _EmptyState(
                       icon: AppIconName.info,
-                      title: "Belum Login",
-                      message: "Silakan login sebagai guru untuk mengelola kelas.",
+                      title: context.t("guruNotLoggedIn"),
+                      message: context.t("guruLoginPrompt"),
                     ),
                   )
                 : StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -93,8 +94,8 @@ class GuruKelasPage extends ConsumerWidget {
                         return SliverToBoxAdapter(
                           child: _EmptyState(
                             icon: AppIconName.info,
-                            title: "Gagal Memuat",
-                            message: "Terjadi kesalahan: ${snapshot.error}",
+                            title: context.t("gagalMemuat"),
+                            message: "${context.t("gagalMemuat")}: ${snapshot.error}",
                           ),
                         );
                       }
@@ -105,8 +106,8 @@ class GuruKelasPage extends ConsumerWidget {
                         return SliverToBoxAdapter(
                           child: _EmptyState(
                             icon: AppIconName.folder,
-                            title: "Belum Ada Kelas",
-                            message: "Tekan \"+ Buat Kelas\" untuk membuat kelas baru.",
+                            title: context.t("guruNoClasses"),
+                            message: context.t("guruCreateClassPrompt"),
                           ),
                         );
                       }
@@ -156,18 +157,18 @@ class GuruKelasPage extends ConsumerWidget {
     return showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Buat Kelas Baru"),
+        title: Text(context.t("guruCreateClassTitle")),
         content: Form(
           key: formKey,
           child: TextFormField(
             controller: controller,
-            decoration: const InputDecoration(
-              labelText: "Nama Kelas",
-              hintText: "Contoh: 10 IPA 1",
+            decoration:  InputDecoration(
+              labelText: context.t("guruClassNameLabel"),
+              hintText: context.t("guruClassNameHint"),
             ),
             validator: (value) {
               if (value == null || value.trim().isEmpty) {
-                return "Nama kelas tidak boleh kosong";
+                return context.t("guruClassNameRequired");
               }
               return null;
             },
@@ -176,7 +177,7 @@ class GuruKelasPage extends ConsumerWidget {
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Batal"),
+            child: Text(context.t("guruCancel")),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -185,7 +186,7 @@ class GuruKelasPage extends ConsumerWidget {
                 await _createClass(ref, controller.text.trim());
               }
             },
-            child: const Text("Buat"),
+            child: Text(context.t("guruCreate")),
           ),
         ],
       ),
@@ -199,7 +200,7 @@ class GuruKelasPage extends ConsumerWidget {
     if (teacherId == null) {
       showVoltSnackBar(
         ref.context!,
-        "Silakan login terlebih dahulu",
+        ref.context!.t("guruLoginFirst"),
       );
       return;
     }
@@ -219,12 +220,12 @@ class GuruKelasPage extends ConsumerWidget {
 
       showVoltSnackBar(
         ref.context!,
-        "Kelas \"$nama\" berhasil dibuat (Kode: $classCode)",
+        ref.context!.t("guruClassCreated", args: [nama, classCode]),
       );
     } catch (e) {
       showVoltSnackBar(
         ref.context!,
-        "Gagal membuat kelas: $e",
+        ref.context!.t("guruClassCreateFailed", args: [e.toString()]),
       );
     }
   }
@@ -286,7 +287,7 @@ class _KelasCard extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xs),
                   Row(
                     children: <Widget>[
-                      Text("$jumlahSiswa siswa", style: AppTypography.bodyMuted),
+                      Text(context.t('guruKelasCardSiswa', args: [jumlahSiswa]), style: AppTypography.bodyMuted),
                       const SizedBox(width: AppSpacing.md),
                       Container(
                         padding: const EdgeInsets.symmetric(
