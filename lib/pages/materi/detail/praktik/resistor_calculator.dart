@@ -4,6 +4,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 enum BandType { digit, multiplier, tolerance, tempco }
 
@@ -184,10 +185,10 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
   }
 
   String _getBandLabel(int i, BandType t) => switch (t) {
-    BandType.digit => 'Gelang ${i + 1} (Digit)',
-    BandType.multiplier => 'Gelang ${i + 1} (Pengali)',
-    BandType.tolerance => 'Gelang ${i + 1} (Toleransi)',
-    BandType.tempco => 'Gelang ${i + 1} (Koef. Suhu)',
+    BandType.digit => context.t('rcBandDigit', args: [(i + 1).toString()]),
+    BandType.multiplier => context.t('rcBandMultiplier', args: [(i + 1).toString()]),
+    BandType.tolerance => context.t('rcBandTolerance', args: [(i + 1).toString()]),
+    BandType.tempco => context.t('rcBandTempco', args: [(i + 1).toString()]),
   };
 
   List<ResistorColorDef> _getColors(BandType t) => switch (t) {
@@ -246,17 +247,17 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text('Kalkulator Kode Warna Resistor', style: AppTypography.title),
+                Text(context.t('rcTitle'), style: AppTypography.title),
                 const SizedBox(height: AppSpacing.xs),
-                const Text('Pilih jumlah gelang lalu ketuk gelang untuk mengubah warna.', style: AppTypography.bodyMuted),
+                Text(context.t('rcDesc'), style: AppTypography.bodyMuted),
                 const SizedBox(height: AppSpacing.lg),
-                const Text('Jumlah Gelang', style: AppTypography.label),
+                Text(context.t('rcBandCount'), style: AppTypography.label),
                 const SizedBox(height: AppSpacing.sm),
                 SegmentedButton<int>(
-                  segments: const <ButtonSegment<int>>[
-                    ButtonSegment<int>(value: 4, label: Text('4 Gelang')),
-                    ButtonSegment<int>(value: 5, label: Text('5 Gelang')),
-                    ButtonSegment<int>(value: 6, label: Text('6 Gelang')),
+                  segments: <ButtonSegment<int>>[
+                    ButtonSegment<int>(value: 4, label: Text(context.t('rcBand4'))),
+                    ButtonSegment<int>(value: 5, label: Text(context.t('rcBand5'))),
+                    ButtonSegment<int>(value: 6, label: Text(context.t('rcBand6'))),
                   ],
                   selected: <int>{_bandCount},
                   onSelectionChanged: (Set<int> newSelection) {
@@ -274,19 +275,13 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          const VoltCard(
+          VoltCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Cara Membaca Gelang', style: AppTypography.title),
+                Text(context.t('rcReadingTitle'), style: AppTypography.title),
                 SizedBox(height: AppSpacing.xs),
-                Text(
-                  '• 4 Gelang: Digit 1, Digit 2, Pengali, Toleransi\n'
-                  '• 5 Gelang: Digit 1, Digit 2, Digit 3, Pengali, Toleransi\n'
-                  '• 6 Gelang: Digit 1, Digit 2, Digit 3, Pengali, Toleransi, Koef. Suhu\n\n'
-                  'Contoh 220 Ω ±5%: Merah (2) - Merah (2) - Cokelat (×10) - Emas (±5%)',
-                  style: AppTypography.body,
-                ),
+                Text(context.t('rcReadingText'), style: AppTypography.body),
               ],
             ),
           ),
@@ -307,10 +302,7 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            'Nilai Hambatan',
-            style: AppTypography.overline.copyWith(color: const Color(0xFF64748B)),
-          ),
+          Text(context.t('rcResultTitle'), style: AppTypography.overline.copyWith(color: const Color(0xFF64748B))),
           const SizedBox(height: AppSpacing.xs),
           Text(
             _formatOhms(_calcOhms()),
@@ -323,7 +315,7 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
           if (_calcTol() != null) ...<Widget>[
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Toleransi: ±${_calcTol()!.toStringAsFixed(_calcTol()! % 1 == 0 ? 0 : 2)}%',
+              context.t('rcToleranceLabel', args: [_calcTol()!.toStringAsFixed(_calcTol()! % 1 == 0 ? 0 : 2)]),
               style: AppTypography.body.copyWith(
                 color: AppColors.accent,
                 fontWeight: FontWeight.w600,
@@ -333,7 +325,7 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
           if (_calcTempco() != null) ...<Widget>[
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Koefisien Suhu: ${_calcTempco()} ppm/K',
+              context.t('rcTempcoLabel', args: [_calcTempco().toString()]),
               style: AppTypography.body.copyWith(
                 color: const Color(0xFF94A3B8),
                 fontWeight: FontWeight.w500,
@@ -386,10 +378,10 @@ class _ResistorCalculatorState extends State<ResistorCalculator> {
           children: List.generate(_bandCount, (i) {
             final BandType type = _getBandType(i);
             final String label = switch (type) {
-              BandType.digit => 'D${i + 1}',
-              BandType.multiplier => 'Pengali',
-              BandType.tolerance => 'Tol.',
-              BandType.tempco => 'PPM',
+              BandType.digit => context.t('rcBandDigit', args: [(i + 1).toString()]),
+              BandType.multiplier => context.t('rcBandMultiplier', args: [(i + 1).toString()]),
+              BandType.tolerance => context.t('rcBandTolerance', args: [(i + 1).toString()]),
+              BandType.tempco => context.t('rcBandTempco', args: [(i + 1).toString()]),
             };
             return InkWell(
               onTap: () => _pickColor(i),

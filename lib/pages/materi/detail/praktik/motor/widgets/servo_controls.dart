@@ -8,6 +8,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 class ServoControls extends StatelessWidget {
   const ServoControls({super.key, required this.controller});
@@ -33,7 +34,7 @@ class ServoControls extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Text(
-          'PRESET SUDUT & LANGKAH (TAHAN UNTUK REPEAT)',
+          context.t('motorServoPresetTitle'),
           style: AppTypography.overline.copyWith(
             color: AppColors.textSecondary,
             fontWeight: FontWeight.w700,
@@ -86,30 +87,30 @@ class ServoControls extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         VirtualSwitch(
           key: const Key('servo_switch_sweep'),
-          label: 'Mode Sweep (0° ↔ 180°)',
-          subtitle: 'Bergerak bolak-balik otomatis seperti contoh Arduino Sweep',
+          label: context.t('motorServoSweepLabel'),
+          subtitle: context.t('motorServoSweepSubtitle'),
           value: controller.servoSweepEnabled,
           onChanged: controller.setServoSweepEnabled,
           accentColor: accent,
         ),
         if (controller.servoSweepEnabled) ...<Widget>[
           const SizedBox(height: AppSpacing.xs),
-          _buildSweepSpeedSelector(accent),
+          _buildSweepSpeedSelector(context, accent),
         ],
       ],
     );
   }
 
-  Widget _buildSweepSpeedSelector(Color accent) {
-    const List<(SpeedPreset, String)> items = <(SpeedPreset, String)>[
-      (SpeedPreset.slow, 'Lambat'),
-      (SpeedPreset.medium, 'Sedang'),
-      (SpeedPreset.fast, 'Cepat'),
+  Widget _buildSweepSpeedSelector(BuildContext context, Color accent) {
+    final List<(SpeedPreset, String)> items = <(SpeedPreset, String)>[
+      (SpeedPreset.slow, context.t('motorSpeedSlow')),
+      (SpeedPreset.medium, context.t('motorSpeedMedium')),
+      (SpeedPreset.fast, context.t('motorSpeedFast')),
     ];
     return Row(
       children: <Widget>[
         Text(
-          'Kecepatan Sweep:',
+          context.t('motorServoSweepSpeed'),
           style: AppTypography.overline.copyWith(color: AppColors.textSecondary),
         ),
         const SizedBox(width: AppSpacing.sm),

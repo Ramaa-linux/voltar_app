@@ -4,6 +4,7 @@ import 'package:voltar/services/auth_service.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 
@@ -78,7 +79,7 @@ class _AuthLoadingPageState extends ConsumerState<AuthLoadingPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const <Widget>[
+      children: <Widget>[
         SizedBox(
           width: 48,
           height: 48,
@@ -89,13 +90,13 @@ class _AuthLoadingPageState extends ConsumerState<AuthLoadingPage> {
         ),
         SizedBox(height: AppSpacing.xl),
         Text(
-          'Menyiapkan akunmu...',
+          context.t('authLoadingPreparing'),
           style: AppTypography.heading,
           textAlign: TextAlign.center,
         ),
         SizedBox(height: AppSpacing.sm),
         Text(
-          'Mohon tunggu sebentar, sedang memuat data peran akun.',
+          context.t('authLoadingWaitMessage'),
           style: AppTypography.bodyMuted,
           textAlign: TextAlign.center,
         ),
@@ -125,20 +126,20 @@ class _AuthLoadingPageState extends ConsumerState<AuthLoadingPage> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          const Text(
-            'Gagal Menyiapkan Akun',
+          Text(
+            context.t('authLoadingFailedTitle'),
             style: AppTypography.heading,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            errorMessage ?? 'Terjadi kendala saat memuat peran akun. Periksa koneksi internet Anda.',
+            errorMessage ?? context.t('authLoadingFailedMessage'),
             style: AppTypography.bodyMuted,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.xl),
           VoltButton(
-            label: _isRetrying ? 'Mencoba...' : 'Coba Lagi',
+            label: _isRetrying ? context.t('authLoadingRetrying') : context.t('authLoadingRetry'),
             fullWidth: true,
             onPressed: (_isRetrying || _isLoggingOut) ? null : _handleRetry,
           ),
@@ -146,7 +147,7 @@ class _AuthLoadingPageState extends ConsumerState<AuthLoadingPage> {
           TextButton(
             onPressed: (_isRetrying || _isLoggingOut) ? null : _handleLogout,
             child: Text(
-              _isLoggingOut ? 'Keluar...' : 'Keluar',
+              _isLoggingOut ? context.t('authLoadingLoggingOut') : context.t('authLoadingLogout'),
               style: AppTypography.button.copyWith(
                 color: AppColors.textSecondary,
               ),

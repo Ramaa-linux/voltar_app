@@ -27,6 +27,9 @@ dependencies:
   cloud_firestore: ^7.1.0
   firebase_storage: ^14.0.1
   image_picker: ^1.0.7
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +39,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
 
   # Fase 2: ikon Lucide 24x24 (ISC). Lisensi: assets/licenses/ISC-Lucide.txt
   # Fase 1 & 2: data materi JSON

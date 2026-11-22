@@ -156,7 +156,13 @@ class _LevelCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  level.caption,
+                  level.materiList.isEmpty
+                      ? context.t('levelCaptionEmpty')
+                      : context.t('levelCaption',
+                          args: [
+                            '${level.materiList.length}',
+                            '${level.totalMinutes}',
+                          ]),
                   style: AppTypography.caption.copyWith(
                     color: isUnlocked
                         ? AppColors.textSecondary

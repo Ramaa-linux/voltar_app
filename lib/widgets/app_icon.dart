@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:voltar/theme/app_colors.dart';
 
@@ -28,6 +28,7 @@ enum AppIconName {
   chevronDown,
   helpCircle,
   folder,
+  globe,
 }
 
 /// Ukuran ikon standar - jangan pakai angka lepas di widget.
@@ -196,7 +197,7 @@ class AppIcon extends StatelessWidget {
   /// Diisi hanya bila ikon berdiri sendiri (tanpa label teks di sebelahnya).
   final String? semanticLabel;
 
-  static String _assetFor(AppIconName name) => switch (name) {
+  static String? _assetFor(AppIconName name) => switch (name) {
     AppIconName.home => 'assets/icons/home.svg',
     AppIconName.bookOpen => 'assets/icons/book-open.svg',
     AppIconName.cpu => 'assets/icons/cpu.svg',
@@ -218,18 +219,24 @@ class AppIcon extends StatelessWidget {
     AppIconName.chevronDown => 'assets/icons/chevron-down.svg',
     AppIconName.helpCircle => 'assets/icons/help-circle.svg',
     AppIconName.folder => 'assets/icons/folder.svg',
+    AppIconName.globe => null,
   };
 
   @override
   Widget build(BuildContext context) {
     // File Lucide memakai stroke="currentColor"; srcIn menimpa seluruh piksel
     // non-transparan sehingga warna selalu mengikuti token.
-    final Widget icon = SvgPicture.asset(
-      _assetFor(name),
-      width: size,
-      height: size,
-      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-    );
+    final Widget icon;
+    if (name == AppIconName.globe) {
+      icon = Icon(Icons.language_outlined, size: size, color: color);
+    } else {
+      icon = SvgPicture.asset(
+        _assetFor(name)!,
+        width: size,
+        height: size,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      );
+    }
 
     final String? label = semanticLabel;
     if (label == null) {
@@ -238,3 +245,5 @@ class AppIcon extends StatelessWidget {
     return Semantics(image: true, label: label, child: icon);
   }
 }
+
+

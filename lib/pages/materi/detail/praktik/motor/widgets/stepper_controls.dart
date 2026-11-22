@@ -8,6 +8,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 class StepperControls extends StatelessWidget {
   const StepperControls({super.key, required this.controller});
@@ -23,7 +24,7 @@ class StepperControls extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _buildModeBar(accent),
+        _buildModeBar(context, accent),
         const SizedBox(height: AppSpacing.sm),
         if (controller.inputDevice == InputDevice.potentiometer)
           VirtualPotentiometer(
@@ -36,12 +37,12 @@ class StepperControls extends StatelessWidget {
             accentColor: accent,
           )
         else
-          _buildPushButtonControls(accent),
+          _buildPushButtonControls(context, accent),
       ],
     );
   }
 
-  Widget _buildModeBar(Color accent) {
+  Widget _buildModeBar(BuildContext context, Color accent) {
     final bool isRotor = controller.stepperViewMode == StepperViewMode.rotor;
     final bool isFull = controller.stepperStepMode == StepperStepMode.fullStep;
 
@@ -51,8 +52,8 @@ class StepperControls extends StatelessWidget {
           child: VirtualPushButton(
             key: const Key('stepper_toggle_view_mode'),
             label: isRotor
-                ? 'Rotor (${isFull ? '5.625°' : '2.81°'}/step)'
-                : 'Output Shaft 1:64',
+                ? context.t('stepperRotorView', args: [isFull ? '5.625' : '2.81'])
+                : context.t('stepperOutputShaft'),
             compact: true,
             accentColor: accent,
             onTap: () => controller.setStepperViewMode(
@@ -64,7 +65,7 @@ class StepperControls extends StatelessWidget {
         Expanded(
           child: VirtualPushButton(
             key: const Key('stepper_toggle_step_mode'),
-            label: isFull ? 'Mode: Full-Step (4)' : 'Mode: Half-Step (8)',
+            label: context.t(isFull ? 'stepperModeFullStep' : 'stepperModeHalfStep'),
             compact: true,
             accentColor: AppColors.primary,
             onTap: () => controller.setStepperStepMode(
@@ -76,7 +77,7 @@ class StepperControls extends StatelessWidget {
     );
   }
 
-  Widget _buildPushButtonControls(Color accent) {
+  Widget _buildPushButtonControls(BuildContext context, Color accent) {
     final bool isCw = controller.stepperAutoRunDir >= 0;
 
     return Column(
@@ -111,7 +112,7 @@ class StepperControls extends StatelessWidget {
             Expanded(
               child: VirtualPushButton(
                 key: const Key('stepper_btn_half_rev'),
-                label: '½ Putaran (180°)',
+                label: context.t('stepperHalfRev'),
                 compact: true,
                 accentColor: AppColors.primary,
                 onTap: () => controller.rotateStepperRevolutions(0.5),
@@ -121,7 +122,7 @@ class StepperControls extends StatelessWidget {
             Expanded(
               child: VirtualPushButton(
                 key: const Key('stepper_btn_full_rev'),
-                label: '1 Putaran (360°)',
+                label: context.t('stepperFullRev'),
                 compact: true,
                 accentColor: AppColors.primary,
                 onTap: () => controller.rotateStepperRevolutions(1.0),
@@ -130,7 +131,7 @@ class StepperControls extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
             VirtualPushButton(
               key: const Key('stepper_btn_reset'),
-              label: 'Reset 0°',
+              label: context.t('stepperResetZero'),
               compact: true,
               accentColor: AppColors.accent,
               onTap: controller.resetStepperPosition,
@@ -140,29 +141,31 @@ class StepperControls extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         VirtualSwitch(
           key: const Key('stepper_switch_autorun'),
-          label: 'Auto-Run Stepper (${isCw ? 'CW' : 'CCW'})',
-          subtitle: 'Melangkah kontinu dengan kecepatan terpilih',
+          label: context.t('stepperAutoRunLabel', args: [isCw ? 'CW' : 'CCW']),
+          subtitle: context.t('stepperAutoRunSubtitle'),
           value: controller.stepperAutoRun,
           onChanged: controller.setStepperAutoRun,
           accentColor: accent,
         ),
         const SizedBox(height: AppSpacing.xs),
-        _buildAutoRunOptions(accent, isCw),
+        _buildAutoRunOptions(context, accent, isCw),
       ],
     );
   }
 
-  Widget _buildAutoRunOptions(Color accent, bool isCw) {
-    const List<(SpeedPreset, String)> speeds = <(SpeedPreset, String)>[
-      (SpeedPreset.slow, 'Lambat'),
-      (SpeedPreset.medium, 'Sedang'),
-      (SpeedPreset.fast, 'Cepat'),
+  Widget _buildAutoRunOptions(BuildContext context, Color accent, bool isCw) {
+    final List<(SpeedPreset, String)> speeds = <(SpeedPreset, String)>[
+      (SpeedPreset.slow, context.t('motorSpeedSlow')),
+      (SpeedPreset.medium, context.t('motorSpeedMedium')),
+      (SpeedPreset.fast, context.t('motorSpeedFast')),
     ];
     return Row(
       children: <Widget>[
         VirtualPushButton(
           key: const Key('stepper_btn_autodir'),
-          label: isCw ? 'Arah: CW ↻' : 'Arah: CCW ↺',
+          label: isCw
+              ? '${context.t('stepperDirCw')} ↻'
+              : '${context.t('stepperDirCcw')} ↺',
           compact: true,
           accentColor: AppColors.primary,
           onTap: () => controller.setStepperAutoRunDir(isCw ? -1 : 1),

@@ -77,6 +77,14 @@ class LearningStep {
     this.videoSummary,
     this.questions,
     this.subMateri,
+    // Localization keys (populated by [MateriRepository]; null = use raw JSON value)
+    this.localizedTitleKey,
+    this.localizedDescriptionKey,
+    this.localizedEstimatedTimeKey,
+    this.localizedContentKeys,      // parallel index to [content]
+    this.localizedVideoSummaryKeys, // parallel index to [videoSummary]
+    this.localizedQuestionKeys,   // question index -> ARB key
+    this.localizedOptionKeys, // question index -> [option ARB keys]
   });
 
   final String id;
@@ -90,6 +98,60 @@ class LearningStep {
   final List<ContentBlock>? videoSummary;
   final List<QuizQuestion>? questions;
   final List<LearningStep>? subMateri;
+  final String? localizedTitleKey;
+  final String? localizedDescriptionKey;
+  final String? localizedEstimatedTimeKey;
+  final List<String>? localizedContentKeys;
+  final List<String>? localizedVideoSummaryKeys;
+  final Map<int, String>? localizedQuestionKeys;
+  final Map<int, List<String>>? localizedOptionKeys;
+
+  /// Salin dengan field yang diganti.
+  LearningStep copyWith({
+    String? id,
+    LearningStepType? type,
+    String? title,
+    String? description,
+    String? estimatedTime,
+    String? heroImageUrl,
+    String? videoUrl,
+    List<ContentBlock>? content,
+    List<ContentBlock>? videoSummary,
+    List<QuizQuestion>? questions,
+    List<LearningStep>? subMateri,
+    String? localizedTitleKey,
+    String? localizedDescriptionKey,
+    String? localizedEstimatedTimeKey,
+    List<String>? localizedContentKeys,
+    List<String>? localizedVideoSummaryKeys,
+    Map<int, String>? localizedQuestionKeys,
+    Map<int, List<String>>? localizedOptionKeys,
+  }) {
+    return LearningStep(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
+      heroImageUrl: heroImageUrl ?? this.heroImageUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
+      content: content ?? this.content,
+      videoSummary: videoSummary ?? this.videoSummary,
+      questions: questions ?? this.questions,
+      subMateri: subMateri ?? this.subMateri,
+      localizedTitleKey: localizedTitleKey ?? this.localizedTitleKey,
+      localizedDescriptionKey:
+          localizedDescriptionKey ?? this.localizedDescriptionKey,
+      localizedEstimatedTimeKey:
+          localizedEstimatedTimeKey ?? this.localizedEstimatedTimeKey,
+      localizedContentKeys: localizedContentKeys ?? this.localizedContentKeys,
+      localizedVideoSummaryKeys:
+          localizedVideoSummaryKeys ?? this.localizedVideoSummaryKeys,
+      localizedQuestionKeys:
+          localizedQuestionKeys ?? this.localizedQuestionKeys,
+      localizedOptionKeys: localizedOptionKeys ?? this.localizedOptionKeys,
+    );
+  }
 
   factory LearningStep.fromJson(Map<String, dynamic> json) {
     final type = LearningStepType.values.byName(json['type'] as String);
@@ -122,6 +184,24 @@ class LearningStep {
               ?.map((e) => LearningStep.fromJson(e as Map<String, dynamic>))
               .toList()
           : null,
+      localizedTitleKey: json['localizedTitleKey'] as String?,
+      localizedDescriptionKey:
+          json['localizedDescriptionKey'] as String?,
+      localizedEstimatedTimeKey:
+          json['localizedEstimatedTimeKey'] as String?,
+      localizedContentKeys: (json['localizedContentKeys'] as List<dynamic>?)
+          ?.cast<String>()
+          .toList(),
+      localizedVideoSummaryKeys: (json['localizedVideoSummaryKeys']
+              as List<dynamic>?)
+          ?.cast<String>()
+          .toList(),
+      localizedQuestionKeys: (json['localizedQuestionKeys']
+              as Map<String, dynamic>?)
+          ?.map((k, v) => MapEntry(int.parse(k), v as String)),
+      localizedOptionKeys: (json['localizedOptionKeys']
+              as Map<String, dynamic>?)
+          ?.map((k, v) => MapEntry(int.parse(k), (v as List<dynamic>).cast<String>())),
     );
   }
 
@@ -137,5 +217,17 @@ class LearningStep {
     'videoSummary': videoSummary?.map((e) => e.toJson()).toList(),
     'questions': questions?.map((e) => e.toJson()).toList(),
     'subMateri': subMateri?.map((e) => e.toJson()).toList(),
+    if (localizedTitleKey != null) 'localizedTitleKey': localizedTitleKey,
+    if (localizedDescriptionKey != null)
+      'localizedDescriptionKey': localizedDescriptionKey,
+    if (localizedEstimatedTimeKey != null)
+      'localizedEstimatedTimeKey': localizedEstimatedTimeKey,
+    if (localizedContentKeys != null)
+      'localizedContentKeys': localizedContentKeys,
+    if (localizedVideoSummaryKeys != null)
+      'localizedVideoSummaryKeys': localizedVideoSummaryKeys,
+    if (localizedQuestionKeys != null)
+      'localizedQuestionKeys': localizedQuestionKeys,
+    if (localizedOptionKeys != null) 'localizedOptionKeys': localizedOptionKeys,
   };
 }

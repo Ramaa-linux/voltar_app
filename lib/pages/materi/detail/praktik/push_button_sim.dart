@@ -4,6 +4,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Praktik interaktif: Virtual Push Button (Tactile Switch) & LED.
 class PushButtonSim extends StatefulWidget {
@@ -35,10 +36,10 @@ class _PushButtonSimState extends State<PushButtonSim> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text('Simulasi Push Button', style: AppTypography.title),
+                Text(context.t('pbSimTitle'), style: AppTypography.title),
                 const SizedBox(height: AppSpacing.xs),
-                const Text(
-                  'Tekan dan tahan tombol tactile switch di bawah untuk mengalirkan arus ke LED.',
+                Text(
+                  context.t('pbSimDesc'),
                   style: AppTypography.bodyMuted,
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -78,8 +79,8 @@ class _PushButtonSimState extends State<PushButtonSim> {
                         ),
                         child: Text(
                           _isPressed
-                              ? 'RANGKAIAN TERTUTUP: ARUS MENGALIR'
-                              : 'RANGKAIAN TERBUKA: STANDBY',
+                              ? context.t('pbCircuitClosed')
+                              : context.t('pbCircuitOpen'),
                           style: AppTypography.label.copyWith(
                             color: _isPressed
                                 ? AppColors.success
@@ -172,7 +173,7 @@ class _PushButtonSimState extends State<PushButtonSim> {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          _isPressed ? 'Ditekan' : 'Tekan & Tahan',
+          _isPressed ? context.t('pbBtnPressed') : context.t('pbBtnHold'),
           style: AppTypography.label.copyWith(
             color: _isPressed ? AppColors.accent : const Color(0xFFCBD5E1),
             fontWeight: FontWeight.w600,
@@ -268,7 +269,7 @@ class _PushButtonSimState extends State<PushButtonSim> {
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          _isPressed ? 'LED ON' : 'LED OFF',
+          _isPressed ? context.t('pbLedOn') : context.t('pbLedOff'),
           style: AppTypography.label.copyWith(
             color: _isPressed ? const Color(0xFFEF4444) : const Color(0xFF94A3B8),
             fontWeight: FontWeight.w700,

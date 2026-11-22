@@ -10,6 +10,7 @@ import 'package:voltar/pages/materi/materi_page.dart';
 import 'package:voltar/repositories/materi_repository.dart';
 import 'package:voltar/repositories/progress_repository.dart';
 import 'package:voltar/widgets/app_icon.dart';
+import 'package:voltar/l10n/app_localizations.dart';
 
 class _FakeMateriRepository extends MateriRepository {
   const _FakeMateriRepository();
@@ -137,6 +138,8 @@ void main() {
           materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
         ],
         child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: MateriPage(),
         ),
       ),
@@ -160,6 +163,8 @@ void main() {
           materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
         ],
         child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: LevelDetailPage(levelNumber: 1),
         ),
       ),
@@ -186,6 +191,8 @@ void main() {
           materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
         ],
         child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: LevelDetailPage(levelNumber: 1),
         ),
       ),
@@ -211,6 +218,8 @@ void main() {
           materiRepositoryProvider.overrideWithValue(repo),
         ],
         child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: MateriDetailView(
               step: step,
@@ -244,6 +253,8 @@ void main() {
           materiRepositoryProvider.overrideWithValue(const _FakeMateriRepository()),
         ],
         child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: KuisPage(stepId: 'l1_pre'),
         ),
       ),
@@ -283,6 +294,8 @@ void main() {
             completedStepsProvider.overrideWith((ref) => Future.value(<String>{})),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: MateriPage(),
           ),
         ),
@@ -324,6 +337,8 @@ void main() {
             ),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: MateriPage(),
           ),
         ),
@@ -366,6 +381,8 @@ void main() {
             completedStepsProvider.overrideWith((ref) => Future.value(<String>{})),
           ],
           child: const MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
             home: LevelDetailPage(levelNumber: 2),
           ),
         ),

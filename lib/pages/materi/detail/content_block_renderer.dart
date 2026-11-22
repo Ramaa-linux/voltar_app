@@ -4,24 +4,37 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/dashed_border_box.dart';
 
 /// Renderer untuk satu blok konten di halaman detail.
 class ContentBlockRenderer extends StatelessWidget {
-  const ContentBlockRenderer({super.key, required this.block, required this.index});
+  const ContentBlockRenderer({
+    super.key,
+    required this.block,
+    required this.index,
+    this.localizedKey, // ARB key untuk teks/heading; null = gunakan block.data
+  });
 
   final ContentBlock block;
   final int index;
+  final String? localizedKey;
 
   @override
   Widget build(BuildContext context) {
+    // Kode Arduino (type: code) disengaji dari ekstraksi ARB — gunakan data mentah.
+    final String displayText =
+        localizedKey != null && block.type != ContentBlockType.code
+            ? context.t(localizedKey!)
+            : block.data;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.xl),
       child: switch (block.type) {
-        ContentBlockType.text => _TextBlock(text: block.data),
+        ContentBlockType.text => _TextBlock(text: displayText),
         ContentBlockType.code => _CodeBlock(code: block.data),
         ContentBlockType.image => _ImagePlaceholder(imageUrl: block.data),
-        ContentBlockType.heading => _HeadingBlock(text: block.data),
+        ContentBlockType.heading => _HeadingBlock(text: displayText),
       },
     );
   }
@@ -85,7 +98,7 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return DashedBorderBox(
       height: 180,
-      text: 'Gambar: $imageUrl\n\n(Tap untuk lihat fullscreen di Fase 3+)',
+      text: context.t('gambarPlaceholder', args: [imageUrl]),
     );
   }
 }

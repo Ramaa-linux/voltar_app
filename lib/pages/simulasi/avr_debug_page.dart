@@ -8,6 +8,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_chip.dart';
@@ -96,12 +97,12 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Kembali',
+          tooltip: context.t('simulasiTooltipBack'),
           icon: const AppIcon.arrowLeft(color: AppColors.textPrimary),
           onPressed: () =>
               context.canPop() ? context.pop() : context.go(AppRoutes.simulasi),
         ),
-        title: const Text('Debug AVR'),
+        title: Text(context.t('simulasiDebugAvrTitle')),
       ),
       body: SafeArea(
         top: false,
@@ -112,12 +113,14 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Text('Mesin simulasi', style: AppTypography.heading),
+                  Text(context.t('simulasiSimMachine'), style: AppTypography.heading),
                   const Spacer(),
                   VoltChip(
                     label: _running
-                        ? (_service.runsInIsolate ? 'Isolate' : 'Timer')
-                        : 'Berhenti',
+                        ? (_service.runsInIsolate
+                            ? context.t('simulasiModeIsolate')
+                            : context.t('simulasiModeTimer'))
+                        : context.t('simulasiStopped'),
                     status: _running
                         ? VoltChipStatus.done
                         : VoltChipStatus.locked,
@@ -149,7 +152,7 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
                 children: <Widget>[
                   Expanded(
                     child: VoltButton(
-                      label: 'Start',
+                      label: context.t('simulasiBtnStart'),
                       icon: AppIconName.zap,
                       fullWidth: true,
                       onPressed: (_running || _starting) ? null : _start,
@@ -158,7 +161,7 @@ class _AvrDebugPageState extends State<AvrDebugPage> {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: VoltButton(
-                      label: 'Stop',
+                      label: context.t('simulasiBtnStop'),
                       variant: VoltButtonVariant.secondary,
                       fullWidth: true,
                       onPressed: _running ? _stop : null,

@@ -7,6 +7,7 @@ import '../../../theme/app_typography.dart';
 import '../../../utils/volt_feedback.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/volt_button.dart';
+import '../../../utils/localization_helper.dart';
 
 /// Tampilkan bottom sheet untuk membuat Pengumuman baru.
 void showCreateAnnouncementSheet({
@@ -50,18 +51,18 @@ void showCreateAnnouncementSheet({
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                Text('Buat Pengumuman', style: AppTypography.title),
+                Text(context.t('buatPengumuman'), style: AppTypography.title),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Bagikan informasi penting kepada seluruh siswa di kelas.',
+                  context.t('bagikanInfo'),
                   style: AppTypography.bodyMuted,
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 TextField(
                   controller: titleCtrl,
                   decoration: InputDecoration(
-                    labelText: 'Judul (Opsional)',
-                    hintText: 'Contoh: Jadwal Praktikum Minggu Depan',
+                    labelText: context.t('judulOpsional'),
+                    hintText: context.t('contohJudul'),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.input),
                     ),
@@ -72,8 +73,8 @@ void showCreateAnnouncementSheet({
                   controller: contentCtrl,
                   maxLines: 4,
                   decoration: InputDecoration(
-                    labelText: 'Isi Pengumuman',
-                    hintText: 'Tulis pengumuman di sini...',
+                    labelText: context.t('isiPengumuman'),
+                    hintText: context.t('tulisPengumuman'),
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.input),
@@ -82,7 +83,7 @@ void showCreateAnnouncementSheet({
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 VoltButton(
-                  label: isLoading ? 'Memposting...' : 'Posting Pengumuman',
+                  label: isLoading ? context.t('memposting') : context.t('postingPengumuman'),
                   fullWidth: true,
                   onPressed: isLoading
                       ? null
@@ -90,7 +91,7 @@ void showCreateAnnouncementSheet({
                           final content = contentCtrl.text.trim();
                           if (content.isEmpty) {
                             showVoltSnackBar(
-                                context, 'Isi pengumuman tidak boleh kosong');
+                                context, context.t('isiPengumumanTidakBolehKosong'));
                             return;
                           }
                           setModalState(() => isLoading = true);
@@ -107,7 +108,7 @@ void showCreateAnnouncementSheet({
                             if (ctx.mounted) {
                               Navigator.pop(ctx);
                               showVoltSnackBar(
-                                  context, 'Pengumuman berhasil diposting');
+                                  context, context.t('createPostAnnouncementPosted'));
                             }
                           } catch (e) {
                             setModalState(() => isLoading = false);
@@ -168,7 +169,7 @@ void showCreateAssignmentSheet({
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                Text('Buat Tugas Baru', style: AppTypography.title),
+                Text(context.t('createPostCreateAssignment'), style: AppTypography.title),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   'Buat tugas dengan deadline untuk siswa. Deadline diset pada akhir hari (23:59).',
@@ -190,7 +191,7 @@ void showCreateAssignmentSheet({
                   controller: contentCtrl,
                   maxLines: 4,
                   decoration: InputDecoration(
-                    labelText: 'Deskripsi Tugas',
+                    labelText: context.t('createPostAssignmentDescription'),
                     hintText: 'Jelaskan detail tugas, instruksi, dll...',
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
@@ -229,8 +230,8 @@ void showCreateAssignmentSheet({
                         Expanded(
                           child: Text(
                             selectedDate == null
-                                ? 'Pilih Batas Waktu (Deadline)'
-                                : 'Deadline: ${_formatDate(selectedDate!)} 23:59',
+                                ? context.t('pilihDeadline')
+                                : context.t('deadlineWithTime', args: [_formatDate(selectedDate!), '23:59']),
                             style: AppTypography.body.copyWith(
                               color: selectedDate == null
                                   ? AppColors.textSecondary
@@ -254,7 +255,7 @@ void showCreateAssignmentSheet({
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 VoltButton(
-                  label: isLoading ? 'Membuat...' : 'Buat Tugas',
+                  label: isLoading ? context.t('membuat') : context.t('buatTugas'),
                   fullWidth: true,
                   variant: VoltButtonVariant.primary,
                   icon: AppIconName.checkSquare,
@@ -264,15 +265,15 @@ void showCreateAssignmentSheet({
                           final title = titleCtrl.text.trim();
                           final content = contentCtrl.text.trim();
                           if (title.isEmpty) {
-                            showVoltSnackBar(context, 'Judul tugas wajib diisi');
+                            showVoltSnackBar(context, context.t('judulTugasWajibDiisi'));
                             return;
                           }
                           if (content.isEmpty) {
-                            showVoltSnackBar(context, 'Deskripsi tugas wajib diisi');
+                            showVoltSnackBar(context, context.t('deskripsiTugasWajibDiisi'));
                             return;
                           }
                           if (selectedDate == null) {
-                            showVoltSnackBar(context, 'Deadline wajib dipilih');
+                            showVoltSnackBar(context, context.t('deadlineWajibDipilih'));
                             return;
                           }
                           setModalState(() => isLoading = true);
@@ -287,7 +288,7 @@ void showCreateAssignmentSheet({
                             );
                             if (ctx.mounted) {
                               Navigator.pop(ctx);
-                              showVoltSnackBar(context, 'Tugas berhasil dibuat');
+                              showVoltSnackBar(context, context.t('tugasBerhasilDibuat'));
                             }
                           } catch (e) {
                             setModalState(() => isLoading = false);

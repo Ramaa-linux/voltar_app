@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:voltar/l10n/app_localizations.dart';
 import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
@@ -185,9 +186,10 @@ class PasswordVisibilityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final String label = obscureText
-        ? 'Tampilkan password'
-        : 'Sembunyikan password';
+        ? l10n.showPassword
+        : l10n.hidePassword;
     return Semantics(
       button: true,
       label: label,
@@ -223,12 +225,13 @@ class AuthSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         VoltButton(
           key: buttonKey,
-          label: isLoading ? 'Memproses...' : label,
+          label: isLoading ? l10n.processing : label,
           fullWidth: true,
           onPressed: isLoading ? null : onPressed,
         ),

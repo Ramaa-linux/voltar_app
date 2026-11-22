@@ -7,9 +7,9 @@ enum PasswordStrength {
 
   String get label => switch (this) {
     PasswordStrength.none => '',
-    PasswordStrength.weak => 'Lemah',
-    PasswordStrength.medium => 'Sedang',
-    PasswordStrength.strong => 'Kuat',
+    PasswordStrength.weak => 'passwordStrengthWeak',
+    PasswordStrength.medium => 'passwordStrengthMedium',
+    PasswordStrength.strong => 'passwordStrengthStrong',
   };
 
   double get progress => switch (this) {
@@ -29,10 +29,10 @@ abstract final class AuthValidators {
   static String? validateName(String? value) {
     final String clean = (value ?? '').trim();
     if (clean.isEmpty) {
-      return 'Nama lengkap wajib diisi';
+      return 'authErrNameRequired';
     }
     if (clean.length < 2) {
-      return 'Nama lengkap minimal 2 karakter';
+      return 'authErrNameMin';
     }
     return null;
   }
@@ -40,10 +40,10 @@ abstract final class AuthValidators {
   static String? validateEmail(String? value) {
     final String clean = (value ?? '').trim();
     if (clean.isEmpty) {
-      return 'Email wajib diisi';
+      return 'authErrEmailRequired';
     }
     if (!_emailRegex.hasMatch(clean)) {
-      return 'Format email tidak valid';
+      return 'authErrEmailInvalid';
     }
     return null;
   }
@@ -51,10 +51,10 @@ abstract final class AuthValidators {
   static String? validatePassword(String? value) {
     final String raw = value ?? '';
     if (raw.isEmpty) {
-      return 'Password wajib diisi';
+      return 'authErrPasswordRequired';
     }
     if (raw.length < 6) {
-      return 'Password minimal 6 karakter';
+      return 'authErrPasswordMin';
     }
     return null;
   }
@@ -62,10 +62,10 @@ abstract final class AuthValidators {
   static String? validateConfirmPassword(String? value, String password) {
     final String raw = value ?? '';
     if (raw.isEmpty) {
-      return 'Konfirmasi password wajib diisi';
+      return 'authErrConfirmPasswordRequired';
     }
     if (raw != password) {
-      return 'Konfirmasi password tidak cocok';
+      return 'authErrConfirmPasswordMismatch';
     }
     return null;
   }
@@ -75,7 +75,7 @@ abstract final class AuthValidators {
     if (!isGuru) return null;
     final String clean = (value ?? '').trim();
     if (clean.isEmpty) {
-      return 'Kode Verifikasi wajib diisi';
+      return 'authErrTeacherCodeRequired';
     }
     return null;
   }

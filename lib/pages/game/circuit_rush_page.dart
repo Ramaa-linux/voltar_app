@@ -8,6 +8,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
@@ -188,7 +189,7 @@ class _TopHud extends StatelessWidget {
       children: <Widget>[
         _HudIconButton(
           key: const Key('circuit_rush_back_button'),
-          tooltip: 'Kembali',
+          tooltip: context.t('gameCircuitRushTooltipBack'),
           icon: AppIconName.arrowLeft,
           onTap: onBack,
         ),
@@ -234,7 +235,7 @@ class _TopHud extends StatelessWidget {
             status == CircuitRushStatus.paused)
           _HudIconButton(
             key: const Key('circuit_rush_pause_button'),
-            tooltip: status == CircuitRushStatus.paused ? 'Lanjut' : 'Jeda',
+            tooltip: status == CircuitRushStatus.paused ? context.t('gameCircuitRushTooltipResume') : context.t('gameCircuitRushTooltipPause'),
             icon: status == CircuitRushStatus.paused
                 ? AppIconName.play
                 : AppIconName.stop,
@@ -310,16 +311,16 @@ class _ReadyOverlay extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('Sirkuit Kilat', style: AppTypography.heading),
+            Text(context.t('gameCircuitRushTitle'), style: AppTypography.heading),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Ketuk layar untuk melompat melewati celah resistor dan kumpulkan koin voltase!',
+              context.t('gameCircuitRushReadyDesc'),
               textAlign: TextAlign.center,
               style: AppTypography.bodyMuted,
             ),
             const SizedBox(height: AppSpacing.lg),
             VoltButton(
-              label: 'Mulai Main',
+              label: context.t('gameCircuitRushStart'),
               icon: AppIconName.play,
               fullWidth: true,
               onPressed: onStart,
@@ -350,24 +351,24 @@ class _PausedOverlay extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Permainan Dijeda', style: AppTypography.title),
+            Text(context.t('gameCircuitRushPaused'), style: AppTypography.title),
             const SizedBox(height: AppSpacing.lg),
             VoltButton(
-              label: 'Lanjutkan',
+              label: context.t('gameCircuitRushResumeBtn'),
               icon: AppIconName.play,
               fullWidth: true,
               onPressed: onResume,
             ),
             const SizedBox(height: AppSpacing.sm),
             VoltButton(
-              label: 'Ulangi',
+              label: context.t('gameCircuitRushRestartBtn'),
               variant: VoltButtonVariant.secondary,
               fullWidth: true,
               onPressed: onRestart,
             ),
             const SizedBox(height: AppSpacing.sm),
             VoltButton(
-              label: 'Keluar',
+              label: context.t('gameCircuitRushExitBtn'),
               variant: VoltButtonVariant.secondary,
               fullWidth: true,
               onPressed: onExit,
@@ -404,12 +405,12 @@ class _GameOverOverlay extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const VoltChip(
-                label: 'Korsleting!',
+              VoltChip(
+                label: context.t('gameCircuitRushChipShort'),
                 status: VoltChipStatus.done,
               ),
               const SizedBox(height: AppSpacing.md),
-              Text('Arus Terputus', style: AppTypography.heading),
+              Text(context.t('gameCircuitRushShortCircuit'), style: AppTypography.heading),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 'Skor Akhir: $score V • Rekor: $highScore V',
@@ -426,14 +427,14 @@ class _GameOverOverlay extends StatelessWidget {
               ],
               const SizedBox(height: AppSpacing.lg),
               VoltButton(
-                label: 'Main Lagi',
+                label: context.t('gameCircuitRushGameOverRetry'),
                 icon: AppIconName.play,
                 fullWidth: true,
                 onPressed: onRetry,
               ),
               const SizedBox(height: AppSpacing.sm),
               VoltButton(
-                label: 'Keluar',
+                label: context.t('gameCircuitRushExitBtn'),
                 variant: VoltButtonVariant.secondary,
                 fullWidth: true,
                 onPressed: onExit,

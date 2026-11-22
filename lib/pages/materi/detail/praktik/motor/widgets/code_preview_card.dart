@@ -5,6 +5,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Kartu preview kode Arduino yang dinamis mengikuti jenis motor dan mode input.
 class CodePreviewCard extends StatelessWidget {
@@ -33,7 +34,7 @@ class CodePreviewCard extends StatelessWidget {
             runSpacing: AppSpacing.xs,
             children: <Widget>[
               Text(
-                'ARDUINO SKETCH LIVE PREVIEW',
+                context.t('motorSketchTitle'),
                 style: AppTypography.overline.copyWith(
                   color: AppColors.primaryLight,
                   fontWeight: FontWeight.w700,
@@ -41,8 +42,8 @@ class CodePreviewCard extends StatelessWidget {
               ),
               Text(
                 controller.inputDevice == InputDevice.potentiometer
-                    ? 'A0 → Output'
-                    : 'D2/D3 → Output',
+                    ? context.t('motorInputA0')
+                    : context.t('motorInputD2D3'),
                 style: AppTypography.overline.copyWith(
                   color: AppColors.textOnPrimary.withValues(alpha: 0.7),
                   fontFamily: 'monospace',

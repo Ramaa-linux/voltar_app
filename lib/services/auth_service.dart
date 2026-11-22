@@ -81,41 +81,41 @@ String friendlyAuthError(Object e) {
   if (e is FirebaseAuthException) {
     switch (e.code) {
       case 'email-already-in-use':
-        return 'Email ini sudah terdaftar. Coba masuk atau gunakan email lain.';
+        return 'authErrEmailAlreadyInUse';
       case 'invalid-email':
-        return 'Format email tidak valid.';
+        return 'authErrEmailInvalid';
       case 'weak-password':
-        return 'Kata sandi terlalu lemah. Gunakan minimal 8 karakter.';
+        return 'authErrWeakPassword';
       case 'network-request-failed':
-        return 'Tidak ada koneksi internet. Periksa jaringanmu lalu coba lagi.';
+        return 'authErrNetworkFailed';
       case 'too-many-requests':
-        return 'Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.';
+        return 'authErrTooManyRequests';
       case 'operation-not-allowed':
-        return 'Pendaftaran email sedang dinonaktifkan. Hubungi admin.';
+        return 'authErrOperationNotAllowed';
       case 'user-token-expired':
       case 'user-not-found':
       case 'requires-recent-login':
-        return 'Sesi kamu berakhir. Silakan masuk kembali.';
+        return 'authErrSessionExpired';
       case 'wrong-password':
       case 'invalid-credential':
       case 'INVALID_LOGIN_CREDENTIALS':
-        return 'Email atau password salah.';
+        return 'authErrInvalidCredentials';
       default:
-        return 'Terjadi kesalahan. Silakan coba lagi.';
+        return 'authErrUnknown';
     }
   }
   if (e is FirebaseException) {
     switch (e.code) {
       case 'unavailable':
       case 'deadline-exceeded':
-        return 'Server sedang sibuk atau koneksi terputus. Coba lagi sebentar.';
+        return 'authErrServerBusy';
       case 'permission-denied':
-        return 'Kamu tidak punya izin untuk tindakan ini.';
+        return 'authErrPermissionDenied';
       default:
-        return 'Terjadi kesalahan. Silakan coba lagi.';
+        return 'authErrUnknown';
     }
   }
-  return 'Terjadi kesalahan. Silakan coba lagi.';
+  return 'authErrUnknown';
 }
 
 /// Provider tunggal [AuthService] untuk dependency injection Riverpod.
@@ -315,7 +315,7 @@ class AuthService extends ChangeNotifier {
     if (cleanRole == 'guru') {
       if (teacherCode == null || teacherCode.trim().isEmpty) {
         throw const AuthException(
-          'Kode Verifikasi wajib diisi.',
+          'authErrTeacherCodeRequired',
           code: 'teacher-code-empty',
         );
       }
@@ -323,7 +323,7 @@ class AuthService extends ChangeNotifier {
       final String cleanCode = teacherCode.trim().toUpperCase();
       if (cleanCode.contains('/')) {
         throw const AuthException(
-          'Kode Verifikasi Guru tidak ditemukan.',
+          'authErrTeacherCodeNotFound',
           code: 'teacher-code-not-found',
         );
       }
@@ -336,7 +336,7 @@ class AuthService extends ChangeNotifier {
 
         if (!doc.exists) {
           throw const AuthException(
-            'Kode Verifikasi Guru tidak ditemukan.',
+            'authErrTeacherCodeNotFound',
             code: 'teacher-code-not-found',
           );
         }
@@ -344,7 +344,7 @@ class AuthService extends ChangeNotifier {
         final Map<String, dynamic>? data = doc.data();
         if (data == null || data['isValid'] != true) {
           throw const AuthException(
-            'Kode Verifikasi Guru tidak valid (isValid = false).',
+            'authErrTeacherCodeInvalid',
             code: 'teacher-code-invalid',
           );
         }
@@ -352,7 +352,7 @@ class AuthService extends ChangeNotifier {
       } on FirebaseException catch (e) {
         if (e.code == 'permission-denied') {
           throw const AuthException(
-            'Gagal memeriksa kode (Akses Ditolak). Pastikan Firestore Rules sudah benar.',
+            'authErrTeacherCodePermissionDenied',
             code: 'permission-denied',
           );
         }

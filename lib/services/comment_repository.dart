@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import '../models/comment.dart';
 
 /// Repository untuk operasi CRUD komentar.
@@ -17,26 +19,31 @@ class CommentRepository {
 
   /// Stream komentar untuk suatu post.
   /// Diurutkan ascending berdasarkan `createdAt` (komentar lama di atas).
+  /// Sorting dilakukan di sisi client agar tidak membutuhkan composite index.
   Stream<List<Comment>> streamComments(String postId) {
     return _commentsRef(postId)
-        .orderBy('createdAt', descending: false)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
+      final comments = snapshot.docs.map((doc) {
         return Comment.fromMap(doc.id, doc.data());
       }).toList();
+      comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      return comments;
     });
   }
 
   /// Ambil komentar sekali (Future) untuk post - cocok untuk lazy load + FutureBuilder.
   Future<List<Comment>> fetchCommentsOnce(String postId) async {
-    final snapshot = await _commentsRef(postId)
-        .orderBy('createdAt', descending: false)
-        .get();
+    debugPrint('fetchCommentsOnce called - postId: $postId');
+    debugPrint('FirebaseAuth.instance.currentUser?.uid: ${FirebaseAuth.instance.currentUser?.uid}');
 
-    return snapshot.docs.map((doc) {
+    final snapshot = await _commentsRef(postId).get();
+
+    final comments = snapshot.docs.map((doc) {
       return Comment.fromMap(doc.id, doc.data());
     }).toList();
+    comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return comments;
   }
 
   /// Tambah komentar baru.
@@ -44,6 +51,7 @@ class CommentRepository {
     required String postId,
     required String authorId,
     required String content,
+    String? authorName,
   }) async {
     final trimmed = content.trim();
     if (trimmed.isEmpty) {
@@ -53,6 +61,7 @@ class CommentRepository {
     await _commentsRef(postId).add({
       'postId': postId,
       'authorId': authorId,
+      if (authorName != null) 'authorName': authorName,
       'content': trimmed,
       'createdAt': FieldValue.serverTimestamp(),
     });

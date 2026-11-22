@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:voltar/l10n/app_localizations.dart';
 import 'package:voltar/pages/auth/auth_form_widgets.dart';
 import 'package:voltar/pages/auth/auth_validators.dart';
 import 'package:voltar/services/auth_service.dart';
@@ -8,6 +9,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/volt_card.dart';
 
 /// Halaman Daftar Akun Baru (Register) EduVolt — Fase 25A.
@@ -122,61 +124,25 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
       );
     } on AuthException catch (e) {
       if (!mounted) return;
-      if (e.code == 'permission-denied') {
-        const String msg =
-            'Gagal memeriksa kode (Akses Ditolak). Pastikan Firestore Rules sudah benar.';
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(msg),
-            backgroundColor: AppColors.error,
-          ),
-        );
-        setState(() => _errorMessage = msg);
+      final String msg = context.t(e.message);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: AppColors.error,
+          action: e.code == 'email-already-in-use'
+              ? SnackBarAction(
+                  label: context.t('loginLink'),
+                  textColor: Colors.white,
+                  onPressed: () => context.go('/login'),
+                )
+              : null,
+        ),
+      );
+      setState(() => _errorMessage = msg);
+      if (e.code == 'teacher-code-not-found' ||
+          e.code == 'teacher-code-invalid' ||
+          e.code == 'teacher-code-empty') {
         _teacherCodeFocus.requestFocus();
-      } else if (e.code == 'teacher-code-not-found') {
-        const String msg = 'Kode Verifikasi Guru tidak ditemukan.';
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(msg),
-            backgroundColor: AppColors.error,
-          ),
-        );
-        setState(() => _errorMessage = msg);
-        _teacherCodeFocus.requestFocus();
-      } else if (e.code == 'teacher-code-invalid') {
-        const String msg = 'Kode Verifikasi Guru tidak valid (isValid = false).';
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(msg),
-            backgroundColor: AppColors.error,
-          ),
-        );
-        setState(() => _errorMessage = msg);
-        _teacherCodeFocus.requestFocus();
-      } else if (e.code == 'teacher-code-empty') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message),
-            backgroundColor: AppColors.error,
-          ),
-        );
-        setState(() => _errorMessage = e.message);
-        _teacherCodeFocus.requestFocus();
-      } else if (e.code == 'email-already-in-use') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message),
-            backgroundColor: AppColors.error,
-            action: SnackBarAction(
-              label: 'Masuk',
-              textColor: Colors.white,
-              onPressed: () => context.go('/login'),
-            ),
-          ),
-        );
-        setState(() => _errorMessage = e.message);
-      } else {
-        setState(() => _errorMessage = e.message);
       }
     } catch (e) {
       if (!mounted) return;
@@ -217,7 +183,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
           ),
           const SizedBox(width: AppSpacing.md),
           Text(
-            _passwordStrength.label,
+            context.t(_passwordStrength.label),
             style: AppTypography.label.copyWith(color: color),
           ),
         ],
@@ -226,6 +192,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   }
 
   Widget _buildFormCard() {
+    final l10n = AppLocalizations.of(context)!;
     return VoltCard(
       padding: const EdgeInsets.all(AppSpacing.xl),
       child: Form(
@@ -236,13 +203,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (_errorMessage != null) ...<Widget>[
-              AuthErrorBanner(message: _errorMessage!),
+              AuthErrorBanner(message: context.t(_errorMessage!)),
               const SizedBox(height: AppSpacing.lg),
             ],
             AuthTextField(
               fieldKey: const Key('register_name_field'),
-              label: 'Nama Lengkap',
-              hintText: 'Masukkan nama lengkap Anda',
+              label: l10n.registerNameLabel,
+              hintText: l10n.registerNameHint,
               controller: _nameController,
               focusNode: _nameFocus,
               prefixIcon: Icons.person_outline_rounded,
@@ -255,8 +222,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
             const SizedBox(height: AppSpacing.lg),
             AuthTextField(
               fieldKey: const Key('register_email_field'),
-              label: 'Email',
-              hintText: 'nama@sekolah.sch.id',
+              label: l10n.emailLabel,
+              hintText: l10n.registerEmailHint,
               controller: _emailController,
               focusNode: _emailFocus,
               prefixIcon: Icons.email_outlined,
@@ -269,8 +236,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
             const SizedBox(height: AppSpacing.lg),
             AuthTextField(
               fieldKey: const Key('register_password_field'),
-              label: 'Password',
-              hintText: 'Minimal 6 karakter',
+              label: l10n.passwordLabel,
+              hintText: l10n.registerPasswordHint,
               controller: _passwordController,
               focusNode: _passwordFocus,
               prefixIcon: Icons.lock_outline_rounded,
@@ -297,8 +264,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
             const SizedBox(height: AppSpacing.lg),
             AuthTextField(
               fieldKey: const Key('register_confirm_field'),
-              label: 'Konfirmasi Password',
-              hintText: 'Ulangi password Anda',
+              label: l10n.registerConfirmPasswordLabel,
+              hintText: l10n.registerConfirmPasswordHint,
               controller: _confirmPasswordController,
               focusNode: _confirmPasswordFocus,
               prefixIcon: Icons.lock_reset_rounded,
@@ -338,6 +305,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   }
 
   Widget _buildRoleSelector() {
+    final l10n = AppLocalizations.of(context)!;
     final bool isSiswa = _selectedRole == 'siswa';
     final bool disableAnim = MediaQuery.disableAnimationsOf(context);
 
@@ -394,7 +362,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                     Expanded(
                       child: _RoleSegment(
                         optionKey: const Key('role_option_siswa'),
-                        label: 'Siswa',
+                        label: l10n.registerRoleStudent,
                         icon: Icons.school_rounded,
                         isSelected: isSiswa,
                         onTap: () => _onRoleChanged('siswa'),
@@ -403,7 +371,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                     Expanded(
                       child: _RoleSegment(
                         optionKey: const Key('role_option_guru'),
-                        label: 'Guru',
+                        label: l10n.registerRoleTeacher,
                         icon: Icons.badge_rounded,
                         isSelected: !isSiswa,
                         onTap: () => _onRoleChanged('guru'),
@@ -420,6 +388,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
   }
 
   Widget _buildTeacherCodeField() {
+    final l10n = AppLocalizations.of(context)!;
     if (_selectedRole != 'guru') {
       return const SizedBox.shrink();
     }
@@ -435,8 +404,8 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
             const SizedBox(height: AppSpacing.lg),
             AuthTextField(
               fieldKey: const Key('register_teacher_code_field'),
-              label: 'Kode Verifikasi Guru',
-              hintText: 'Masukkan kode verifikasi',
+              label: l10n.registerTeacherCodeLabel,
+              hintText: l10n.registerTeacherCodeHint,
               controller: _teacherCodeController,
               focusNode: _teacherCodeFocus,
               prefixIcon: Icons.verified_user_rounded,
@@ -449,7 +418,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Kode verifikasi diberikan oleh pihak Admin. Jangan bagikan kode kepada siswa.',
+              l10n.registerTeacherCodeDescription,
               style: AppTypography.caption.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -462,6 +431,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.background,
@@ -479,9 +449,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  const AuthHeader(
-                    title: 'Buat Akun EduVolt',
-                    subtitle: 'Mulai petualangan elektronika dan raih koinmu!',
+                  AuthHeader(
+                    title: l10n.appTitle,
+                    subtitle: l10n.registerTitle,
                   ),
                   const SizedBox(height: AppSpacing.xxl),
                   _buildFormCard(),
@@ -490,15 +460,15 @@ class _RegisterPageState extends ConsumerState<RegisterPage>
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[
-                      const Text(
-                        'Sudah punya akun? ',
+                      Text(
+                        l10n.hasAccount,
                         style: AppTypography.bodyMuted,
                       ),
                       TextButton(
                         onPressed: _isLoading
                             ? null
                             : () => context.go('/login'),
-                        child: const Text('Masuk'),
+                        child: Text(l10n.loginLink),
                       ),
                     ],
                   ),

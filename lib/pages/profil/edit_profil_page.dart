@@ -15,6 +15,7 @@ import 'package:voltar/utils/volt_feedback.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 String? _safePhotoUrl(dynamic user) {
   if (user == null) return null;
@@ -59,13 +60,13 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
             ? (profile!['name'] as String).trim()
             : (user?.displayName?.toString().trim().isNotEmpty == true
                   ? user!.displayName!.toString().trim()
-                  : 'Budi Santoso');
+                  : context.t('defaultName'));
     final String initialEmail =
         (profile?['email'] as String?)?.trim().isNotEmpty == true
             ? (profile!['email'] as String).trim()
             : (user?.email?.toString().trim().isNotEmpty == true
                   ? user!.email!.toString().trim()
-                  : 'budi.santoso@sekolah.sch.id');
+                  : context.t('defaultEmail'));
 
     _photoUrl = (profile?['photoUrl'] as String?)?.trim().isNotEmpty == true
         ? (profile!['photoUrl'] as String).trim()
@@ -113,7 +114,7 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
       setState(() {
         _photoUrl = downloadUrl;
       });
-      showVoltSnackBar(context, 'Foto profil berhasil diperbarui');
+      showVoltSnackBar(context, context.t('fotoProfilDiperbarui'));
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() => _errorMessage = e.message);
@@ -121,7 +122,7 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
       if (!mounted) return;
       setState(
         () => _errorMessage =
-            'Gagal memilih atau mengunggah foto profil. Silakan coba lagi.',
+            context.t('gagalUnggahFoto'),
       );
     } finally {
       if (mounted) {
@@ -149,7 +150,7 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
           .updateProfile(name: _nameController.text.trim());
       if (!mounted) return;
       context.pop();
-      showVoltSnackBar(context, 'Profil berhasil diperbarui');
+      showVoltSnackBar(context, context.t('profilDiperbarui'));
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() => _errorMessage = e.message);
@@ -157,7 +158,7 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
       if (!mounted) return;
       setState(
         () => _errorMessage =
-            'Terjadi kesalahan saat menyimpan profil. Silakan coba lagi.',
+            context.t('gagalSimpanProfil'),
       );
     } finally {
       if (mounted) {
@@ -202,9 +203,9 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
             color: AppColors.textPrimary,
           ),
           onPressed: () => context.pop(),
-          tooltip: 'Kembali',
+          tooltip: context.t('kembali'),
         ),
-        title: Text('Edit Profil', style: AppTypography.title),
+        title: Text(context.t('editProfil'), style: AppTypography.title),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -287,8 +288,8 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
                       const SizedBox(height: AppSpacing.xl),
                       AuthTextField(
                         fieldKey: const Key('edit_name_field'),
-                        label: 'Nama Lengkap',
-                        hintText: 'Masukkan nama lengkap',
+                        label: context.t('nameLabel'),
+                        hintText: context.t('nameHint'),
                         controller: _nameController,
                         focusNode: _nameFocus,
                         prefixIcon: Icons.person_outline_rounded,
@@ -301,8 +302,8 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
                       const SizedBox(height: AppSpacing.lg),
                       AuthTextField(
                         fieldKey: const Key('edit_email_field'),
-                        label: 'Email',
-                        hintText: 'nama@sekolah.sch.id',
+                        label: context.t('emailLabel'),
+                        hintText: context.t('emailHint'),
                         controller: _emailController,
                         prefixIcon: Icons.email_outlined,
                         enabled: false,
@@ -310,7 +311,7 @@ class _EditProfilPageState extends ConsumerState<EditProfilPage> {
                       const SizedBox(height: AppSpacing.xl),
                       VoltButton(
                         key: const Key('edit_save_button'),
-                        label: _isLoading ? 'Menyimpan...' : 'Simpan Perubahan',
+                        label: _isLoading ? context.t('saving') : context.t('saveChanges'),
                         fullWidth: true,
                         onPressed: _isLoading ? null : _handleSave,
                       ),

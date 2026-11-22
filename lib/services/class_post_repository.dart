@@ -83,6 +83,7 @@ class ClassPostRepository {
       throw ArgumentError('Konten pengumuman tidak boleh kosong');
     }
 
+    final now = FieldValue.serverTimestamp();
     await _firestore.collection('posts').add({
       'classId': classId,
       'authorId': authorId,
@@ -91,7 +92,8 @@ class ClassPostRepository {
       'content': trimmedContent,
       'deadline': null,
       'isCommentEnabled': true,
-      'createdAt': FieldValue.serverTimestamp(),
+      'createdAt': now,
+      'updatedAt': now,
     });
   }
 
@@ -122,6 +124,7 @@ class ClassPostRepository {
       23, 59, 59,
     );
 
+    final now = FieldValue.serverTimestamp();
     await _firestore.collection('posts').add({
       'classId': classId,
       'authorId': authorId,
@@ -130,8 +133,91 @@ class ClassPostRepository {
       'content': trimmedContent,
       'deadline': Timestamp.fromDate(endOfDay),
       'isCommentEnabled': false, // Assignments default: comments disabled
-      'createdAt': FieldValue.serverTimestamp(),
+      'createdAt': now,
+      'updatedAt': now,
     });
+  }
+
+  /// Update post yang sudah ada. Hanya field yang diberikan (non-null) yang diubah.
+  /// [authorId], [authorName], [createdAt], [type], [classId] diabaikan (tidak bisa diubah).
+  /// Selalu menambah/memperbarui [updatedAt] dengan serverTimestamp.
+  Future<void> updatePost({
+    required String postId,
+    required String classId,
+    String? title,
+    String? content,
+    Timestamp? deadline,
+    bool? isCommentEnabled,
+  }) async {
+    final Map<String, dynamic> updates = {
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    if (title != null) updates['title'] = title.trim().isEmpty ? null : title.trim();
+    if (content != null) {
+      if (content.trim().isEmpty) {
+        throw ArgumentError('Konten tidak boleh kosong');
+      }
+      updates['content'] = content.trim();
+    }
+    if (deadline != null) updates['deadline'] = deadline;
+    if (isCommentEnabled != null) updates['isCommentEnabled'] = isCommentEnabled;
+
+    // Hanya update jika ada field selain updatedAt
+    if (updates.length > 1) {
+      await _firestore.collection('posts').doc(postId).update(updates);
+    }
+  }
+
+  /// Hapus post dan membersihkan data terkait (best effort via WriteBatch).
+  /// Hapus semua dokumen di subcollection `posts/{postId}/comments` dan semua
+  /// dokumen `submissions` dengan `postId` yang cocok.
+  /// Maksimal 500 operasi per batch; dipotong jika lebih.
+  Future<void> deletePostWithCleanup(String postId) async {
+    final batch = _firestore.batch();
+
+    // Hapus komentar di subcollection
+    final commentsSnap = await _firestore
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .get();
+    int count = 0;
+    for (final doc in commentsSnap.docs) {
+      batch.delete(doc.reference);
+      count++;
+      if (count >= 500) {
+        await batch.commit();
+        batch.delete(_firestore.collection('posts').doc(postId));
+        count = 0;
+      }
+    }
+
+    // Hapus submissions dengan postId yang cocok
+    final subsSnap = await _firestore
+        .collection('submissions')
+        .where('postId', isEqualTo: postId)
+        .get();
+    for (final doc in subsSnap.docs) {
+      batch.delete(doc.reference);
+      count++;
+      if (count >= 500) {
+        await batch.commit();
+        batch.delete(_firestore.collection('posts').doc(postId));
+        count = 0;
+      }
+    }
+
+    // Hapus dokumen post utama
+    batch.delete(_firestore.collection('posts').doc(postId));
+    await batch.commit();
+  }
+
+  /// Hapus post utama saja (tanpa cleanup data terkait).
+  /// Digunakan sebagai fallback jika cleanup gagal atau rules tidak mengizinkan.
+  Future<void> deletePost(String postId) async {
+    // Hapus post utama (comments di subcollection akan yatim, tapi aman untuk skala kelas)
+    await _firestore.collection('posts').doc(postId).delete();
   }
 
   /// Toggle aktif/nonaktif komentar untuk suatu post (khusus guru)
@@ -144,9 +230,4 @@ class ClassPostRepository {
     });
   }
 
-  /// Hapus post (beserta subcollection comments jika diperlukan)
-  Future<void> deletePost(String postId) async {
-    // Hapus post utama (comments di subcollection akan yatim, tapi aman untuk skala kelas)
-    await _firestore.collection('posts').doc(postId).delete();
-  }
 }

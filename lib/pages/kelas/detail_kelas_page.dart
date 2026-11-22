@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_typography.dart';
+import '../../utils/localization_helper.dart';
 import 'widgets/create_post_sheets.dart';
 import 'widgets/forum_tab.dart';
 import 'widgets/orang_tab.dart';
@@ -84,10 +85,10 @@ class _DetailKelasPageState extends ConsumerState<DetailKelasPage>
           unselectedLabelColor: AppColors.textTertiary,
           labelStyle: AppTypography.label.copyWith(fontWeight: FontWeight.w700),
           unselectedLabelStyle: AppTypography.label,
-          tabs: const [
-            Tab(text: 'Forum'),
-            Tab(text: 'Tugas'),
-            Tab(text: 'Orang'),
+          tabs:  [
+            Tab(text: context.t('kelasTabForum')),
+            Tab(text: context.t('kelasTabTugas')),
+            Tab(text: context.t('kelasTabOrang')),
           ],
         ),
         elevation: 0,

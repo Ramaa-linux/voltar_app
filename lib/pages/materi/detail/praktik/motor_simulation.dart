@@ -16,6 +16,7 @@ import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Simulasi Interaktif Fase 10D (`l4_jenis_motor`):
 /// 1. Servo SG90 (PWM 50 Hz, 500–2400 µs, 0–180°)
@@ -122,10 +123,10 @@ class _MotorSimulationState extends State<MotorSimulation>
   }
 
   Widget _buildMotorTabBar(Color activeAccent) {
-    const List<(MotorType, String, IconData)> tabs = <(MotorType, String, IconData)>[
-      (MotorType.servo, 'Servo', Icons.precision_manufacturing_rounded),
-      (MotorType.dc, 'Motor DC', Icons.cyclone_rounded),
-      (MotorType.stepper, 'Stepper', Icons.rotate_right_rounded),
+    final List<(MotorType, String, IconData)> tabs = <(MotorType, String, IconData)>[
+      (MotorType.servo, context.t('motorServo'), Icons.precision_manufacturing_rounded),
+      (MotorType.dc, context.t('motorDc'), Icons.cyclone_rounded),
+      (MotorType.stepper, context.t('motorStepper'), Icons.rotate_right_rounded),
     ];
 
     return Container(
@@ -196,15 +197,15 @@ class _MotorSimulationState extends State<MotorSimulation>
   Widget _buildHeaderBadge(Color accent) {
     final (String title, String statusText) = switch (_controller.motorType) {
       MotorType.servo => (
-          'Simulasi Motor Servo SG90',
+          context.t('motorServoTitle'),
           'Sudut: ${_controller.servoCurrentAngle.round()}° | Target: ${_controller.servoTargetAngle.round()}° (${_controller.servoPulseWidthUs} µs)',
         ),
       MotorType.dc => (
-          'Simulasi Motor DC & Kontrol PWM',
+          context.t('motorDcTitle'),
           'PWM: ${_controller.dcTargetPwm} (${_controller.dcDutyCyclePercent}%) | ${_controller.dcRpm} RPM',
         ),
       MotorType.stepper => (
-          'Simulasi Stepper 28BYJ-48 + ULN2003',
+          context.t('motorStepperTitle'),
           'Step: ${_controller.stepperStepCounter} | Sudut: ${_controller.stepperCurrentAngleDeg.toStringAsFixed(1)}°',
         ),
     };

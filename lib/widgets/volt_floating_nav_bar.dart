@@ -3,15 +3,16 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/app_icon.dart';
 
 /// Satu tujuan navigasi pada [VoltFloatingNavBar].
 @immutable
 class VoltNavItem {
-  const VoltNavItem({required this.icon, required this.label});
+  const VoltNavItem({required this.icon, required this.labelKey});
 
   final AppIconName icon;
-  final String label;
+  final String labelKey;
 }
 
 /// Navigasi mengambang EduVolt: radius 24, border 1px, shadow lembut.
@@ -80,6 +81,18 @@ class _VoltNavItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String label = switch (item.labelKey) {
+      'navHome' => context.t('navHome'),
+      'navMateri' => context.t('navMateri'),
+      'navSimulasi' => context.t('navSimulasi'),
+      'navKelas' => context.t('navKelas'),
+      'navProfil' => context.t('navProfil'),
+      'guruNavDashboard' => context.t('guruNavDashboard'),
+      'guruNavKelas' => context.t('guruNavKelas'),
+      'guruNavTugas' => context.t('guruNavTugas'),
+      'guruNavProfil' => context.t('guruNavProfil'),
+      _ => item.labelKey,
+    };
     final Color color = selected
         ? AppColors.primaryDark
         : AppColors.textSecondary;
@@ -88,7 +101,7 @@ class _VoltNavItemView extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      label: item.label,
+      label: label,
       excludeSemantics: true,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
@@ -119,14 +132,16 @@ class _VoltNavItemView extends StatelessWidget {
                     curve: Curves.easeOut,
                     child: selected
                         ? Padding(
-                            padding: const EdgeInsets.only(left: AppSpacing.xs),
-                            child: Text(
-                              item.label,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTypography.overline.copyWith(
-                                color: color,
-                                fontWeight: FontWeight.w700,
+                            padding: const EdgeInsets.only(left: AppSpacing.sm),
+                            child: Flexible(
+                              child: Text(
+                                label,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.overline.copyWith(
+                                  color: color,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           )

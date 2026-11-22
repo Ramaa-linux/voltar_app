@@ -3,6 +3,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Tombol aksi bawah: "Tandai Selesai".
 class BottomActionBar extends StatelessWidget {
@@ -50,7 +51,7 @@ class BottomActionBar extends StatelessWidget {
               ),
             ),
             child: Text(
-              isDone ? 'Sudah Selesai' : 'Tandai Selesai',
+              isDone ? context.t('sudahSelesai') : context.t('tandaiSelesai'),
               style: AppTypography.button,
             ),
           ),

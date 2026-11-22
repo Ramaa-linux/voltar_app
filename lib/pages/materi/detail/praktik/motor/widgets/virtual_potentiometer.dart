@@ -5,6 +5,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 class VirtualPotentiometer extends StatelessWidget {
   const VirtualPotentiometer({
@@ -82,7 +83,7 @@ class VirtualPotentiometer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      'Potensiometer Rotary (A0)',
+                      context.t('potentiometerTitle'),
                       style: AppTypography.label.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w700,

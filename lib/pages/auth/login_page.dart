@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:voltar/l10n/app_localizations.dart';
 import 'package:voltar/pages/auth/auth_form_widgets.dart';
 import 'package:voltar/pages/auth/auth_validators.dart';
 import 'package:voltar/services/auth_service.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/volt_card.dart';
 
 /// Halaman Masuk (Login) EduVolt.
@@ -69,6 +71,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -84,9 +87,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  const AuthHeader(
-                    title: 'EduVolt',
-                    subtitle: 'Belajar listrik jadi seru ⚡',
+                  AuthHeader(
+                    title: l10n.appTitle,
+                    subtitle: l10n.loginSubtitle,
                   ),
                   const SizedBox(height: AppSpacing.xxl),
                   VoltCard(
@@ -99,13 +102,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           if (_errorMessage != null) ...<Widget>[
-                            AuthErrorBanner(message: _errorMessage!),
+                            AuthErrorBanner(message: context.t(_errorMessage!)),
                             const SizedBox(height: AppSpacing.lg),
                           ],
                           AuthTextField(
                             fieldKey: const Key('login_email_field'),
-                            label: 'Email',
-                            hintText: 'nama@sekolah.sch.id',
+                            label: l10n.emailLabel,
+                            hintText: l10n.emailHint,
                             controller: _emailController,
                             focusNode: _emailFocus,
                             prefixIcon: Icons.email_outlined,
@@ -118,8 +121,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           const SizedBox(height: AppSpacing.lg),
                           AuthTextField(
                             fieldKey: const Key('login_password_field'),
-                            label: 'Password',
-                            hintText: 'Masukkan password Anda',
+                            label: l10n.passwordLabel,
+                            hintText: l10n.passwordHint,
                             controller: _passwordController,
                             focusNode: _passwordFocus,
                             prefixIcon: Icons.lock_outline_rounded,
@@ -143,7 +146,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           const SizedBox(height: AppSpacing.xl),
                           AuthSubmitButton(
                             buttonKey: const Key('login_submit_button'),
-                            label: 'Masuk',
+                            label: l10n.btnLogin,
                             isLoading: _isLoading,
                             onPressed: _handleLogin,
                           ),
@@ -156,15 +159,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: <Widget>[
-                      const Text(
-                        'Belum punya akun? ',
+                      Text(
+                        l10n.noAccount,
                         style: AppTypography.bodyMuted,
                       ),
                       TextButton(
                         onPressed: _isLoading
                             ? null
                             : () => context.go('/register'),
-                        child: const Text('Daftar'),
+                        child: Text(l10n.registerLink),
                       ),
                     ],
                   ),

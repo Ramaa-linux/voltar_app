@@ -8,6 +8,7 @@ import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
 import '../../widgets/app_icon.dart';
 import '../../shell/guru_shell.dart';
+import '../../utils/localization_helper.dart';
 import 'data/guru_dummy_data.dart';
 
 /// Halaman Dashboard Guru.
@@ -55,7 +56,7 @@ class GuruDashboardPage extends ConsumerWidget {
                 horizontal: AppSpacing.pagePadding,
               ),
               child: Text(
-                'Aktivitas Terkini',
+                context.t('guruActivities'),
                 style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
               ),
             ),
@@ -94,13 +95,13 @@ class _GreetingSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final String nama = (data?['name'] as String?)?.trim().isNotEmpty == true
         ? (data!['name'] as String).trim()
-        : 'Guru';
+        : context.t('guruNotLoggedIn');
     final String tanggal = formatTanggalIndonesia(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('Selamat datang,', style: AppTypography.bodyMuted),
+        Text(context.t('guruWelcome'), style: AppTypography.bodyMuted),
         const SizedBox(height: AppSpacing.xs),
         Text(
           nama,
@@ -137,10 +138,10 @@ class _GreetingError extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('Selamat datang,', style: AppTypography.bodyMuted),
+        Text(context.t('guruWelcome'), style: AppTypography.bodyMuted),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Guru',
+          context.t('guruNotLoggedIn'),
           style: AppTypography.heading.copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -162,7 +163,7 @@ class _StatsRow extends StatelessWidget {
         // TODO(Fase 28+): sinkronkan nilai statistik dengan data nyata di Firestore.
         Expanded(
           child: _StatCard(
-            label: 'Kelas',
+            label: context.t('guruStatsClasses'),
             value: '2',
             icon: AppIconName.folder,
           ),
@@ -170,7 +171,7 @@ class _StatsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
-            label: 'Siswa',
+            label: context.t('guruStatsStudents'),
             value: '60',
             icon: AppIconName.profile,
           ),
@@ -178,7 +179,7 @@ class _StatsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
-            label: 'Tugas Aktif',
+            label: context.t('guruStatsActiveAssignments'),
             value: '3',
             icon: AppIconName.checkSquare,
             valueColor: AppColors.primary,

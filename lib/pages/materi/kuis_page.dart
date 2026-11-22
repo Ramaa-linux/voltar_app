@@ -11,6 +11,7 @@ import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/press_scale.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Provider untuk memuat satu [LearningStep] kuis berdasarkan ID.
 final kuisStepProvider =
@@ -54,11 +55,13 @@ class _KuisPageState extends ConsumerState<KuisPage> {
         ),
         title: stepAsync.when(
           data: (step) => Text(
-            step.title,
+            step.localizedTitleKey != null
+                ? context.t(step.localizedTitleKey!)
+                : step.title,
             style: AppTypography.title.copyWith(fontSize: 16),
           ),
           loading: () => const SizedBox.shrink(),
-          error: (_, _) => const Text('Kuis'),
+          error: (_, _) => Text(context.t('kuis')),
         ),
         centerTitle: true,
         bottom: PreferredSize(
@@ -70,7 +73,7 @@ class _KuisPageState extends ConsumerState<KuisPage> {
         data: (step) {
           final List<QuizQuestion> questions = step.questions ?? [];
           if (questions.isEmpty) {
-            return const Center(child: Text('Tidak ada soal tersedia.'));
+            return Center(child: Text(context.t('tidakAdaSoal')));
           }
           if (_isSubmitted) {
             return _buildResultView(step, questions);
@@ -82,7 +85,7 @@ class _KuisPageState extends ConsumerState<KuisPage> {
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Text(
-              'Gagal memuat kuis: $error',
+              context.t('gagalMemuatKuis', args: [error.toString()]),
               style: AppTypography.bodyMuted,
               textAlign: TextAlign.center,
             ),
@@ -114,21 +117,35 @@ class _KuisPageState extends ConsumerState<KuisPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'PERTANYAAN ${_currentIndex + 1} DARI $totalQuestions',
+                    context.t(
+                      'kuisQuestionCounter',
+                      args: [
+                        '${_currentIndex + 1}',
+                        '$totalQuestions',
+                      ],
+                    ),
                     style: AppTypography.overline.copyWith(
                       color: AppColors.primaryDark,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    currentQuestion.question,
+                    step.localizedQuestionKeys != null &&
+                            step.localizedQuestionKeys![_currentIndex] != null
+                        ? context.t(
+                            step.localizedQuestionKeys![_currentIndex]!)
+                        : currentQuestion.question,
                     style: AppTypography.heading.copyWith(fontSize: 18),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   for (int i = 0; i < currentQuestion.options.length; i++) ...[
                     _buildOptionTile(
                       index: i,
-                      text: currentQuestion.options[i],
+                      text: (step.localizedOptionKeys != null &&
+                              step.localizedOptionKeys![_currentIndex] != null)
+                          ? context.t(
+                              step.localizedOptionKeys![_currentIndex]![i])
+                          : currentQuestion.options[i],
                       isSelected: selectedOption == i,
                       onTap: () =>
                           setState(() => _selectedAnswers[_currentIndex] = i),
@@ -212,7 +229,7 @@ class _KuisPageState extends ConsumerState<KuisPage> {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => setState(() => _currentIndex--),
-                child: const Text('Sebelumnya'),
+                child: Text(context.t('btnPrevious')),
               ),
             ),
           if (_currentIndex > 0) const SizedBox(width: AppSpacing.md),
@@ -251,7 +268,7 @@ class _KuisPageState extends ConsumerState<KuisPage> {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
               ),
-              child: Text(isLast ? 'Kirim Jawaban' : 'Selanjutnya'),
+              child: Text(isLast ? context.t('kirimJawaban') : context.t('selanjutnya')),
             ),
           ),
         ],
@@ -282,14 +299,14 @@ class _KuisPageState extends ConsumerState<KuisPage> {
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
-                passed ? 'Selamat!' : 'Perlu Belajar Lagi',
+                passed ? context.t('selamat') : context.t('perluBelajarLagi'),
                 style: AppTypography.heading,
               ),
               const SizedBox(height: AppSpacing.sm),
-              Text('Skor Kamu: $score', style: AppTypography.display),
+              Text(context.t('skorKamu', args: [score.toString()]), style: AppTypography.display),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                '$correct dari ${questions.length} benar',
+                context.t('benarDari', args: [correct.toString(), questions.length.toString()]),
                 style: AppTypography.bodyMuted,
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -300,7 +317,7 @@ class _KuisPageState extends ConsumerState<KuisPage> {
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                   ),
-                  child: const Text('Kembali ke Level'),
+                  child: Text(context.t('kembaliKeLevel')),
                 ),
               ),
             ],

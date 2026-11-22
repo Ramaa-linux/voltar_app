@@ -363,7 +363,9 @@ class _StepTile extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      step.title,
+                      step.localizedTitleKey != null
+                          ? context.t(step.localizedTitleKey!)
+                          : step.title,
                       style: AppTypography.body.copyWith(
                         fontWeight: FontWeight.w600,
                         color: _isLocked
@@ -476,7 +478,15 @@ class _FolderStepTile extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${sub.length} materi • ${step.description}',
+                      context.t(
+                        'folderSubtitle',
+                        args: [
+                          '${sub.length}',
+                          step.localizedDescriptionKey != null
+                              ? context.t(step.localizedDescriptionKey!)
+                              : step.description,
+                        ],
+                      ),
                       style: AppTypography.caption,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -609,7 +619,9 @@ class _SubMateriTile extends StatelessWidget {
                   ),
           ),
           title: Text(
-            step.title,
+            step.localizedTitleKey != null
+                ? context.t(step.localizedTitleKey!)
+                : step.title,
             style: AppTypography.body.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 13,
@@ -619,7 +631,9 @@ class _SubMateriTile extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            step.estimatedTime ?? context.t('estimatedTimeShort', args: ['5']),
+            step.localizedEstimatedTimeKey != null
+                ? context.t(step.localizedEstimatedTimeKey!)
+                : context.t('estimatedTimeShort', args: [step.estimatedTime ?? '5']),
             style: AppTypography.caption,
           ),
           trailing: VoltChip(

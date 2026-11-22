@@ -6,6 +6,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Praktik interaktif: Animasi Running LED (chaser).
 class LedAnimation extends StatefulWidget {
@@ -82,10 +83,10 @@ class _LedAnimationState extends State<LedAnimation> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text('Simulasi Running LED', style: AppTypography.title),
+                Text(context.t('ledSimTitle'), style: AppTypography.title),
                 const SizedBox(height: AppSpacing.xs),
-                const Text(
-                  'Amati bagaimana pin digital mikrokontroler menyalakan deretan LED bergantian.',
+                Text(
+                  context.t('ledSimDesc'),
                   style: AppTypography.bodyMuted,
                 ),
                 const SizedBox(height: AppSpacing.xl),
@@ -140,8 +141,8 @@ class _LedAnimationState extends State<LedAnimation> {
                         ),
                         child: Text(
                           _isRunning
-                              ? 'Aktif: Pin D${_activeLedIndex + 8} HIGH'
-                              : 'Status: Standby (Semua Pin LOW)',
+                              ? context.t('ledStatusActive', args: [(_activeLedIndex + 8).toString()])
+                              : context.t('ledStatusStandby'),
                           style: AppTypography.label.copyWith(
                             color: _isRunning
                                 ? AppColors.accent
@@ -155,7 +156,7 @@ class _LedAnimationState extends State<LedAnimation> {
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 VoltButton(
-                  label: _isRunning ? 'Hentikan Animasi' : 'Jalankan Animasi',
+                  label: _isRunning ? context.t('ledBtnStop') : context.t('ledBtnStart'),
                   fullWidth: true,
                   variant: _isRunning
                       ? VoltButtonVariant.secondary
@@ -166,16 +167,14 @@ class _LedAnimationState extends State<LedAnimation> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          const VoltCard(
+          VoltCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Konsep Kerja', style: AppTypography.title),
+                Text(context.t('ledConceptTitle'), style: AppTypography.title),
                 SizedBox(height: AppSpacing.xs),
                 Text(
-                  '1. Mikrokontroler mengirim sinyal HIGH (5V) ke satu pin.\n'
-                  '2. LED menyala karena arus mengalir melewati resistor ke GND.\n'
-                  '3. Rutin loop mematikan LED (LOW) lalu beralih ke pin berikutnya.',
+                  context.t('ledConceptText'),
                   style: AppTypography.body,
                 ),
               ],

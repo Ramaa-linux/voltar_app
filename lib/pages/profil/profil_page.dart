@@ -7,10 +7,12 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/providers/locale_provider.dart';
 import 'package:voltar/utils/volt_feedback.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_card.dart';
 import 'package:voltar/widgets/volt_chip.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 class _SettingsItem {
   const _SettingsItem({required this.icon, required this.label});
@@ -19,10 +21,11 @@ class _SettingsItem {
   final String label;
 }
 
-const List<_SettingsItem> _settings = <_SettingsItem>[
-  _SettingsItem(icon: AppIconName.pencil, label: 'Edit Profil'),
-  _SettingsItem(icon: AppIconName.bell, label: 'Notifikasi'),
-  _SettingsItem(icon: AppIconName.info, label: 'Tentang Aplikasi'),
+final List<_SettingsItem> _settings = <_SettingsItem>[
+  _SettingsItem(icon: AppIconName.pencil, label: 'settingsEditProfil'),
+  _SettingsItem(icon: AppIconName.bell, label: 'menuNotifications'),
+  _SettingsItem(icon: AppIconName.info, label: 'settingsAbout'),
+  _SettingsItem(icon: AppIconName.globe, label: 'settingsLanguage'),
 ];
 
 /// Menghasilkan inisial nama untuk avatar (mis. "Rama" -> "R", "Rama Pratama" -> "RP").
@@ -78,12 +81,12 @@ class ProfilPage extends ConsumerWidget {
         ? (data!['name'] as String).trim()
         : (currentUser?.displayName?.toString().trim().isNotEmpty == true
               ? currentUser!.displayName!.toString().trim()
-              : 'Budi Santoso');
+              : context.t('defaultName'));
     final String email = (data?['email'] as String?)?.trim().isNotEmpty == true
         ? (data!['email'] as String).trim()
         : (currentUser?.email?.toString().trim().isNotEmpty == true
               ? currentUser!.email!.toString().trim()
-              : 'budi.santoso@sekolah.sch.id');
+              : context.t('defaultEmail'));
     final String roleLabel = _formatRoleLabel(data?['role'] as String?);
     final String initials = initialsFromName(name);
     final String? photoUrl = (data?['photoUrl'] as String?)?.trim().isNotEmpty == true
@@ -101,7 +104,7 @@ class ProfilPage extends ConsumerWidget {
           AppSpacing.navBarClearance,
         ),
         children: <Widget>[
-          Text('Profil', style: AppTypography.display),
+          Text(context.t('titleProfile'), style: AppTypography.display),
           const SizedBox(height: AppSpacing.xl),
           Center(
             child: Column(
@@ -133,7 +136,7 @@ class ProfilPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
-          Text('Pengaturan', style: AppTypography.title),
+          Text(context.t('titleSettings'), style: AppTypography.title),
           const SizedBox(height: AppSpacing.md),
           VoltCard(
             padding: EdgeInsets.zero,
@@ -144,11 +147,13 @@ class ProfilPage extends ConsumerWidget {
                   _SettingsRow(
                     item: _settings[i],
                     onTap: () {
-                      if (_settings[i].label == 'Edit Profil') {
+                      if (_settings[i].label == 'settingsEditProfil') {
                         context.push(AppRoutes.profilEdit);
-                      } else if (_settings[i].label == 'Notifikasi') {
+                      } else if (_settings[i].label == 'menuNotifications') {
                         _showNotificationDialog(context);
-                      } else if (_settings[i].label == 'Tentang Aplikasi') {
+                      } else if (_settings[i].label == 'settingsLanguage') {
+                        _showLanguageSheet(context, ref);
+                      } else if (_settings[i].label == 'settingsAbout') {
                         _showAboutDialog(context);
                       }
                     },
@@ -166,7 +171,7 @@ class ProfilPage extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'EduVolt v1.0.0',
+            context.t('appVersion', args: ['1.0.0']),
             style: AppTypography.caption,
             textAlign: TextAlign.center,
           ),
@@ -188,18 +193,18 @@ class ProfilPage extends ConsumerWidget {
             borderRadius: BorderRadius.circular(AppRadius.card),
           ),
           title: Text(
-            'Konfirmasi Keluar',
+            context.t('logoutConfirm'),
             style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
           ),
           content: Text(
-            'Apakah kamu yakin ingin keluar?',
+            context.t('logoutConfirmMessage'),
             style: AppTypography.body.copyWith(color: AppColors.textSecondary),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: Text(
-                'Batal',
+                context.t('btnCancel'),
                 style: AppTypography.label.copyWith(
                   color: AppColors.textSecondary,
                 ),
@@ -215,12 +220,12 @@ class ProfilPage extends ConsumerWidget {
                   }
                 } catch (e) {
                   if (context.mounted) {
-                    showVoltSnackBar(context, 'Gagal keluar: $e');
+                    showVoltSnackBar(context, context.t('errLogoutFailed', args: [e.toString()]));
                   }
                 }
               },
               child: Text(
-                'Ya, Keluar',
+                context.t('btnYesLogout'),
                 style: AppTypography.label.copyWith(color: AppColors.error),
               ),
             ),
@@ -255,18 +260,18 @@ class ProfilPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.md),
-            Text('Notifikasi', style: AppTypography.title),
+            Text(context.t('menuNotifications'), style: AppTypography.title),
           ],
         ),
         content: Text(
-          'Belum ada notifikasi baru.',
+          context.t('msgNoNotifications'),
           style: AppTypography.body,
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text(
-              'Tutup',
+              context.t('btnClose'),
               style: AppTypography.body.copyWith(color: AppColors.primaryDark),
             ),
           ),
@@ -308,16 +313,16 @@ class ProfilPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('EduVolt', style: AppTypography.display),
+            Text(context.t('appTitle'), style: AppTypography.display),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'EduVolt v1.0.0 - Platform Pembelajaran Elektronika untuk SMK.',
+              context.t('aboutDesc', args: ['1.0.0']),
               style: AppTypography.bodyMuted,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'Dibuat oleh: Tim EduVolt',
+              context.t('aboutMadeBy'),
               style: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
@@ -328,7 +333,7 @@ class ProfilPage extends ConsumerWidget {
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
                   child: Text(
-                    'Tutup',
+                    context.t('btnClose'),
                     style: AppTypography.body.copyWith(
                       color: AppColors.primaryDark,
                     ),
@@ -339,6 +344,62 @@ class ProfilPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Bottom Sheet: memilih bahasa aplikasi (Indonesia / English).
+  void _showLanguageSheet(BuildContext context, WidgetRef ref) {
+    String selectedLang = ref.read(localeProvider).locale.languageCode;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(AppRadius.card),
+          topRight: Radius.circular(AppRadius.card),
+        ),
+      ),
+      builder: (BuildContext ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom +
+                  AppSpacing.navBarClearance,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  context.t('languageDialogTitle'),
+                  style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                RadioListTile<String>(
+                  title: Text(context.t('langIndonesian')),
+                  value: 'id',
+                  groupValue: selectedLang,
+                  onChanged: (String? value) {
+                    selectedLang = value!;
+                    ref.read(localeProvider.notifier).setLocale(value);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+                RadioListTile<String>(
+                  title: Text(context.t('langEnglish')),
+                  value: 'en',
+                  groupValue: selectedLang,
+                  onChanged: (String? value) {
+                    selectedLang = value!;
+                    ref.read(localeProvider.notifier).setLocale(value);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -385,7 +446,7 @@ class _SettingsRow extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: Text(item.label, style: AppTypography.body),
+                  child: Text(context.t(item.label), style: AppTypography.body),
                 ),
                 const AppIcon.chevronRight(
                   size: AppIconSize.sm,
@@ -441,7 +502,7 @@ class _LogoutRow extends StatelessWidget {
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
-                    'Keluar',
+                    context.t('logout'),
                     style: AppTypography.body.copyWith(
                       color: AppColors.error,
                       fontWeight: FontWeight.w600,
@@ -460,4 +521,6 @@ class _LogoutRow extends StatelessWidget {
     );
   }
 }
+
+
 

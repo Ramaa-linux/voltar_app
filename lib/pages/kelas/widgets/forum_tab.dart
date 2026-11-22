@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/class_post.dart';
+import '../../../utils/localization_helper.dart';
 import '../../../services/auth_service.dart';
 import '../../../services/class_post_repository.dart';
-import '../../../services/comment_repository.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_spacing.dart';
 import '../../../theme/app_typography.dart';
-import '../../../utils/volt_feedback.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/volt_button.dart';
 import 'post_card.dart';
@@ -34,7 +33,6 @@ class ForumTab extends ConsumerStatefulWidget {
 class _ForumTabState extends ConsumerState<ForumTab>
     with AutomaticKeepAliveClientMixin {
   late final ClassPostRepository _postRepo;
-  late final CommentRepository _commentRepo;
   late final AuthService _authService;
   late Future<List<ClassPost>> _postsFuture;
   Map<String, String> _authorNames = {};
@@ -46,7 +44,6 @@ class _ForumTabState extends ConsumerState<ForumTab>
   void initState() {
     super.initState();
     _postRepo = ClassPostRepository();
-    _commentRepo = CommentRepository();
     _authService = AuthService();
     _loadPosts();
   }
@@ -64,7 +61,7 @@ class _ForumTabState extends ConsumerState<ForumTab>
     final usersMap = await _authService.fetchUsersByIds(authorIds);
     final Map<String, String> names = {};
     for (final entry in usersMap.entries) {
-      names[entry.key] = entry.value['name'] as String? ?? 'Pengguna';
+      names[entry.key] = entry.value['name'] as String? ?? context.t('pengguna');
     }
     if (mounted) {
       setState(() {
@@ -117,18 +114,13 @@ class _ForumTabState extends ConsumerState<ForumTab>
             itemCount: posts.length,
             itemBuilder: (context, index) {
               final post = posts[index];
-              final authorName = _authorNames[post.authorId] ?? 'Pengguna';
+              final authorName = _authorNames[post.authorId] ?? context.t('pengguna');
               return PostCard(
                 post: post,
                 authorName: authorName,
                 isTeacher: widget.isTeacher,
                 currentUserId: widget.currentUserId,
-                teacherId: widget.teacherId,
-                onDelete: widget.isTeacher ? () => _deletePost(post) : null,
-                onToggleComments: widget.isTeacher
-                    ? () => _toggleComments(post)
-                    : null,
-                onAddComment: _addComment,
+                classId: widget.classId,
               );
             },
           );
@@ -146,7 +138,7 @@ class _ForumTabState extends ConsumerState<ForumTab>
           children: [
             const AppIcon(AppIconName.info, size: 48, color: AppColors.error),
             const SizedBox(height: AppSpacing.md),
-            Text('Gagal Memuat', style: AppTypography.title),
+            Text(context.t('gagalMemuat'), style: AppTypography.title),
             const SizedBox(height: AppSpacing.xs),
             Text(
               error,
@@ -155,7 +147,7 @@ class _ForumTabState extends ConsumerState<ForumTab>
             ),
             const SizedBox(height: AppSpacing.lg),
             VoltButton(
-              label: 'Coba Lagi',
+              label: context.t('cobaLagi'),
               onPressed: () => setState(() {}),
             ),
           ],
@@ -187,12 +179,12 @@ class _ForumTabState extends ConsumerState<ForumTab>
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Text('Belum Ada Postingan', style: AppTypography.title),
+            Text(context.t('belumAdaPostingan'), style: AppTypography.title),
             const SizedBox(height: AppSpacing.xs),
             Text(
               widget.isTeacher
-                  ? 'Buat pengumuman atau tugas pertama Anda'
-                  : 'Tunggu pengumuman dari guru',
+                  ? context.t('buatPengumumanAtauTugasPertama')
+                  : context.t('tungguPengumumanGuru'),
               style: AppTypography.bodyMuted,
               textAlign: TextAlign.center,
             ),
@@ -202,72 +194,6 @@ class _ForumTabState extends ConsumerState<ForumTab>
     );
   }
 
-  Future<void> _deletePost(ClassPost post) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Hapus Postingan'),
-        content: Text(
-          'Yakin ingin menghapus "${post.title ?? post.content.substring(0, post.content.length.clamp(0, 30))}..."?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Hapus'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        await _postRepo.deletePost(post.id);
-        if (mounted) {
-          showVoltSnackBar(context, 'Postingan dihapus');
-        }
-      } catch (e) {
-        if (mounted) {
-          showVoltSnackBar(context, 'Gagal menghapus: $e');
-        }
-      }
-    }
-  }
-
-  Future<void> _toggleComments(ClassPost post) async {
-    try {
-      await _postRepo.toggleComments(
-        postId: post.id,
-        enabled: !post.isCommentEnabled,
-      );
-      if (mounted) {
-        showVoltSnackBar(
-          context,
-          post.isCommentEnabled ? 'Komentar dinonaktifkan' : 'Komentar diaktifkan',
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        showVoltSnackBar(context, 'Gagal mengubah status komentar: $e');
-      }
-    }
-  }
-
-  Future<void> _addComment(String postId, String content) async {
-    try {
-      await _commentRepo.addComment(
-        postId: postId,
-        authorId: widget.currentUserId,
-        content: content,
-      );
-    } catch (e) {
-      if (mounted) {
-        showVoltSnackBar(context, 'Gagal menambah komentar: $e');
-      }
-    }
-  }
 }
+
+

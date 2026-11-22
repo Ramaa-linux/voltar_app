@@ -12,6 +12,7 @@ import '../../../theme/app_typography.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/volt_button.dart';
 import 'assignment_widgets.dart';
+import '../../../utils/localization_helper.dart';
 
 class TugasTab extends ConsumerStatefulWidget {
   final String classId;
@@ -72,7 +73,7 @@ class _TugasTabState extends ConsumerState<TugasTab>
     final usersMap = await _authService.fetchUsersByIds(authorIds);
     final Map<String, String> names = {};
     for (final entry in usersMap.entries) {
-      names[entry.key] = entry.value['name'] as String? ?? 'Pengguna';
+      names[entry.key] = entry.value['name'] as String? ?? context.t('pengguna');
     }
     if (mounted) {
       setState(() {
@@ -145,9 +146,9 @@ class _TugasTabState extends ConsumerState<TugasTab>
         labelStyle: AppTypography.label.copyWith(fontWeight: FontWeight.w700),
         unselectedLabelStyle: AppTypography.label,
         tabs: [
-          Tab(text: 'Semua ($totalCount)'),
-          Tab(text: 'Selesai'),
-          Tab(text: 'Belum Selesai'),
+          Tab(text: context.t('semuaTab', args: [totalCount.toString()])),
+          Tab(text: context.t('selesaiTugas')),
+          Tab(text: context.t('belumDikerjakan')),
         ],
       ),
     );
@@ -184,8 +185,8 @@ class _TugasTabState extends ConsumerState<TugasTab>
         if (completedAssignments.isEmpty) {
           return _buildEmptyState(
             icon: AppIconName.checkSquare,
-            title: 'Belum Ada Tugas Selesai',
-            message: 'Tugas yang diselesaikan akan muncul di sini.',
+            title: context.t('belumAdaTugasSelesai'),
+            message: context.t('tugasSelesaiWillAppear'),
           );
         }
 
@@ -221,8 +222,8 @@ class _TugasTabState extends ConsumerState<TugasTab>
         if (pendingAssignments.isEmpty) {
           return _buildEmptyState(
             icon: AppIconName.bell,
-            title: 'Semua Tugas Selesai! 🎉',
-            message: 'Tidak ada tugas yang tertunda.',
+            title: context.t('semuaTugasSelesai'),
+            message: context.t('tidakAdaTugasTertunda'),
           );
         }
 
@@ -248,7 +249,7 @@ class _TugasTabState extends ConsumerState<TugasTab>
           children: [
             const AppIcon(AppIconName.info, size: 48, color: AppColors.error),
             const SizedBox(height: AppSpacing.md),
-            Text('Gagal Memuat', style: AppTypography.title),
+            Text(context.t('gagalMemuat'), style: AppTypography.title),
             const SizedBox(height: AppSpacing.xs),
             Text(
               error,
@@ -257,7 +258,7 @@ class _TugasTabState extends ConsumerState<TugasTab>
             ),
             const SizedBox(height: AppSpacing.lg),
             VoltButton(
-              label: 'Coba Lagi',
+              label: context.t('cobaLagi'),
               onPressed: () => setState(() {}),
             ),
           ],
@@ -302,6 +303,8 @@ class _TugasTabState extends ConsumerState<TugasTab>
     );
   }
 }
+
+
 
 
 

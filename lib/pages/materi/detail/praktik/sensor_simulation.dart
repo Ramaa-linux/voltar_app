@@ -6,6 +6,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_card.dart';
 import 'package:voltar/widgets/volt_chip.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Lab Virtual Sensor Level 3: HC-SR04, LDR, DHT11, dan MQ-135.
 class SensorSimulation extends StatefulWidget {
@@ -26,9 +27,17 @@ class _SensorSimulationState extends State<SensorSimulation>
   double _humidityPercent = 55.0; // 0 - 100 %
   double _gasPpm = 220.0; // 0 - 1000 ppm
 
+  late final List<String> _tabs;
+
   @override
   void initState() {
     super.initState();
+    _tabs = <String>[
+      context.t('sensorTabHcsr04'),
+      context.t('sensorTabLdr'),
+      context.t('sensorTabDht11'),
+      context.t('sensorTabMq135'),
+    ];
     // ponytail: single ticker drives all 4 sensor animations; split only if independent speeds needed.
     _loopCtrl = AnimationController(
       vsync: this,
@@ -41,8 +50,6 @@ class _SensorSimulationState extends State<SensorSimulation>
     _loopCtrl.dispose();
     super.dispose();
   }
-
-  static const List<String> _tabs = <String>['HC-SR04', 'LDR', 'DHT11', 'MQ-135'];
 
   @override
   Widget build(BuildContext context) {
@@ -114,16 +121,16 @@ class _SensorSimulationState extends State<SensorSimulation>
   Widget _buildHcsr04() {
     final bool isDanger = _distanceCm < 20.0;
     final String statusText = isDanger
-        ? 'Jarak: ${_distanceCm.round()} cm (Bahaya!)'
-        : 'Jarak: ${_distanceCm.round()} cm (Aman)';
+        ? context.t('sensorHcsr04StatusDanger', args: [_distanceCm.round().toString()])
+        : context.t('sensorHcsr04StatusSafe', args: [_distanceCm.round().toString()]);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _header('Sensor Ultrasonik HC-SR04', isDanger ? 'LED ON' : 'STANDBY', isDanger),
-        const SizedBox(height: AppSpacing.xs),
-        const Text(
-          'Gelombang suara keluar dari Transmitter (T), memantul di objek, dan masuk ke Receiver (R).',
+        _header(context.t('sensorHcsr04Title'), isDanger ? context.t('sensorLedOn') : context.t('sensorLedOff'), isDanger),
+        SizedBox(height: AppSpacing.xs),
+        Text(
+          context.t('sensorHcsr04Desc'),
           style: AppTypography.bodyMuted,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -143,7 +150,7 @@ class _SensorSimulationState extends State<SensorSimulation>
         ),
         const SizedBox(height: AppSpacing.md),
         _controlPanel(
-          title: 'Jarak Objek (2 cm - 400 cm)',
+          title: context.t('sensorHcsr04Panel'),
           trailing: '${_distanceCm.round()} cm',
           child: Slider(
             key: const Key('slider_hcsr04'),
@@ -157,10 +164,10 @@ class _SensorSimulationState extends State<SensorSimulation>
         const SizedBox(height: AppSpacing.sm),
         _outputPanel(
           mainText: statusText,
-          subText: isDanger ? 'Jarak < 20 cm -> LED Indikator Hijau MENYALA' : 'Jarak >= 20 cm -> LED MATI',
+          subText: isDanger ? context.t('sensorHcsr04SubDanger') : context.t('sensorHcsr04SubSafe'),
           dotColor: isDanger ? AppColors.success : AppColors.borderStrong,
           glow: isDanger,
-          badge: isDanger ? 'LED: ON' : 'LED: OFF',
+          badge: isDanger ? context.t('sensorHcsr04BadgeOn') : context.t('sensorHcsr04BadgeOff'),
         ),
       ],
     );
@@ -168,16 +175,18 @@ class _SensorSimulationState extends State<SensorSimulation>
 
   Widget _buildLdr() {
     final bool isDark = _lightPercent < 30.0;
-    final String statusText = isDark ? 'Kondisi: Gelap -> Lampu ON' : 'Kondisi: Terang -> Lampu OFF';
+    final String statusText = isDark
+        ? context.t('sensorLdrStatusDark')
+        : context.t('sensorLdrStatusBright');
     final Color bg = Color.lerp(AppColors.codeBackground, AppColors.accentLight, _lightPercent / 100.0)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _header('Sensor Cahaya LDR', isDark ? 'LAMPU ON' : 'LAMPU OFF', isDark),
-        const SizedBox(height: AppSpacing.xs),
-        const Text(
-          'Saat cahaya < 30%, resistansi LDR naik sehingga lampu menyala otomatis.',
+        _header(context.t('sensorLdrTitle'), isDark ? context.t('sensorLedOn') : context.t('sensorLedOff'), isDark),
+        SizedBox(height: AppSpacing.xs),
+        Text(
+          context.t('sensorLdrDesc'),
           style: AppTypography.bodyMuted,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -190,7 +199,7 @@ class _SensorSimulationState extends State<SensorSimulation>
         ),
         const SizedBox(height: AppSpacing.md),
         _controlPanel(
-          title: 'Intensitas Cahaya (0% - 100%)',
+          title: context.t('sensorLdrPanel'),
           trailing: '${_lightPercent.round()}%',
           child: Slider(
             key: const Key('slider_ldr'),
@@ -204,10 +213,10 @@ class _SensorSimulationState extends State<SensorSimulation>
         const SizedBox(height: AppSpacing.sm),
         _outputPanel(
           mainText: statusText,
-          subText: 'Intensitas: ${_lightPercent.round()}% (Ambang gelap < 30%)',
+          subText: context.t('sensorLdrSub', args: [_lightPercent.round().toString()]),
           dotColor: isDark ? AppColors.accent : AppColors.borderStrong,
           glow: isDark,
-          badge: isDark ? 'GLOW: ON' : 'GLOW: OFF',
+          badge: isDark ? context.t('sensorLdrBadgeOn') : context.t('sensorLdrBadgeOff'),
         ),
       ],
     );
@@ -216,15 +225,15 @@ class _SensorSimulationState extends State<SensorSimulation>
   Widget _buildDht11() {
     final bool isHot = _tempCelsius > 30;
     final String statusText =
-        'Suhu: $_tempCelsius°C | Kelembapan: ${_humidityPercent.round()}%';
+        context.t('sensorDht11Status', args: [_tempCelsius.toString(), _humidityPercent.round().toString()]);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _header('Sensor Suhu & Kelembapan DHT11', isHot ? 'KIPAS ON' : 'KIPAS OFF', isHot),
-        const SizedBox(height: AppSpacing.xs),
-        const Text(
-          'Mengukur suhu & kelembapan udara. Jika suhu > 30°C, kipas pendingin menyala.',
+        _header(context.t('sensorDht11Title'), isHot ? context.t('sensorDht11FanOn') : context.t('sensorDht11FanOff'), isHot),
+        SizedBox(height: AppSpacing.xs),
+        Text(
+          context.t('sensorDht11Desc'),
           style: AppTypography.bodyMuted,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -249,7 +258,7 @@ class _SensorSimulationState extends State<SensorSimulation>
         ),
         const SizedBox(height: AppSpacing.md),
         _controlPanel(
-          title: 'Suhu (20°C - 40°C) & Kelembapan (0% - 100%)',
+          title: context.t('sensorDht11Panel'),
           trailing: '$_tempCelsius°C / ${_humidityPercent.round()}%',
           child: Column(
             children: <Widget>[
@@ -292,10 +301,10 @@ class _SensorSimulationState extends State<SensorSimulation>
         const SizedBox(height: AppSpacing.sm),
         _outputPanel(
           mainText: statusText,
-          subText: isHot ? 'Suhu > 30°C -> Kipas Pendingin AKTIF' : 'Suhu <= 30°C -> Kipas MATI',
+          subText: isHot ? context.t('sensorDht11FanOn') : context.t('sensorDht11FanOff'),
           dotColor: isHot ? AppColors.error : AppColors.primary,
           glow: isHot,
-          badge: isHot ? 'KIPAS: ON' : 'KIPAS: OFF',
+          badge: isHot ? context.t('sensorDht11FanOn') : context.t('sensorDht11FanOff'),
         ),
       ],
     );
@@ -303,15 +312,17 @@ class _SensorSimulationState extends State<SensorSimulation>
 
   Widget _buildMq135() {
     final bool isBadAir = _gasPpm > 500.0;
-    final String statusText = isBadAir ? 'Kualitas Udara: BURUK' : 'Kualitas Udara: BAIK';
+    final String statusText = isBadAir
+        ? context.t('sensorMq135Status', args: [_gasPpm.round().toString()])
+        : context.t('sensorMq135Standby');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _header('Sensor Kualitas Udara MQ-135', isBadAir ? 'BAHAYA' : 'AMAN', isBadAir),
-        const SizedBox(height: AppSpacing.xs),
-        const Text(
-          'Mendeteksi gas berbahaya & asap. Jika level > 500 ppm, LED Peringatan Merah berkedip.',
+        _header(context.t('sensorMq135Title'), isBadAir ? context.t('sensorMq135Alarm') : context.t('sensorLedOff'), isBadAir),
+        SizedBox(height: AppSpacing.xs),
+        Text(
+          context.t('sensorMq135Desc'),
           style: AppTypography.bodyMuted,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -335,7 +346,7 @@ class _SensorSimulationState extends State<SensorSimulation>
         ),
         const SizedBox(height: AppSpacing.md),
         _controlPanel(
-          title: 'Level Gas (0 - 1000 ppm)',
+          title: context.t('sensorMq135Panel'),
           trailing: '${_gasPpm.round()} ppm',
           child: Slider(
             key: const Key('slider_mq135'),
@@ -353,10 +364,10 @@ class _SensorSimulationState extends State<SensorSimulation>
             final bool blinkOn = isBadAir && (_loopCtrl.value < 0.5);
             return _outputPanel(
               mainText: statusText,
-              subText: 'Level Gas: ${_gasPpm.round()} ppm (Ambang > 500 ppm)',
+              subText: context.t('sensorMq135Status', args: [_gasPpm.round().toString()]),
               dotColor: blinkOn ? AppColors.error : (isBadAir ? AppColors.errorLight : AppColors.success),
               glow: blinkOn,
-              badge: isBadAir ? 'LED: BLINK' : 'LED: AMAN',
+              badge: isBadAir ? context.t('sensorMq135Alarm') : context.t('sensorLedOff'),
             );
           },
         ),

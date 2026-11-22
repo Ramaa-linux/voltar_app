@@ -12,27 +12,31 @@ class LevelModel {
   final int levelNumber;
   final List<LearningStep> steps;
 
-  /// Caption untuk tampilan daftar: "X materi • Y menit" (termasuk di dalam subMateri folder).
-  String get caption {
-    final List<LearningStep> allMateris = [];
-
+  /// Daftar semua step materi di level ini, termasuk di dalam folder.
+  List<LearningStep> get materiList {
+    final List<LearningStep> result = [];
     for (final LearningStep step in steps) {
       if (step.type == LearningStepType.materi) {
-        allMateris.add(step);
+        result.add(step);
       } else if (step.type == LearningStepType.folder) {
-        allMateris.addAll(_allMaterisRecursive(step));
+        result.addAll(_allMaterisRecursive(step));
       }
     }
+    return result;
+  }
 
-    if (allMateris.isEmpty) return '0 materi • 0 menit';
-
-    final int totalMateri = allMateris.length;
-    final int totalMinutes = allMateris.fold<int>(0, (sum, s) {
+  /// Total estimasi waktu (menit) dari seluruh materi di level ini.
+  int get totalMinutes {
+    return materiList.fold<int>(0, (sum, s) {
       final match = RegExp(r'(\d+)').firstMatch(s.estimatedTime ?? '');
       return sum + (int.tryParse(match?.group(1) ?? '') ?? 0);
     });
+  }
 
-    return '$totalMateri materi • $totalMinutes menit';
+  /// Caption untuk tampilan daftar: "X materi • Y menit" (termasuk di dalam subMateri folder).
+  String get caption {
+    if (materiList.isEmpty) return '0 materi • 0 menit';
+    return '${materiList.length} materi • $totalMinutes menit';
   }
 
   /// Kumpulkan semua step materi di dalam folder secara rekursif.

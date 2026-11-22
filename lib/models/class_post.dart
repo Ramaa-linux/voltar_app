@@ -5,27 +5,33 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// - [type] bisa 'announcement' atau 'assignment'
 /// - [title] wajib untuk assignment, opsional untuk announcement
 /// - [deadline] hanya untuk assignment, disimpan sebagai 23:59:59 lokal
+/// - [updatedAt] diisi saat diedit (nullable untuk data lama)
+/// - [authorName] disimpan di Firestore saat membuat/edit post (opsional, nullable)
 class ClassPost {
   final String id;
   final String classId;
   final String authorId;
+  final String? authorName;
   final String type; // 'announcement' | 'assignment'
   final String? title;
   final String content;
   final Timestamp? deadline;
   final bool isCommentEnabled;
   final Timestamp createdAt;
+  final Timestamp? updatedAt;
 
   ClassPost({
     required this.id,
     required this.classId,
     required this.authorId,
+    this.authorName,
     required this.type,
     this.title,
     required this.content,
     this.deadline,
     required this.isCommentEnabled,
     required this.createdAt,
+    this.updatedAt,
   });
 
   factory ClassPost.fromMap(String id, Map<String, dynamic> map) {
@@ -33,12 +39,14 @@ class ClassPost {
       id: id,
       classId: map['classId'] as String? ?? '',
       authorId: map['authorId'] as String? ?? '',
+      authorName: map['authorName'] as String?,
       type: map['type'] as String? ?? 'announcement',
       title: map['title'] as String?,
       content: map['content'] as String? ?? '',
       deadline: map['deadline'] as Timestamp?,
       isCommentEnabled: map['isCommentEnabled'] as bool? ?? true,
       createdAt: map['createdAt'] as Timestamp? ?? Timestamp.now(),
+      updatedAt: map['updatedAt'] as Timestamp?,
     );
   }
 
@@ -46,13 +54,44 @@ class ClassPost {
     return {
       'classId': classId,
       'authorId': authorId,
+      'authorName': authorName,
       'type': type,
       'title': title,
       'content': content,
       'deadline': deadline,
       'isCommentEnabled': isCommentEnabled,
       'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
+  }
+
+  /// Buat salinan dengan field yang dapat diubah (untuk edit).
+  ClassPost copyWith({
+    String? id,
+    String? classId,
+    String? authorId,
+    String? authorName,
+    String? type,
+    String? title,
+    String? content,
+    Timestamp? deadline,
+    bool? isCommentEnabled,
+    Timestamp? createdAt,
+    Timestamp? updatedAt,
+  }) {
+    return ClassPost(
+      id: id ?? this.id,
+      classId: classId ?? this.classId,
+      authorId: authorId ?? this.authorId,
+      authorName: authorName ?? this.authorName,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      deadline: deadline ?? this.deadline,
+      isCommentEnabled: isCommentEnabled ?? this.isCommentEnabled,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
   }
 
   /// Cek apakah post ini adalah tugas (assignment)

@@ -8,6 +8,7 @@ import 'package:voltar/services/auth_service.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 
@@ -121,8 +122,8 @@ class _VerificationPendingPageState
       await ref.read(authServiceProvider).sendVerificationEmail();
       if (!mounted) return;
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text('Email verifikasi telah dikirim ulang.'),
+        SnackBar(
+          content: Text(context.t('verificationPendingResent')),
           backgroundColor: AppColors.success,
         ),
       );
@@ -131,7 +132,7 @@ class _VerificationPendingPageState
       if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(
-          content: Text(friendlyAuthError(e)),
+          content: Text(context.t(friendlyAuthError(e))),
           backgroundColor: AppColors.error,
         ),
       );
@@ -142,7 +143,7 @@ class _VerificationPendingPageState
       if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(
-          content: Text(friendlyAuthError(e)),
+          content: Text(context.t(friendlyAuthError(e))),
           backgroundColor: AppColors.error,
         ),
       );
@@ -163,9 +164,9 @@ class _VerificationPendingPageState
       if (!mounted) return;
       if (!isVerified) {
         messenger.showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Email kamu belum terverifikasi. Pastikan sudah klik link di email.',
+              context.t('verificationPendingNotVerified'),
             ),
           ),
         );
@@ -174,7 +175,7 @@ class _VerificationPendingPageState
       if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(
-          content: Text(friendlyAuthError(e)),
+          content: Text(context.t(friendlyAuthError(e))),
           backgroundColor: AppColors.error,
         ),
       );
@@ -197,7 +198,7 @@ class _VerificationPendingPageState
         setState(() => _isLoggingOut = false);
         messenger.showSnackBar(
           SnackBar(
-            content: Text(friendlyAuthError(e)),
+            content: Text(context.t(friendlyAuthError(e))),
             backgroundColor: AppColors.error,
           ),
         );
@@ -205,10 +206,10 @@ class _VerificationPendingPageState
     }
   }
 
-  Widget _buildEmailDescription(String targetEmail) {
+  Widget _buildEmailDescription(BuildContext context, String targetEmail) {
     if (targetEmail.isEmpty) {
-      return const Text(
-        'Kami telah mengirim link verifikasi ke email kamu. Silakan buka email dan klik link tersebut untuk mengaktifkan akun.',
+      return Text(
+        context.t('verificationPendingDescGeneric'),
         style: AppTypography.bodyMuted,
         textAlign: TextAlign.center,
       );
@@ -217,7 +218,10 @@ class _VerificationPendingPageState
       TextSpan(
         style: AppTypography.body.copyWith(color: AppColors.textSecondary),
         children: <TextSpan>[
-          const TextSpan(text: 'Kami telah mengirim link verifikasi ke: '),
+          TextSpan(
+            text: context.t('verificationPendingDescEmailPrefix'),
+            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          ),
           TextSpan(
             text: targetEmail,
             style: AppTypography.body.copyWith(
@@ -225,8 +229,9 @@ class _VerificationPendingPageState
               fontWeight: FontWeight.bold,
             ),
           ),
-          const TextSpan(
-            text: '. Silakan buka email kamu dan klik link tersebut untuk mengaktifkan akun.',
+          TextSpan(
+            text: context.t('verificationPendingDescEmailSuffix'),
+            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -240,8 +245,8 @@ class _VerificationPendingPageState
     final String targetEmail = _resolveTargetEmail(authService);
     final bool isCooldownActive = _remainingSeconds > 0;
     final String resendLabel = isCooldownActive
-        ? 'Kirim Ulang (${_remainingSeconds}s)'
-        : 'Kirim Ulang Email Verifikasi';
+        ? context.t('verificationPendingResendCooldown', args: [_remainingSeconds])
+        : context.t('verificationPendingResendLabel');
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -281,23 +286,23 @@ class _VerificationPendingPageState
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    const Text(
-                      'Cek Email Kamu!',
+                    Text(
+                      context.t('verificationPendingHeader'),
                       style: AppTypography.heading,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.md),
-                    _buildEmailDescription(targetEmail),
+                    _buildEmailDescription(context, targetEmail),
                     const SizedBox(height: AppSpacing.sm),
-                    const Text(
-                      'Tidak ketemu? Cek folder Spam atau Promosi.',
+                    Text(
+                      context.t('verificationPendingSpamHint'),
                       style: AppTypography.caption,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                     VoltButton(
                       key: const Key('resend_verification_button'),
-                      label: _isSending ? 'Mengirim...' : resendLabel,
+                      label: _isSending ? context.t('verificationPendingResending') : resendLabel,
                       fullWidth: true,
                       onPressed: (isCooldownActive || _isSending)
                           ? null
@@ -318,8 +323,8 @@ class _VerificationPendingPageState
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text(
-                              'Saya sudah verifikasi',
+                          : Text(
+                              context.t('verificationPendingCheckButton'),
                               style: AppTypography.button,
                             ),
                     ),
@@ -329,7 +334,7 @@ class _VerificationPendingPageState
                         key: const Key('back_to_login_button'),
                         onPressed: _isLoggingOut ? null : _handleBackToLogin,
                         child: Text(
-                          _isLoggingOut ? 'Keluar...' : 'Kembali ke Login',
+                          _isLoggingOut ? context.t('verificationPendingLoggingOut') : context.t('verificationPendingBackToLogin'),
                           style: AppTypography.button.copyWith(
                             color: AppColors.textSecondary,
                           ),

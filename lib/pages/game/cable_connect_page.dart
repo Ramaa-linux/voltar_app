@@ -9,6 +9,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
@@ -122,7 +123,7 @@ class _CableConnectPageState extends State<CableConnectPage>
         children: <Widget>[
           _CircleButton(
             key: const Key('cable_connect_back_button'),
-            tooltip: 'Kembali',
+            tooltip: context.t('gameCableConnectTooltipBack'),
             icon: AppIconName.arrowLeft,
             onTap: _exitGame,
           ),
@@ -187,7 +188,7 @@ class _CableConnectPageState extends State<CableConnectPage>
           const SizedBox(width: AppSpacing.sm),
           _CircleButton(
             key: const Key('cable_connect_reset_button'),
-            tooltip: 'Ulang Jalur',
+            tooltip: context.t('gameCableConnectTooltipRedo'),
             icon: AppIconName.stop,
             onTap: _controller.resetPath,
           ),
@@ -294,7 +295,7 @@ class _CableConnectPageState extends State<CableConnectPage>
         AppSpacing.md,
       ),
       child: Text(
-        feedback ?? 'Tarik kawat dari (+) melewati semua komponen ke (-).',
+        feedback ?? context.t('gameCableConnectFeedback'),
         style: AppTypography.bodyMuted.copyWith(
           color: AppColors.surface.withValues(alpha: 0.85),
           fontWeight: FontWeight.w500,
@@ -315,13 +316,13 @@ class _CableConnectPageState extends State<CableConnectPage>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const VoltChip(
-                label: 'Arus Mengalir!',
+              VoltChip(
+                label: context.t('gameCableConnectChipCurrent'),
                 status: VoltChipStatus.done,
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Rangkaian Tertutup',
+                context.t('gameCableConnectCircuitClosed'),
                 style: AppTypography.heading,
                 textAlign: TextAlign.center,
               ),
@@ -360,14 +361,14 @@ class _CableConnectPageState extends State<CableConnectPage>
               const SizedBox(height: AppSpacing.lg),
               VoltButton(
                 key: const Key('cable_connect_next_button'),
-                label: 'Level Berikutnya (+10s)',
+                label: context.t('gameCableConnectNextLevel'),
                 icon: AppIconName.play,
                 fullWidth: true,
                 onPressed: _controller.nextLevel,
               ),
               const SizedBox(height: AppSpacing.sm),
               VoltButton(
-                label: 'Keluar',
+                label: context.t('gameCableConnectExit'),
                 variant: VoltButtonVariant.secondary,
                 fullWidth: true,
                 onPressed: _exitGame,
@@ -393,7 +394,7 @@ class _CableConnectPageState extends State<CableConnectPage>
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Waktu Habis',
+                context.t('gameCableConnectTimeUp'),
                 style: AppTypography.heading,
                 textAlign: TextAlign.center,
               ),
@@ -406,14 +407,14 @@ class _CableConnectPageState extends State<CableConnectPage>
               const SizedBox(height: AppSpacing.lg),
               VoltButton(
                 key: const Key('cable_connect_retry_button'),
-                label: 'Coba Lagi',
+                label: context.t('gameCableConnectTryAgain'),
                 icon: AppIconName.play,
                 fullWidth: true,
                 onPressed: _controller.retryGame,
               ),
               const SizedBox(height: AppSpacing.sm),
               VoltButton(
-                label: 'Keluar',
+                label: context.t('gameCableConnectExit'),
                 variant: VoltButtonVariant.secondary,
                 fullWidth: true,
                 onPressed: _exitGame,

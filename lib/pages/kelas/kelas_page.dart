@@ -13,6 +13,7 @@ import "../../widgets/app_icon.dart";
 import "../../widgets/press_scale.dart";
 import "../../widgets/volt_button.dart";
 import "../../widgets/volt_card.dart";
+import "../../utils/localization_helper.dart";
 
 /// Halaman Kelas Siswa.
 /// Menampilkan kelas yang diikuti siswa (berdasarkan classId di users).
@@ -40,7 +41,7 @@ class KelasPage extends ConsumerWidget {
                 AppSpacing.lg,
               ),
               child: Text(
-                "Kelas Saya",
+                context.t("kelasSaya"),
                 style: AppTypography.heading.copyWith(fontWeight: FontWeight.w800),
               ),
             ),
@@ -158,7 +159,7 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "Belum Punya Kelas?",
+                            context.t('kelasNoClassYet'),
                             style: AppTypography.title.copyWith(
                               color: AppColors.primaryDark,
                               fontWeight: FontWeight.w800,
@@ -166,7 +167,7 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
-                            "Masukkan kode kelas dari guru Anda untuk bergabung.",
+                            context.t("masukkanKodeKelas"),
                             style: AppTypography.bodyMuted.copyWith(
                               color: AppColors.primaryDark,
                             ),
@@ -186,9 +187,9 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
               children: <Widget>[
                 TextField(
                   controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: "Kode Kelas",
-                    hintText: "Contoh: ABC123",
+                  decoration: InputDecoration(
+                    labelText: context.t("kodeKelas"),
+                    hintText: context.t("classCodeHint"),
                     border: OutlineInputBorder(),
                   ),
                   textCapitalization: TextCapitalization.characters,
@@ -197,7 +198,7 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
                 ),
                 const SizedBox(height: AppSpacing.md),
                 VoltButton(
-                  label: "Gabung Kelas",
+                  label: context.t("gabungKelas"),
                   onPressed: _isLoading ? null : _handleJoinClass,
                   fullWidth: true,
                   variant: VoltButtonVariant.primary,
@@ -219,7 +220,7 @@ class _JoinClassFormState extends ConsumerState<_JoinClassForm> {
     try {
       await widget.authService.joinClass(code);
       if (mounted) {
-        showVoltSnackBar(context, "Berhasil bergabung ke kelas!");
+        showVoltSnackBar(context, context.t('kelasJoinSuccess'));
         _controller.clear();
       }
     } on AuthException catch (e) {
@@ -295,7 +296,7 @@ class _KelasCard extends StatelessWidget {
                       Row(
                         children: <Widget>[
                           Text(
-                            "$studentCount siswa",
+                            context.t("studentCount", args: [studentCount.toString()]),
                             style: AppTypography.bodyMuted,
                           ),
                           const SizedBox(width: AppSpacing.md),
@@ -331,7 +332,7 @@ class _KelasCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onTap,
                     icon: const AppIcon(AppIconName.info, size: 16),
-                    label: const Text("Lihat Detail"),
+                    label: Text(context.t("lihatDetail")),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.primary,
                       side: BorderSide(color: AppColors.primary),
@@ -348,7 +349,7 @@ class _KelasCard extends StatelessWidget {
                       // Future: navigate to tugas/absen for this class
                     },
                     icon: const AppIcon(AppIconName.checkSquare, size: 16),
-                    label: const Text("Tugas & Absen"),
+                    label: Text(context.t("tugasDanAbsen")),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
@@ -457,12 +458,12 @@ class _KelasCardError extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Kelas tidak ditemukan",
+                  context.t("kelasTidakDitemukan"),
                   style: AppTypography.title.copyWith(color: AppColors.error),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  "Hubungi guru Anda untuk kode kelas yang benar",
+                  context.t("hubungiGuruKodeKelas"),
                   style: AppTypography.bodyMuted.copyWith(color: AppColors.error),
                 ),
               ],
@@ -473,6 +474,8 @@ class _KelasCardError extends StatelessWidget {
     );
   }
 }
+
+
 
 
 

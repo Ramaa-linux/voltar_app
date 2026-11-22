@@ -5,6 +5,7 @@ import 'package:voltar/models/learning_step.dart';
 import 'package:voltar/repositories/materi_repository.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/pages/materi/detail/materi_detail_view.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Provider untuk repository materi (singleton).
 final materiRepositoryProvider = Provider<MateriRepository>((ref) {
@@ -74,7 +75,7 @@ class _MateriDetailErrorView extends StatelessWidget {
             children: <Widget>[
               const Icon(Icons.error_outline, size: 48, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Gagal memuat materi', style: Theme.of(context).textTheme.titleLarge),
+              Text(context.t('gagalMemuatMateri'), style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               Text(
                 error.toString(),
@@ -84,7 +85,7 @@ class _MateriDetailErrorView extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: () => Navigator.of(context).maybePop(),
-                child: const Text('Kembali'),
+                child: Text(context.t('kembali')),
               ),
             ],
           ),

@@ -4,6 +4,7 @@ import 'package:voltar/router/app_routes.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -118,12 +119,12 @@ class _SimulasiEditorPageState extends State<SimulasiEditorPage> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         leading: IconButton(
-          tooltip: 'Kembali',
+          tooltip: context.t('simulasiTooltipBack'),
           icon: const AppIcon.arrowLeft(color: AppColors.textPrimary),
           onPressed: _close,
         ),
-        title: const Text(
-          'Simulator Velxio',
+        title: Text(
+          context.t('simulasiEditorDefaultName'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -136,7 +137,7 @@ class _SimulasiEditorPageState extends State<SimulasiEditorPage> {
                 foregroundColor: AppColors.primaryDark,
                 textStyle: AppTypography.label,
               ),
-              child: const Text('Muat Ulang'),
+              child: Text(context.t('simulasiBtnReload')),
             ),
           ),
         ],
@@ -163,8 +164,8 @@ class _SimulasiEditorPageState extends State<SimulasiEditorPage> {
                         color: AppColors.error,
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      const Text(
-                        'Koneksi Terputus',
+                      Text(
+                        context.t('simulasiConnDisconnected'),
                         style: AppTypography.title,
                         textAlign: TextAlign.center,
                       ),
@@ -176,7 +177,7 @@ class _SimulasiEditorPageState extends State<SimulasiEditorPage> {
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       VoltButton(
-                        label: 'Coba Lagi',
+                        label: context.t('simulasiBtnRetry'),
                         onPressed: _reload,
                       ),
                     ],

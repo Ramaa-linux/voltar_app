@@ -5,6 +5,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Panel telemetry monospace (`tabularFigures`) + oscilloscope mini gelombang sinyal.
 class TelemetryPanel extends StatelessWidget {
@@ -14,7 +15,7 @@ class TelemetryPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<(String, String)> metrics = _buildMetrics();
+    final List<(String, String)> metrics = _buildMetrics(context);
     final Color waveColor = switch (controller.motorType) {
       MotorType.servo => MotorPalette.servoBlueLight,
       MotorType.dc => AppColors.primaryLight,
@@ -38,7 +39,7 @@ class TelemetryPanel extends StatelessWidget {
             runSpacing: AppSpacing.xs,
             children: <Widget>[
               Text(
-                'TELEMETRY & OSCILLOSCOPE',
+                context.t('telemetryTitle'),
                 style: AppTypography.overline.copyWith(
                   color: waveColor,
                   fontWeight: FontWeight.w700,
@@ -46,9 +47,9 @@ class TelemetryPanel extends StatelessWidget {
               ),
               Text(
                 switch (controller.motorType) {
-                  MotorType.servo => 'PWM 50 Hz (Periode 20 ms)',
-                  MotorType.dc => 'PWM ~490 Hz (Pin D5)',
-                  MotorType.stepper => '4-Coil Step Sequence (IN1–IN4)',
+                  MotorType.servo => context.t('telemetryPwmServo'),
+                  MotorType.dc => context.t('telemetryPwmDc'),
+                  MotorType.stepper => context.t('telemetryStepSequence'),
                 },
                 style: AppTypography.overline.copyWith(
                   color: AppColors.textOnPrimary.withValues(alpha: 0.7),
@@ -114,37 +115,37 @@ class TelemetryPanel extends StatelessWidget {
     );
   }
 
-  List<(String, String)> _buildMetrics() {
+  List<(String, String)> _buildMetrics(BuildContext context) {
     switch (controller.motorType) {
       case MotorType.servo:
         return <(String, String)>[
-          ('Sudut Aktual', '${controller.servoCurrentAngle.round()}°'),
-          ('Sudut Target', '${controller.servoTargetAngle.round()}°'),
-          ('Lebar Pulsa', '${controller.servoPulseWidthUs} µs'),
-          ('Frekuensi', '${MotorSimController.servoFrequencyHz} Hz'),
+          (context.t('telemetryActualAngle'), '${controller.servoCurrentAngle.round()}°'),
+          (context.t('telemetryTargetAngle'), '${controller.servoTargetAngle.round()}°'),
+          (context.t('telemetryPulseWidth'), '${controller.servoPulseWidthUs} µs'),
+          (context.t('telemetryFrequency'), '${MotorSimController.servoFrequencyHz} Hz'),
         ];
       case MotorType.dc:
         final String dirText = switch (controller.dcActualDirection) {
-          1 => 'CW (Maju)',
-          -1 => 'CCW (Mundur)',
-          _ => controller.isDcStalled ? 'STALL' : 'STOP',
+          1 => context.t('telemetryDirectionCw'),
+          -1 => context.t('telemetryDirectionCcw'),
+          _ => controller.isDcStalled ? context.t('telemetryDirectionStall') : context.t('telemetryDirectionStop'),
         };
         return <(String, String)>[
-          ('PWM', '${controller.dcTargetPwm}/255'),
-          ('Duty Cycle', '${controller.dcDutyCyclePercent}%'),
-          ('RPM', '${controller.dcRpm}'),
-          ('Arah', dirText),
+          (context.t('telemetryPwm'), '${controller.dcTargetPwm}/255'),
+          (context.t('telemetryDutyCycle'), '${controller.dcDutyCyclePercent}%'),
+          (context.t('telemetryRpm'), '${controller.dcRpm}'),
+          (context.t('telemetryDirection'), dirText),
         ];
       case MotorType.stepper:
         final List<bool> c = controller.stepperActiveCoils;
         final String coilStr =
             '${c[0] ? '1' : '0'}-${c[1] ? '1' : '0'}-${c[2] ? '1' : '0'}-${c[3] ? '1' : '0'}';
         return <(String, String)>[
-          ('Step Counter', '${controller.stepperStepCounter}'),
-          ('Sudut', '${controller.stepperCurrentAngleDeg.toStringAsFixed(1)}°'),
-          ('Kumparan ABCD', coilStr),
+          (context.t('telemetryStepCounter'), '${controller.stepperStepCounter}'),
+          (context.t('telemetryStepperAngle'), '${controller.stepperCurrentAngleDeg.toStringAsFixed(1)}°'),
+          (context.t('telemetryStepperCoils'), coilStr),
           (
-            'Kecepatan',
+            context.t('telemetryStepperSpeed'),
             '${controller.stepperCurrentSpeedStepsPerSec.round()} step/s',
           ),
         ];

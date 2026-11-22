@@ -5,6 +5,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Pemilih perangkat input (Potensiometer vs Switch/Push Button) + info sinyal aktif.
 class InputSelector extends StatelessWidget {
@@ -30,7 +31,7 @@ class InputSelector extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              'PERANGKAT INPUT',
+              context.t('motorInputDeviceTitle'),
               style: AppTypography.overline.copyWith(
                 color: AppColors.textSecondary,
                 fontWeight: FontWeight.w700,
@@ -38,7 +39,7 @@ class InputSelector extends StatelessWidget {
             ),
             Flexible(
               child: Text(
-                isPot ? 'Analog input (ADC 0–1023)' : 'Digital input (HIGH/LOW)',
+                isPot ? context.t('motorInputAnalog') : context.t('motorInputDigital'),
                 overflow: TextOverflow.ellipsis,
                 style: AppTypography.overline.copyWith(
                   color: accentColor,
@@ -61,7 +62,7 @@ class InputSelector extends StatelessWidget {
               Expanded(
                 child: _buildOption(
                   key: const Key('input_device_potentiometer'),
-                  label: 'Potensiometer',
+                  label: context.t('motorInputPotentiometer'),
                   icon: Icons.tune_rounded,
                   active: isPot,
                   onTap: () => onChanged(InputDevice.potentiometer),
@@ -71,7 +72,7 @@ class InputSelector extends StatelessWidget {
               Expanded(
                 child: _buildOption(
                   key: const Key('input_device_push_button'),
-                  label: 'Switch / Push Button',
+                  label: context.t('motorInputSwitchPushButton'),
                   icon: Icons.radio_button_checked_rounded,
                   active: !isPot,
                   onTap: () => onChanged(InputDevice.pushButton),

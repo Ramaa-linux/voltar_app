@@ -16,11 +16,11 @@ class AppShell extends StatelessWidget {
 
   /// Urutan HARUS sama dengan urutan branch di app_router.dart.
   static const List<VoltNavItem> navItems = <VoltNavItem>[
-    VoltNavItem(icon: AppIconName.home, label: 'Home'),
-    VoltNavItem(icon: AppIconName.bookOpen, label: 'Materi'),
-    VoltNavItem(icon: AppIconName.cpu, label: 'Simulasi'),
-    VoltNavItem(icon: AppIconName.folder, label: 'Kelas'),
-    VoltNavItem(icon: AppIconName.profile, label: 'Profil'),
+    VoltNavItem(icon: AppIconName.home, labelKey: 'navHome'),
+    VoltNavItem(icon: AppIconName.bookOpen, labelKey: 'navMateri'),
+    VoltNavItem(icon: AppIconName.cpu, labelKey: 'navSimulasi'),
+    VoltNavItem(icon: AppIconName.folder, labelKey: 'navKelas'),
+    VoltNavItem(icon: AppIconName.profile, labelKey: 'navProfil'),
   ];
 
   @override

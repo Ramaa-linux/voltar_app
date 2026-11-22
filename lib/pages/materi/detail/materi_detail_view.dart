@@ -138,7 +138,12 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xs),
-                          Text(step.title, style: AppTypography.title),
+                          Text(
+                            step.localizedTitleKey != null
+                                ? context.t(step.localizedTitleKey!)
+                                : step.title,
+                            style: AppTypography.title,
+                          ),
                         ],
                       ),
                     ),
@@ -192,7 +197,9 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    step.description,
+                    step.localizedDescriptionKey != null
+                        ? context.t(step.localizedDescriptionKey!)
+                        : step.description,
                     style: AppTypography.body.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -231,6 +238,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
   }
 
     Widget _buildReadingTab(LearningStep step) {
+    final contentKeys = step.localizedContentKeys;
     return SingleChildScrollView(
       controller: _scrollController,
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
@@ -238,7 +246,11 @@ class _MateriDetailViewState extends State<MateriDetailView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           for (int i = 0; i < (step.content?.length ?? 0); i++)
-            ContentBlockRenderer(block: step.content![i], index: i),
+            ContentBlockRenderer(
+              block: step.content![i],
+              index: i,
+              localizedKey: contentKeys?[i],
+            ),
         ],
       ),
     );
@@ -246,6 +258,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
 
   Widget _buildVideoTab(LearningStep step) {
     final summary = step.videoSummary ?? const <ContentBlock>[];
+    final summaryKeys = step.localizedVideoSummaryKeys;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
       child: Column(
@@ -293,6 +306,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                   return ContentBlockRenderer(
                     block: summary[index],
                     index: index,
+                    localizedKey: summaryKeys?[index],
                   );
                 },
               ),

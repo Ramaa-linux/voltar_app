@@ -8,6 +8,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 class DcControls extends StatelessWidget {
   const DcControls({super.key, required this.controller});
@@ -23,7 +24,7 @@ class DcControls extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        _buildTopBar(accent),
+        _buildTopBar(context, accent),
         const SizedBox(height: AppSpacing.sm),
         if (controller.inputDevice == InputDevice.potentiometer)
           VirtualPotentiometer(
@@ -34,7 +35,7 @@ class DcControls extends StatelessWidget {
             accentColor: AppColors.primary,
           )
         else
-          _buildPushButtonControls(accent),
+          _buildPushButtonControls(context, accent),
         if (controller.isDcStalled) ...<Widget>[
           const SizedBox(height: AppSpacing.xs),
           Container(
@@ -44,7 +45,7 @@ class DcControls extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.input),
             ),
             child: Text(
-              'Torsi belum cukup (stall): PWM di bawah ${MotorSimController.dcDeadZonePwm} belum mampu memutar rotor.',
+              context.t('motorDcStalled', args: [MotorSimController.dcDeadZonePwm.toString()]),
               style: AppTypography.overline.copyWith(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w700,
@@ -56,7 +57,7 @@ class DcControls extends StatelessWidget {
     );
   }
 
-  Widget _buildTopBar(Color accent) {
+  Widget _buildTopBar(BuildContext context, Color accent) {
     final bool isForward = controller.dcDirection >= 0;
     final bool isFan = controller.dcAttachment == DcAttachment.fan;
 
@@ -68,7 +69,7 @@ class DcControls extends StatelessWidget {
               Expanded(
                 child: VirtualPushButton(
                   key: const Key('dc_dir_forward'),
-                  label: 'Maju (CW)',
+                  label: context.t('motorDcForward'),
                   compact: true,
                   accentColor: AppColors.success,
                   isActive: isForward,
@@ -79,7 +80,7 @@ class DcControls extends StatelessWidget {
               Expanded(
                 child: VirtualPushButton(
                   key: const Key('dc_dir_reverse'),
-                  label: 'Mundur (CCW)',
+                  label: context.t('motorDcReverse'),
                   compact: true,
                   accentColor: AppColors.accent,
                   isActive: !isForward,
@@ -103,7 +104,7 @@ class DcControls extends StatelessWidget {
     );
   }
 
-  Widget _buildPushButtonControls(Color accent) {
+  Widget _buildPushButtonControls(BuildContext context, Color accent) {
     final int pwm = controller.dcTargetPwm;
     final double progress = (pwm / 255.0).clamp(0.0, 1.0);
 
@@ -175,7 +176,7 @@ class DcControls extends StatelessWidget {
             Expanded(
               child: VirtualPushButton(
                 key: const Key('dc_btn_gas'),
-                label: 'GAS ▲ (Tahan)',
+                label: context.t('motorDcGas'),
                 accentColor: AppColors.success,
                 isActive: controller.isGasPressed,
                 onPressStart: controller.startDcGas,
@@ -186,7 +187,7 @@ class DcControls extends StatelessWidget {
             Expanded(
               child: VirtualPushButton(
                 key: const Key('dc_btn_brake'),
-                label: 'REM ▼ (Tahan)',
+                label: context.t('motorDcBrake'),
                 accentColor: AppColors.accent,
                 isActive: controller.isBrakePressed,
                 onPressStart: controller.startDcBrake,
@@ -196,7 +197,7 @@ class DcControls extends StatelessWidget {
             const SizedBox(width: AppSpacing.xs),
             VirtualPushButton(
               key: const Key('dc_btn_stop'),
-              label: 'BERHENTI',
+              label: context.t('motorDcStop'),
               compact: true,
               accentColor: AppColors.error,
               onTap: controller.stopDcMotor,
@@ -209,7 +210,7 @@ class DcControls extends StatelessWidget {
             Expanded(
               child: VirtualPushButton(
                 key: const Key('dc_preset_fwd200'),
-                label: 'Maju (PWM 200)',
+                label: context.t('motorDcPresetFwd200'),
                 compact: true,
                 accentColor: AppColors.primary,
                 onTap: () => controller.applyDcPreset(direction: 1, pwm: 200),
@@ -219,7 +220,7 @@ class DcControls extends StatelessWidget {
             Expanded(
               child: VirtualPushButton(
                 key: const Key('dc_preset_rev100'),
-                label: 'Mundur (PWM 100)',
+                label: context.t('motorDcPresetRev100'),
                 compact: true,
                 accentColor: AppColors.accent,
                 onTap: () => controller.applyDcPreset(direction: -1, pwm: 100),
@@ -230,8 +231,8 @@ class DcControls extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         VirtualSwitch(
           key: const Key('dc_switch_power'),
-          label: 'Saklar Utama Motor DC (Soft-Start)',
-          subtitle: 'Saat ON, kecepatan naik bertahap ke target PWM',
+          label: context.t('motorDcPowerLabel'),
+          subtitle: context.t('motorDcPowerSubtitle'),
           value: controller.dcPowerOn,
           onChanged: controller.setDcPowerOn,
           accentColor: AppColors.primary,
@@ -239,8 +240,8 @@ class DcControls extends StatelessWidget {
         const SizedBox(height: AppSpacing.xs),
         VirtualSwitch(
           key: const Key('dc_switch_autobrake'),
-          label: 'Auto-Brake (Lepas GAS = Turun)',
-          subtitle: 'Coasting otomatis saat tombol GAS dilepas',
+          label: context.t('motorDcAutoBrakeLabel'),
+          subtitle: context.t('motorDcAutoBrakeSubtitle'),
           value: controller.dcAutoBrake,
           onChanged: controller.setDcAutoBrake,
           accentColor: accent,

@@ -4,6 +4,7 @@ import 'package:voltar/theme/app_borders.dart';
 import 'package:voltar/theme/app_colors.dart';
 import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
+import 'package:voltar/utils/localization_helper.dart';
 import 'package:voltar/widgets/app_icon.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
@@ -42,27 +43,27 @@ class SimulasiPage extends StatelessWidget {
           AppSpacing.navBarClearance,
         ),
         children: <Widget>[
-          const Text('Simulasi', style: AppTypography.display),
+          Text(context.t('simulasiTitle'), style: AppTypography.display),
           const SizedBox(height: AppSpacing.xs),
-          const Text(
-            'Rancang dan uji sirkuit virtual langsung di browser.',
+          Text(
+            context.t('simulasiSubtitle'),
             style: AppTypography.bodyMuted,
           ),
           const SizedBox(height: AppSpacing.xl),
           VoltButton(
-            label: 'Buka Project Baru',
+            label: context.t('simulasiNewProject'),
             fullWidth: true,
             onPressed: () => _openEditor(context, _blankProjectUrl),
           ),
           const SizedBox(height: AppSpacing.xl),
-          Text('Project yang sudah ada', style: AppTypography.title),
+          Text(context.t('simulasiExistingProjects'), style: AppTypography.title),
           const SizedBox(height: AppSpacing.md),
           // ponytail: list kartu statis 2 template; upgrade ke ListView.builder jika template dinamis dari API
           VoltCard(
             onTap: () => _openEditor(
               context,
               _ledBlinkerUrl,
-              title: 'LED Blinker',
+              title: context.t('simulasiLedBlinkerTitle'),
             ),
             child: Row(
               children: <Widget>[
@@ -85,14 +86,14 @@ class SimulasiPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'LED Blinker',
+                        context.t('simulasiLedBlinkerTitle'),
                         style: AppTypography.body.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
-                      const Text(
-                        'Simulasi kedip LED dasar Arduino',
+                      Text(
+                        context.t('simulasiLedBlinkerDesc'),
                         style: AppTypography.bodyMuted,
                       ),
                     ],
@@ -111,7 +112,7 @@ class SimulasiPage extends StatelessWidget {
             onTap: () => _openEditor(
               context,
               _trafficLightUrl,
-              title: '4-Way Traffic Light',
+              title: context.t('simulasiTrafficLightTitle'),
             ),
             child: Row(
               children: <Widget>[
@@ -135,14 +136,14 @@ class SimulasiPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '4-Way Traffic Light',
+                        context.t('simulasiTrafficLightTitle'),
                         style: AppTypography.body.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
-                      const Text(
-                        'Simulasi lampu lalu lintas 4 arah',
+                      Text(
+                        context.t('simulasiTrafficLightDesc'),
                         style: AppTypography.bodyMuted,
                       ),
                     ],

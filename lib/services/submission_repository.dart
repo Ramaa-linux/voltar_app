@@ -15,12 +15,12 @@ class SubmissionRepository {
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// Referensi ke collection submissions
-  CollectionReference<Map<String, dynamic>> get _submissionsRef =>
+  CollectionReference<Map<String, dynamic>> get submissionsRef =>
       _firestore.collection('submissions');
 
   /// Stream submission untuk satu tugas (post) - khusus guru
   Stream<List<Submission>> streamSubmissionsForPost(String postId) {
-    return _submissionsRef
+    return submissionsRef
         .where('postId', isEqualTo: postId)
         .snapshots()
         .map((snapshot) {
@@ -32,7 +32,7 @@ class SubmissionRepository {
 
   /// Ambil submissions sekali (Future) untuk post - cocok untuk dialog "Lihat yang sudah selesai".
   Future<List<Submission>> fetchSubmissionsForPostOnce(String postId) async {
-    final snapshot = await _submissionsRef
+    final snapshot = await submissionsRef
         .where('postId', isEqualTo: postId)
         .get();
 
@@ -47,7 +47,7 @@ class SubmissionRepository {
     required String classId,
     required String studentId,
   }) {
-    return _submissionsRef
+    return submissionsRef
         .where('classId', isEqualTo: classId)
         .where('studentId', isEqualTo: studentId)
         .snapshots()
@@ -67,7 +67,7 @@ class SubmissionRepository {
     required bool completed,
   }) async {
     final id = Submission.createId(postId, studentId);
-    final docRef = _submissionsRef.doc(id);
+    final docRef = submissionsRef.doc(id);
 
     if (completed) {
       await docRef.set({
@@ -87,13 +87,13 @@ class SubmissionRepository {
     required String studentId,
   }) async {
     final id = Submission.createId(postId, studentId);
-    final doc = await _submissionsRef.doc(id).get();
+    final doc = await submissionsRef.doc(id).get();
     return doc.exists;
   }
 
   /// Hapus submission (cleanup jika tugas dihapus guru)
   Future<void> deleteSubmission(String postId, String studentId) async {
     final id = Submission.createId(postId, studentId);
-    await _submissionsRef.doc(id).delete();
+    await submissionsRef.doc(id).delete();
   }
 }

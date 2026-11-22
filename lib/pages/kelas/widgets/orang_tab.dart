@@ -6,6 +6,7 @@ import '../../../theme/app_spacing.dart';
 import '../../../theme/app_typography.dart';
 import '../../../widgets/app_icon.dart';
 import 'orang_tab_helpers.dart';
+import '../../../utils/localization_helper.dart';
 
 /// A simple skeleton loader for member list items.
 class _MemberSkeleton extends StatelessWidget {
@@ -84,14 +85,14 @@ class OrangTab extends StatelessWidget {
 
     return CustomScrollView(
       slivers: [
-        if (teacherId != null && teacherId!.isNotEmpty) ..._buildTeacherSection(),
+        if (teacherId != null && teacherId!.isNotEmpty) ..._buildTeacherSection(context),
         ..._buildStudentSection(studentsStream),
         SliverToBoxAdapter(child: SizedBox(height: bottomInset)),
       ],
     );
   }
 
-  List<Widget> _buildTeacherSection() {
+  List<Widget> _buildTeacherSection(BuildContext context) {
     return [
       SliverToBoxAdapter(
         child: Padding(
@@ -102,7 +103,7 @@ class OrangTab extends StatelessWidget {
             AppSpacing.sm,
           ),
           child: Text(
-            'GURU',
+            context.t('guru').toUpperCase(),
             style: AppTypography.label.copyWith(
               color: AppColors.primaryDark,
               fontWeight: FontWeight.w700,
@@ -125,19 +126,19 @@ class OrangTab extends StatelessWidget {
               }
               if (!snapshot.hasData || !snapshot.data!.exists) {
                 return MemberTile(
-                  name: 'Guru',
+                  name: context.t('guru'),
                   email: '-',
-                  role: 'Pengajar',
+                  role: context.t('guru'),
                   isTeacher: true,
                 );
               }
               final data = snapshot.data!.data()!;
-              final name = data['name'] as String? ?? 'Guru';
+              final name = data['name'] as String? ?? context.t('guru');
               final email = data['email'] as String? ?? '';
               return MemberTile(
                 name: name,
                 email: email,
-                role: 'Pengajar',
+                role: context.t('guru'),
                 isTeacher: true,
               );
             },
@@ -166,7 +167,7 @@ class OrangTab extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'SISWA ($count)',
+                    context.t('siswaTab', args: [count.toString()]),
                     style: AppTypography.label.copyWith(
                       color: AppColors.primaryDark,
                       fontWeight: FontWeight.w700,
@@ -184,7 +185,7 @@ class OrangTab extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.input),
                       ),
                       child: Text(
-                        'Kode: $classCode',
+                        context.t('kodeLabel', args: [classCode!]),
                         style: AppTypography.caption.copyWith(
                           color: AppColors.primaryDark,
                           fontWeight: FontWeight.w700,
@@ -214,8 +215,8 @@ class OrangTab extends StatelessWidget {
               return SliverToBoxAdapter(
                 child: TabEmptyState(
                   icon: AppIconName.info,
-                  title: 'Gagal Memuat',
-                  message: 'Terjadi kesalahan saat memuat daftar siswa.',
+                  title: context.t('gagalMemuat'),
+                  message: context.t('gagalMemuatSiswa'),
                 ),
               );
             }
@@ -239,7 +240,7 @@ class OrangTab extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xs),
               itemBuilder: (context, index) {
                 final data = sortedDocs[index].data();
-                final name = data['name'] as String? ?? 'Tanpa Nama';
+                final name = data['name'] as String? ?? context.t('tanpaNama');
                 final email = data['email'] as String? ?? '';
                 return MemberTile(
                   name: name,

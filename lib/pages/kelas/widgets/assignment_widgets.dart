@@ -10,6 +10,7 @@ import '../../../theme/app_typography.dart';
 import '../../../widgets/app_icon.dart';
 import '../../../widgets/volt_card.dart';
 import 'assignment_card.dart';
+import '../../../utils/localization_helper.dart';
 
 class TugasLoading extends StatelessWidget {
   const TugasLoading({super.key});
@@ -27,10 +28,10 @@ class TugasLoading extends StatelessWidget {
             unselectedLabelColor: AppColors.textTertiary,
             labelStyle: AppTypography.label.copyWith(fontWeight: FontWeight.w700),
             unselectedLabelStyle: AppTypography.label,
-            tabs: const [
-              Tab(text: 'Semua'),
-              Tab(text: 'Selesai'),
-              Tab(text: 'Belum Selesai'),
+            tabs: [
+              Tab(text: context.t('semuaTab')),
+              Tab(text: context.t('selesaiTugas')),
+              Tab(text: context.t('belumDikerjakan')),
             ],
           ),
         ),
@@ -182,7 +183,7 @@ class _AssignmentListState extends ConsumerState<AssignmentList> {
     final usersMap = await _authService.fetchUsersByIds(studentIds);
     final Map<String, String> names = {};
     for (final entry in usersMap.entries) {
-      names[entry.key] = entry.value['name'] as String? ?? 'Siswa';
+      names[entry.key] = entry.value['name'] as String? ?? context.t('siswa');
     }
     if (mounted) {
       setState(() {
@@ -216,12 +217,12 @@ class _AssignmentListState extends ConsumerState<AssignmentList> {
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
-              Text('Belum Ada Tugas', style: AppTypography.title),
+              Text(context.t('belumAdaTugas'), style: AppTypography.title),
               const SizedBox(height: AppSpacing.xs),
               Text(
                 widget.isTeacher
-                    ? 'Buat tugas baru untuk siswa Anda'
-                    : 'Tunggu tugas dari guru',
+                    ? context.t('buatTugasBaru')
+                    : context.t('tungguTugasDariGuru'),
                 style: AppTypography.bodyMuted,
                 textAlign: TextAlign.center,
               ),
@@ -241,16 +242,13 @@ class _AssignmentListState extends ConsumerState<AssignmentList> {
       itemCount: widget.assignments.length,
       itemBuilder: (context, index) {
         final assignment = widget.assignments[index];
-        final authorName = widget.authorNames[assignment.authorId] ?? 'Guru';
+        final authorName = widget.authorNames[assignment.authorId] ?? context.t('guru');
         return AssignmentCard(
           assignment: assignment,
           authorName: authorName,
           isTeacher: widget.isTeacher,
           currentUserId: widget.currentUserId,
-          submissionRepo: widget.submissionRepo,
           classId: widget.classId,
-          studentNames: _studentNames,
-          onResolveStudentNames: _resolveStudentNames,
         );
       },
     );

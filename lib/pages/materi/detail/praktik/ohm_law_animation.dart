@@ -6,6 +6,7 @@ import 'package:voltar/theme/app_spacing.dart';
 import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Praktik interaktif: Animasi Rangkaian Tertutup & Simulasi Hukum Ohm (V = I x R).
 class OhmLawAnimation extends StatefulWidget {
@@ -100,13 +101,13 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
-                  'Simulasi Rangkaian Tertutup & Hukum Ohm',
+                Text(
+                  context.t('ohmSimTitle'),
                   style: AppTypography.title,
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                const Text(
-                  'Amati aliran arus listrik pada rangkaian tertutup dari kutub (+) baterai, melewati hambatan dan beban, kembali ke kutub (-).',
+                Text(
+                  context.t('ohmSimDesc'),
                   style: AppTypography.bodyMuted,
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -169,8 +170,8 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
                       Expanded(
                         child: Text(
                           _isClosed
-                              ? 'RANGKAIAN TERTUTUP: Arus Mengalir (${currentMa.toStringAsFixed(1)} mA)'
-                              : 'RANGKAIAN TERBUKA: Arus Terputus (0.0 mA)',
+                              ? context.t('ohmCircuitClosed', args: [currentMa.toStringAsFixed(1)])
+                              : context.t('ohmCircuitOpen'),
                           style: AppTypography.label.copyWith(
                             color: _isClosed
                                 ? AppColors.primaryDark
@@ -184,7 +185,7 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 VoltButton(
-                  label: _isClosed ? 'Buka Saklar (OFF)' : 'Tutup Saklar (ON)',
+                  label: _isClosed ? context.t('ohmBtnOpen') : context.t('ohmBtnClose'),
                   fullWidth: true,
                   variant: _isClosed
                       ? VoltButtonVariant.secondary
@@ -208,17 +209,14 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const Text('Pengaturan Parameter', style: AppTypography.title),
+          Text(context.t('ohmParamTitle'), style: AppTypography.title),
           const SizedBox(height: AppSpacing.xs),
-          const Text(
-            'Ubah nilai tegangan atau hambatan untuk melihat pengaruhnya terhadap laju partikel dan terangnya lampu.',
-            style: AppTypography.bodyMuted,
-          ),
+          Text(context.t('ohmParamDesc'), style: AppTypography.bodyMuted),
           const SizedBox(height: AppSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text('Tegangan (V)', style: AppTypography.body),
+              Text(context.t('ohmVoltageLabel'), style: AppTypography.body),
               Text(
                 '${_voltage.toStringAsFixed(1)} V',
                 style: AppTypography.body.copyWith(
@@ -242,7 +240,7 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text('Hambatan (R)', style: AppTypography.body),
+              Text(context.t('ohmResistanceLabel'), style: AppTypography.body),
               Text(
                 '${_resistance.round()} Ω',
                 style: AppTypography.body.copyWith(
@@ -271,11 +269,11 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
             ),
             child: Row(
               children: <Widget>[
-                Expanded(child: _buildFormulaItem('Tegangan (V)', '${_voltage.toStringAsFixed(1)}V', AppColors.primaryLight)),
+                Expanded(child: _buildFormulaItem(context.t('ohmVoltageLabel'), '${_voltage.toStringAsFixed(1)}V', AppColors.primaryLight)),
                 const Text('÷', style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.bold)),
-                Expanded(child: _buildFormulaItem('Hambatan (R)', '${_resistance.round()}Ω', AppColors.accentLight)),
+                Expanded(child: _buildFormulaItem(context.t('ohmResistanceLabel'), '${_resistance.round()}Ω', AppColors.accentLight)),
                 const Text('=', style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.bold)),
-                Expanded(child: _buildFormulaItem('Arus (I)', '${currentMa.toStringAsFixed(1)}mA', const Color(0xFF38BDF8))),
+                Expanded(child: _buildFormulaItem(context.t('ohmCurrent'), '${currentMa.toStringAsFixed(1)}mA', const Color(0xFF38BDF8))),
               ],
             ),
           ),
@@ -317,21 +315,13 @@ class _OhmLawAnimationState extends State<OhmLawAnimation>
   }
 
   Widget _buildConceptCard() {
-    return const VoltCard(
+    return VoltCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Konsep Rangkaian Tertutup & Hukum Ohm', style: AppTypography.title),
+          Text(context.t('ohmConceptTitle'), style: AppTypography.title),
           SizedBox(height: AppSpacing.xs),
-          Text(
-            '1. Rangkaian Tertutup (Closed Circuit):\n'
-            '   Arus hanya mengalir bila ada lintasan konduktor tertutup dari kutub (+) baterai menuju beban dan kembali ke kutub (-).\n\n'
-            '2. Hambatan Resistor (R):\n'
-            '   Resistor membatasi laju partikel muatan. Semakin tinggi hambatan, semakin lambat aliran arus.\n\n'
-            '3. Daya Terang Lampu:\n'
-            '   Kuat arus (I = V / R) menentukan terang bohlam. Arus besar membuat lampu menyala lebih terang.',
-            style: AppTypography.body,
-          ),
+          Text(context.t('ohmConceptText'), style: AppTypography.body),
         ],
       ),
     );

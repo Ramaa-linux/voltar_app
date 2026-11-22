@@ -7,6 +7,7 @@ import 'package:voltar/theme/app_typography.dart';
 import 'package:voltar/widgets/volt_button.dart';
 import 'package:voltar/widgets/volt_card.dart';
 import 'package:voltar/widgets/volt_chip.dart';
+import 'package:voltar/utils/localization_helper.dart';
 
 /// Simulasi Relay Level 2: Active LOW logic & NO/NC mechanical switch.
 class RelaySimulation extends StatefulWidget {
@@ -64,21 +65,18 @@ class _RelaySimulationState extends State<RelaySimulation>
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    const Expanded(
-                      child: Text('Simulasi Modul Relay 5V', style: AppTypography.title),
+                    Expanded(
+                      child: Text(context.t('relaySimTitle'), style: AppTypography.title),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     VoltChip(
-                      label: isRelayOn ? 'ON' : 'OFF',
+                      label: isRelayOn ? context.t('relayOn') : context.t('relayOff'),
                       status: isRelayOn ? VoltChipStatus.done : VoltChipStatus.locked,
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.sm),
-                const Text(
-                  'Logika Active LOW: Beri sinyal LOW (0V) di Pin D7 untuk mengalirkan arus ke koil relay.',
-                  style: AppTypography.bodyMuted,
-                ),
+                Text(context.t('relayDesc'), style: AppTypography.bodyMuted),
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   height: 220,
