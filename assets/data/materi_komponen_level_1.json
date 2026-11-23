@@ -8,22 +8,76 @@
     "heroImageUrl": "assets/images/materi/level_1/pengenalan komponen/Led/hero_led.jpg",
     "videoUrl": "https://youtu.be/bUTvyjiFVrM",
     "videoSummary": [
-      { "type": "heading", "data": "Bab 1: Pengenalan LED" },
-      { "type": "text", "data": "LED bukan lampu biasa seperti lampu pijar, melainkan jenis dioda yang memancarkan cahaya ketika dialiri listrik. LED terbuat dari bahan semikonduktor tipe P dan tipe N, dan cahaya dihasilkan saat elektron dan lubang muatan bertemu." },
-      { "type": "heading", "data": "Bab 2: Warna, Tegangan, dan Karakteristik" },
-      { "type": "text", "data": "Warna cahaya LED ditentukan oleh bahan pembuatnya, yang juga menentukan panjang gelombang dan tegangan kerja. Contohnya, LED biru biasanya membutuhkan tegangan maju lebih tinggi dibanding LED merah." },
-      { "type": "text", "data": "Karakteristik lain yang perlu diperhatikan adalah sudut pancaran cahaya (sekitar 10° sampai 120°) dan intensitas cahaya yang diukur dalam millicandela." },
-      { "type": "heading", "data": "Bab 3: Jenis-Jenis LED" },
-      { "type": "text", "data": "LED through-hole adalah tipe yang umum dengan ukuran paling sering 5 mm, mudah dipasang, dan polaritasnya mudah dikenali dari panjang kaki." },
-      { "type": "text", "data": "LED SMD berukuran sangat kecil dan tipis, cocok untuk pemasangan massal pada ruang terbatas. LED berdaya tinggi sangat terang tetapi menghasilkan panas sehingga memerlukan heatsink." },
-      { "type": "text", "data": "LED COB menggabungkan banyak chip dalam satu modul kecil. LED RGB terdiri dari tiga warna dasar merah, hijau, dan biru yang dapat dikontrol secara independen untuk menghasilkan berbagai warna." },
-      { "type": "text", "data": "LED alfanumerik digunakan sebagai tampilan angka dan huruf pada berbagai alat elektronik." }
+      {
+        "type": "heading",
+        "data": "Bab 1: Pengenalan LED",
+        "data_en": "Chapter 1: Introduction to LEDs"
+      },
+      {
+        "type": "text",
+        "data": "LED bukan lampu biasa seperti lampu pijar, melainkan jenis dioda yang memancarkan cahaya ketika dialiri listrik. LED terbuat dari bahan semikonduktor tipe P dan tipe N, dan cahaya dihasilkan saat elektron dan lubang muatan bertemu.",
+        "data_en": "An LED is not an ordinary lamp like an incandescent bulb, but a type of diode that emits light when current flows through it. LEDs are made of P-type and N-type semiconductor materials, and light is produced when electrons and holes meet."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 2: Warna, Tegangan, dan Karakteristik",
+        "data_en": "Chapter 2: Color, Voltage, and Characteristics"
+      },
+      {
+        "type": "text",
+        "data": "Warna cahaya LED ditentukan oleh bahan pembuatnya, yang juga menentukan panjang gelombang dan tegangan kerja. Contohnya, LED biru biasanya membutuhkan tegangan maju lebih tinggi dibanding LED merah.",
+        "data_en": "The color of an LED's light is determined by the material it is made of, which also determines its wavelength and operating voltage. For example, a blue LED usually requires a higher forward voltage than a red LED."
+      },
+      {
+        "type": "text",
+        "data": "Karakteristik lain yang perlu diperhatikan adalah sudut pancaran cahaya (sekitar 10° sampai 120°) dan intensitas cahaya yang diukur dalam millicandela.",
+        "data_en": "Other characteristics to consider are the viewing angle (about 10° to 120°) and the luminous intensity, measured in millicandelas."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 3: Jenis-Jenis LED",
+        "data_en": "Chapter 3: Types of LEDs"
+      },
+      {
+        "type": "text",
+        "data": "LED through-hole adalah tipe yang umum dengan ukuran paling sering 5 mm, mudah dipasang, dan polaritasnya mudah dikenali dari panjang kaki.",
+        "data_en": "Through-hole LEDs are the common type, most often 5 mm in size, easy to mount, and with polarity that is easy to identify from the leg length."
+      },
+      {
+        "type": "text",
+        "data": "LED SMD berukuran sangat kecil dan tipis, cocok untuk pemasangan massal pada ruang terbatas. LED berdaya tinggi sangat terang tetapi menghasilkan panas sehingga memerlukan heatsink.",
+        "data_en": "SMD LEDs are very small and thin, suitable for mass assembly in limited space. High-power LEDs are very bright but generate heat, so they require a heatsink."
+      },
+      {
+        "type": "text",
+        "data": "LED COB menggabungkan banyak chip dalam satu modul kecil. LED RGB terdiri dari tiga warna dasar merah, hijau, dan biru yang dapat dikontrol secara independen untuk menghasilkan berbagai warna.",
+        "data_en": "COB LEDs combine many chips in one small module. RGB LEDs consist of three primary colors, red, green, and blue, which can be controlled independently to produce a wide range of colors."
+      },
+      {
+        "type": "text",
+        "data": "LED alfanumerik digunakan sebagai tampilan angka dan huruf pada berbagai alat elektronik.",
+        "data_en": "Alphanumeric LEDs are used as number and letter displays in various electronic devices."
+      }
     ],
     "content": [
-      { "type": "text", "data": "LED (Light Emitting Diode) adalah dioda yang memancarkan cahaya. Berbeda dengan lampu pijar, LED menghasilkan cahaya melalui rekombinasi elektron dan lubang muatan di dalam semikonduktor, sehingga lebih efisien dan lebih tahan lama." },
-      { "type": "text", "data": "Poin penting:\n- Warna LED ditentukan oleh bahan semikonduktor.\n- Tegangan maju (Vf) berbeda untuk setiap warna.\n- Sudut pancaran dan intensitas cahaya dapat dipilih sesuai kebutuhan.\n- Kaki LED memiliki polaritas, dan kaki panjang umumnya adalah anoda." },
-      { "type": "text", "data": "Jenis LED: through-hole (umum, 5 mm), SMD (kecil dan tipis), berdaya tinggi (perlu pendingin), COB (banyak chip dalam satu modul), RGB (multi-warna), dan alfanumerik (display angka dan huruf)." }
-    ]
+      {
+        "type": "text",
+        "data": "LED (Light Emitting Diode) adalah dioda yang memancarkan cahaya. Berbeda dengan lampu pijar, LED menghasilkan cahaya melalui rekombinasi elektron dan lubang muatan di dalam semikonduktor, sehingga lebih efisien dan lebih tahan lama.",
+        "data_en": "An LED (Light Emitting Diode) is a diode that emits light. Unlike an incandescent bulb, an LED produces light through the recombination of electrons and holes inside a semiconductor, making it more efficient and longer-lasting."
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n- Warna LED ditentukan oleh bahan semikonduktor.\n- Tegangan maju (Vf) berbeda untuk setiap warna.\n- Sudut pancaran dan intensitas cahaya dapat dipilih sesuai kebutuhan.\n- Kaki LED memiliki polaritas, dan kaki panjang umumnya adalah anoda.",
+        "data_en": "Key points:\n- LED color is determined by the semiconductor material.\n- The forward voltage (Vf) differs for each color.\n- The viewing angle and luminous intensity can be chosen to suit your needs.\n- LED legs have polarity, and the long leg is generally the anode."
+      },
+      {
+        "type": "text",
+        "data": "Jenis LED: through-hole (umum, 5 mm), SMD (kecil dan tipis), berdaya tinggi (perlu pendingin), COB (banyak chip dalam satu modul), RGB (multi-warna), dan alfanumerik (display angka dan huruf).",
+        "data_en": "LED types: through-hole (common, 5 mm), SMD (small and thin), high-power (needs cooling), COB (many chips in one module), RGB (multi-color), and alphanumeric (number and letter displays)."
+      }
+    ],
+    "title_en": "LED (Light Emitting Diode)",
+    "description_en": "An LED is a diode that emits light when current flows through it, with its color and operating voltage determined by its semiconductor material."
   },
   {
     "id": "l1_kom_kapasitor",
@@ -34,22 +88,76 @@
     "heroImageUrl": "assets/images/materi/level_1/pengenalan komponen/Kapasitor/hero_kapasitor.jfif",
     "videoUrl": "https://youtu.be/rE76zPaqkko",
     "videoSummary": [
-      { "type": "heading", "data": "Bab 1: Pengertian Kapasitor" },
-      { "type": "text", "data": "Kapasitor adalah komponen elektronik yang mampu menyimpan dan melepas energi listrik secara cepat. Komponen ini terdiri dari dua pelat logam yang dipisahkan oleh bahan dielektrik yang tidak menghantarkan listrik." },
-      { "type": "text", "data": "Bahan dielektrik menentukan jenis kapasitor, misalnya keramik, kertas, atau poliester." },
-      { "type": "heading", "data": "Bab 2: Jenis-Jenis Kapasitor" },
-      { "type": "text", "data": "Kapasitor keramik umum ditemui, berkapasitansi kecil, dan sering dipakai untuk frekuensi tinggi. Kapasitor poliester banyak dipakai pada aplikasi audio." },
-      { "type": "text", "data": "Kapasitor elektrolitik (Elco) dan solid capacitor memiliki kapasitansi besar dan berpolaritas, sehingga harus dipasang dengan benar. Solid capacitor lebih tahan panas dan awet, banyak dipakai di motherboard komputer." },
-      { "type": "text", "data": "Variable capacitor dapat diatur nilainya secara mekanis dan sering dipakai untuk penyetelan frekuensi pada radio." },
-      { "type": "text", "data": "Superkapasitor memiliki kapasitansi hingga ratusan farad dan berpotensi menggantikan baterai pada beberapa aplikasi." },
-      { "type": "heading", "data": "Bab 3: Rentang Kapasitansi dan Keselamatan" },
-      { "type": "text", "data": "Kapasitansi kapasitor bervariasi dari beberapa pikofarad (pF) hingga ratusan farad (F)." },
-      { "type": "text", "data": "Pemasangan kapasitor berpolaritas dengan terbalik dapat menyebabkan kerusakan, bahkan ledakan." }
+      {
+        "type": "heading",
+        "data": "Bab 1: Pengertian Kapasitor",
+        "data_en": "Chapter 1: What Is a Capacitor"
+      },
+      {
+        "type": "text",
+        "data": "Kapasitor adalah komponen elektronik yang mampu menyimpan dan melepas energi listrik secara cepat. Komponen ini terdiri dari dua pelat logam yang dipisahkan oleh bahan dielektrik yang tidak menghantarkan listrik.",
+        "data_en": "A capacitor is an electronic component that can store and release electrical energy quickly. It consists of two metal plates separated by a dielectric material that does not conduct electricity."
+      },
+      {
+        "type": "text",
+        "data": "Bahan dielektrik menentukan jenis kapasitor, misalnya keramik, kertas, atau poliester.",
+        "data_en": "The dielectric material determines the type of capacitor, for example ceramic, paper, or polyester."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 2: Jenis-Jenis Kapasitor",
+        "data_en": "Chapter 2: Types of Capacitors"
+      },
+      {
+        "type": "text",
+        "data": "Kapasitor keramik umum ditemui, berkapasitansi kecil, dan sering dipakai untuk frekuensi tinggi. Kapasitor poliester banyak dipakai pada aplikasi audio.",
+        "data_en": "Ceramic capacitors are common, have small capacitance, and are often used for high frequencies. Polyester capacitors are widely used in audio applications."
+      },
+      {
+        "type": "text",
+        "data": "Kapasitor elektrolitik (Elco) dan solid capacitor memiliki kapasitansi besar dan berpolaritas, sehingga harus dipasang dengan benar. Solid capacitor lebih tahan panas dan awet, banyak dipakai di motherboard komputer.",
+        "data_en": "Electrolytic capacitors (Elco) and solid capacitors have large capacitance and are polarized, so they must be installed correctly. Solid capacitors are more heat-resistant and durable, and are widely used on computer motherboards."
+      },
+      {
+        "type": "text",
+        "data": "Variable capacitor dapat diatur nilainya secara mekanis dan sering dipakai untuk penyetelan frekuensi pada radio.",
+        "data_en": "A variable capacitor can have its value adjusted mechanically and is often used for frequency tuning in radios."
+      },
+      {
+        "type": "text",
+        "data": "Superkapasitor memiliki kapasitansi hingga ratusan farad dan berpotensi menggantikan baterai pada beberapa aplikasi.",
+        "data_en": "Supercapacitors have capacitance of up to hundreds of farads and could potentially replace batteries in some applications."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 3: Rentang Kapasitansi dan Keselamatan",
+        "data_en": "Chapter 3: Capacitance Range and Safety"
+      },
+      {
+        "type": "text",
+        "data": "Kapasitansi kapasitor bervariasi dari beberapa pikofarad (pF) hingga ratusan farad (F).",
+        "data_en": "Capacitor capacitance ranges from a few picofarads (pF) to hundreds of farads (F)."
+      },
+      {
+        "type": "text",
+        "data": "Pemasangan kapasitor berpolaritas dengan terbalik dapat menyebabkan kerusakan, bahkan ledakan.",
+        "data_en": "Installing a polarized capacitor backwards can cause damage, even an explosion."
+      }
     ],
     "content": [
-      { "type": "text", "data": "Kapasitor menyimpan dan melepaskan energi listrik. Fungsinya antara lain menjaga kestabilan tegangan, menyaring sinyal, dan penyetelan frekuensi." },
-      { "type": "text", "data": "Poin penting:\n- Struktur: dua pelat logam dengan bahan dielektrik di antaranya.\n- Jenis keramik untuk kapasitansi kecil dan frekuensi tinggi.\n- Jenis poliester untuk audio.\n- Elco dan solid capacitor berpolaritas, pasang sesuai kaki positif dan negatif.\n- Variable capacitor untuk penyetelan frekuensi radio.\n- Rentang nilai dari pF hingga F." }
-    ]
+      {
+        "type": "text",
+        "data": "Kapasitor menyimpan dan melepaskan energi listrik. Fungsinya antara lain menjaga kestabilan tegangan, menyaring sinyal, dan penyetelan frekuensi.",
+        "data_en": "Capacitors store and release electrical energy. Their functions include keeping voltage stable, filtering signals, and tuning frequencies."
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n- Struktur: dua pelat logam dengan bahan dielektrik di antaranya.\n- Jenis keramik untuk kapasitansi kecil dan frekuensi tinggi.\n- Jenis poliester untuk audio.\n- Elco dan solid capacitor berpolaritas, pasang sesuai kaki positif dan negatif.\n- Variable capacitor untuk penyetelan frekuensi radio.\n- Rentang nilai dari pF hingga F.",
+        "data_en": "Key points:\n- Structure: two metal plates with a dielectric material between them.\n- Ceramic type for small capacitance and high frequencies.\n- Polyester type for audio.\n- Elco and solid capacitors are polarized; install them according to the positive and negative legs.\n- Variable capacitors for radio frequency tuning.\n- Value range from pF to F."
+      }
+    ],
+    "title_en": "Capacitor",
+    "description_en": "A capacitor is a component that stores and releases electrical energy quickly, with its type determined by its dielectric material."
   },
   {
     "id": "l1_kom_breadboard",
@@ -60,20 +168,66 @@
     "heroImageUrl": "assets/images/materi/level_1/pengenalan komponen/Breadboard/hero_breadboard1.png",
     "videoUrl": "https://youtu.be/MgHbgrPMrnw",
     "videoSummary": [
-      { "type": "heading", "data": "Bab 1: Struktur Breadboard" },
-      { "type": "text", "data": "Breadboard terdiri dari deretan pin yang terhubung secara internal dengan pola tertentu. Jalur berwarna biru dan merah menunjukkan baris yang saling terhubung." },
-      { "type": "text", "data": "Terdapat dua tipe breadboard dengan jumlah pin berbeda, sekitar 400 pin dan 830 pin, tetapi prinsip kerjanya sama." },
-      { "type": "heading", "data": "Bab 2: Pola Koneksi dan Celah Tengah" },
-      { "type": "text", "data": "Pin yang berdekatan belum tentu terhubung karena ada celah pembatas di bagian tengah. Jalur koneksi umumnya horizontal di sisi pinggir dan vertikal di bagian tengah." },
-      { "type": "text", "data": "Celah tengah dimanfaatkan untuk memasang IC agar pin kiri dan kanan IC tidak saling terhubung." },
-      { "type": "heading", "data": "Bab 3: Pengujian dan Penggunaan" },
-      { "type": "text", "data": "Multimeter (avometer) dengan fungsi continuity test dapat digunakan untuk memeriksa apakah pin-pin breadboard saling terhubung." },
-      { "type": "text", "data": "Breadboard digunakan untuk membuat prototipe rangkaian tanpa menyolder, sehingga memudahkan perubahan dan pengujian." }
+      {
+        "type": "heading",
+        "data": "Bab 1: Struktur Breadboard",
+        "data_en": "Chapter 1: Breadboard Structure"
+      },
+      {
+        "type": "text",
+        "data": "Breadboard terdiri dari deretan pin yang terhubung secara internal dengan pola tertentu. Jalur berwarna biru dan merah menunjukkan baris yang saling terhubung.",
+        "data_en": "A breadboard consists of rows of pins that are internally connected in a specific pattern. The blue and red lines indicate rows that are connected to each other."
+      },
+      {
+        "type": "text",
+        "data": "Terdapat dua tipe breadboard dengan jumlah pin berbeda, sekitar 400 pin dan 830 pin, tetapi prinsip kerjanya sama.",
+        "data_en": "There are two types of breadboards with different pin counts, about 400 pins and 830 pins, but they work on the same principle."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 2: Pola Koneksi dan Celah Tengah",
+        "data_en": "Chapter 2: Connection Pattern and Center Gap"
+      },
+      {
+        "type": "text",
+        "data": "Pin yang berdekatan belum tentu terhubung karena ada celah pembatas di bagian tengah. Jalur koneksi umumnya horizontal di sisi pinggir dan vertikal di bagian tengah.",
+        "data_en": "Adjacent pins are not necessarily connected because there is a dividing gap in the middle. Connection strips generally run horizontally along the edges and vertically in the middle section."
+      },
+      {
+        "type": "text",
+        "data": "Celah tengah dimanfaatkan untuk memasang IC agar pin kiri dan kanan IC tidak saling terhubung.",
+        "data_en": "The center gap is used to mount ICs so that the left and right pins of the IC are not connected to each other."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 3: Pengujian dan Penggunaan",
+        "data_en": "Chapter 3: Testing and Usage"
+      },
+      {
+        "type": "text",
+        "data": "Multimeter (avometer) dengan fungsi continuity test dapat digunakan untuk memeriksa apakah pin-pin breadboard saling terhubung.",
+        "data_en": "A multimeter (AVO meter) with a continuity test function can be used to check whether breadboard pins are connected to each other."
+      },
+      {
+        "type": "text",
+        "data": "Breadboard digunakan untuk membuat prototipe rangkaian tanpa menyolder, sehingga memudahkan perubahan dan pengujian.",
+        "data_en": "Breadboards are used to prototype circuits without soldering, making changes and testing easier."
+      }
     ],
     "content": [
-      { "type": "text", "data": "Breadboard adalah alat prototipe untuk merangkai rangkaian elektronik tanpa menyolder. Memahami pola koneksinya penting agar rangkaian tidak salah sambung." },
-      { "type": "text", "data": "Poin penting:\n- Jalur biru dan merah menandai baris yang terhubung.\n- Celah tengah memisahkan dua sisi, cocok untuk memasang IC.\n- Pin berdekatan belum tentu terhubung, periksa polanya.\n- Gunakan avometer mode continuity untuk menguji koneksi.\n- Tersedia tipe 400 dan 830 pin." }
-    ]
+      {
+        "type": "text",
+        "data": "Breadboard adalah alat prototipe untuk merangkai rangkaian elektronik tanpa menyolder. Memahami pola koneksinya penting agar rangkaian tidak salah sambung.",
+        "data_en": "A breadboard is a prototyping tool for building electronic circuits without soldering. Understanding its connection pattern is important to avoid wiring mistakes."
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n- Jalur biru dan merah menandai baris yang terhubung.\n- Celah tengah memisahkan dua sisi, cocok untuk memasang IC.\n- Pin berdekatan belum tentu terhubung, periksa polanya.\n- Gunakan avometer mode continuity untuk menguji koneksi.\n- Tersedia tipe 400 dan 830 pin.",
+        "data_en": "Key points:\n- The blue and red lines mark rows that are connected.\n- The center gap separates the two sides, which is ideal for mounting ICs.\n- Adjacent pins are not necessarily connected; check the pattern.\n- Use an AVO meter in continuity mode to test connections.\n- Available in 400-pin and 830-pin types."
+      }
+    ],
+    "title_en": "Breadboard",
+    "description_en": "A breadboard is a board for assembling electronic components without soldering, with a predefined pin connection pattern."
   },
   {
     "id": "l1_kom_tactile_switch",
@@ -84,21 +238,71 @@
     "heroImageUrl": "assets/images/materi/level_1/pengenalan komponen/push button tacticle/hero_switch1.jpg",
     "videoUrl": "https://youtu.be/jMUTm05WbZw",
     "videoSummary": [
-      { "type": "heading", "data": "Bab 1: Pengenalan Saklar Mini Tactile" },
-      { "type": "text", "data": "Saklar mini atau tactile switch, juga dikenal sebagai micro switch, berukuran sangat kecil dan berfungsi sebagai saklar tekan (push button)." },
-      { "type": "text", "data": "Saklar ini bekerja secara momentary: on saat ditekan dan off saat dilepas." },
-      { "type": "heading", "data": "Bab 2: Pin dan Prinsip Kerja" },
-      { "type": "text", "data": "Saklar ini umumnya memiliki empat pin, tetapi prinsip kerjanya sederhana dengan dua kutub. Dua pin biasanya berpasangan secara paralel sehingga stabil secara mekanis dan listrik." },
-      { "type": "text", "data": "Terdapat variasi bentuk batang, dari panjang, pendek, hingga pipih, sesuai kebutuhan desain." },
-      { "type": "heading", "data": "Bab 3: Batasan dan Aplikasi" },
-      { "type": "text", "data": "Saklar digunakan pada rangkaian DC dengan tegangan sekitar 4,5 sampai 12 volt dan arus maksimum sekitar 100 mA." },
-      { "type": "text", "data": "Saklar ini jarang digunakan pada rangkaian AC karena alasan keselamatan dan peruntukannya untuk sirkuit DC kecil." },
-      { "type": "text", "data": "Saklar ditemukan pada remote control, TV lama, dan set-top box. Pemasangannya dilakukan pada PCB, atau breadboard untuk eksperimen." }
+      {
+        "type": "heading",
+        "data": "Bab 1: Pengenalan Saklar Mini Tactile",
+        "data_en": "Chapter 1: Introduction to Mini Tactile Switches"
+      },
+      {
+        "type": "text",
+        "data": "Saklar mini atau tactile switch, juga dikenal sebagai micro switch, berukuran sangat kecil dan berfungsi sebagai saklar tekan (push button).",
+        "data_en": "A mini switch or tactile switch, also known as a micro switch, is very small and works as a push button."
+      },
+      {
+        "type": "text",
+        "data": "Saklar ini bekerja secara momentary: on saat ditekan dan off saat dilepas.",
+        "data_en": "This switch works in a momentary fashion: on when pressed and off when released."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 2: Pin dan Prinsip Kerja",
+        "data_en": "Chapter 2: Pins and Working Principle"
+      },
+      {
+        "type": "text",
+        "data": "Saklar ini umumnya memiliki empat pin, tetapi prinsip kerjanya sederhana dengan dua kutub. Dua pin biasanya berpasangan secara paralel sehingga stabil secara mekanis dan listrik.",
+        "data_en": "This switch generally has four pins, but its working principle is simple, with two poles. Two pins are usually paired in parallel, making it mechanically and electrically stable."
+      },
+      {
+        "type": "text",
+        "data": "Terdapat variasi bentuk batang, dari panjang, pendek, hingga pipih, sesuai kebutuhan desain.",
+        "data_en": "There are variations in stem shape, from long and short to flat, to suit design needs."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 3: Batasan dan Aplikasi",
+        "data_en": "Chapter 3: Limitations and Applications"
+      },
+      {
+        "type": "text",
+        "data": "Saklar digunakan pada rangkaian DC dengan tegangan sekitar 4,5 sampai 12 volt dan arus maksimum sekitar 100 mA.",
+        "data_en": "The switch is used in DC circuits with a voltage of about 4.5 to 12 volts and a maximum current of about 100 mA."
+      },
+      {
+        "type": "text",
+        "data": "Saklar ini jarang digunakan pada rangkaian AC karena alasan keselamatan dan peruntukannya untuk sirkuit DC kecil.",
+        "data_en": "This switch is rarely used in AC circuits for safety reasons and because it is intended for small DC circuits."
+      },
+      {
+        "type": "text",
+        "data": "Saklar ditemukan pada remote control, TV lama, dan set-top box. Pemasangannya dilakukan pada PCB, atau breadboard untuk eksperimen.",
+        "data_en": "The switch is found in remote controls, old TVs, and set-top boxes. It is mounted on a PCB, or on a breadboard for experiments."
+      }
     ],
     "content": [
-      { "type": "text", "data": "Tactile switch adalah push button kecil yang memberikan sinyal on saat ditekan dan off saat dilepas. Cocok untuk input tombol pada rangkaian elektronik kecil." },
-      { "type": "text", "data": "Poin penting:\n- Sifatnya momentary (tekan untuk on, lepas untuk off).\n- Tegangan kerja DC sekitar 4,5 sampai 12 V.\n- Arus maksimum sekitar 100 mA.\n- Tidak disarankan untuk rangkaian AC.\n- Umum dipakai pada remote control dan perangkat elektronik kecil." }
-    ]
+      {
+        "type": "text",
+        "data": "Tactile switch adalah push button kecil yang memberikan sinyal on saat ditekan dan off saat dilepas. Cocok untuk input tombol pada rangkaian elektronik kecil.",
+        "data_en": "A tactile switch is a small push button that gives an on signal when pressed and an off signal when released. It is suitable for button input in small electronic circuits."
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n- Sifatnya momentary (tekan untuk on, lepas untuk off).\n- Tegangan kerja DC sekitar 4,5 sampai 12 V.\n- Arus maksimum sekitar 100 mA.\n- Tidak disarankan untuk rangkaian AC.\n- Umum dipakai pada remote control dan perangkat elektronik kecil.",
+        "data_en": "Key points:\n- It is momentary (press for on, release for off).\n- DC operating voltage of about 4.5 to 12 V.\n- Maximum current of about 100 mA.\n- Not recommended for AC circuits.\n- Commonly used in remote controls and small electronic devices."
+      }
+    ],
+    "title_en": "Tactile Switch (Push Button)",
+    "description_en": "A tactile switch is a small push switch that turns on when pressed and off when released, commonly used in low-voltage DC circuits."
   },
   {
     "id": "l1_kom_hukum_ohm",
@@ -109,19 +313,61 @@
     "heroImageUrl": "assets/images/materi/level_1/pengenalan komponen/ohm/hero_ohm.png",
     "videoUrl": "https://www.youtube.com/watch?v=iNEFhwP_gS0",
     "videoSummary": [
-      { "type": "heading", "data": "Bab 1: Pengertian Hukum Ohm" },
-      { "type": "text", "data": "Hukum Ohm adalah prinsip dasar elektronika yang menjelaskan hubungan antara arus listrik (I), tegangan (V), dan hambatan (R) dalam suatu rangkaian." },
-      { "type": "text", "data": "Arus yang mengalir melalui konduktor berbanding lurus dengan tegangan yang diberikan dan berbanding terbalik dengan hambatannya." },
-      { "type": "heading", "data": "Bab 2: Rumus Hukum Ohm" },
-      { "type": "text", "data": "Rumusnya adalah I = V / R, dengan I dalam ampere, V dalam volt, dan R dalam ohm." },
-      { "type": "heading", "data": "Bab 3: Contoh Soal" },
-      { "type": "text", "data": "Contoh pertama adalah menghitung arus yang mengalir melalui sebuah lampu dengan hambatan dan tegangan tertentu." },
-      { "type": "text", "data": "Contoh kedua adalah menghitung tegangan yang dibutuhkan untuk menghasilkan arus tertentu pada hambatan tertentu." }
+      {
+        "type": "heading",
+        "data": "Bab 1: Pengertian Hukum Ohm",
+        "data_en": "Chapter 1: What Is Ohm's Law"
+      },
+      {
+        "type": "text",
+        "data": "Hukum Ohm adalah prinsip dasar elektronika yang menjelaskan hubungan antara arus listrik (I), tegangan (V), dan hambatan (R) dalam suatu rangkaian.",
+        "data_en": "Ohm's Law is a fundamental principle of electronics that describes the relationship between electric current (I), voltage (V), and resistance (R) in a circuit."
+      },
+      {
+        "type": "text",
+        "data": "Arus yang mengalir melalui konduktor berbanding lurus dengan tegangan yang diberikan dan berbanding terbalik dengan hambatannya.",
+        "data_en": "The current flowing through a conductor is directly proportional to the applied voltage and inversely proportional to its resistance."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 2: Rumus Hukum Ohm",
+        "data_en": "Chapter 2: Ohm's Law Formula"
+      },
+      {
+        "type": "text",
+        "data": "Rumusnya adalah I = V / R, dengan I dalam ampere, V dalam volt, dan R dalam ohm.",
+        "data_en": "The formula is I = V / R, with I in amperes, V in volts, and R in ohms."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 3: Contoh Soal",
+        "data_en": "Chapter 3: Example Problems"
+      },
+      {
+        "type": "text",
+        "data": "Contoh pertama adalah menghitung arus yang mengalir melalui sebuah lampu dengan hambatan dan tegangan tertentu.",
+        "data_en": "The first example is calculating the current flowing through a lamp with a given resistance and voltage."
+      },
+      {
+        "type": "text",
+        "data": "Contoh kedua adalah menghitung tegangan yang dibutuhkan untuk menghasilkan arus tertentu pada hambatan tertentu.",
+        "data_en": "The second example is calculating the voltage needed to produce a certain current at a given resistance."
+      }
     ],
     "content": [
-      { "type": "text", "data": "Hukum Ohm menghubungkan arus, tegangan, dan hambatan dalam rangkaian listrik. Rumus dasarnya: I = V / R." },
-      { "type": "text", "data": "Poin penting:\n- Arus berbanding lurus dengan tegangan.\n- Arus berbanding terbalik dengan hambatan.\n- Satuan: I (ampere), V (volt), R (ohm).\n- Dapat dipakai untuk menghitung salah satu nilai jika dua lainnya diketahui." }
-    ]
+      {
+        "type": "text",
+        "data": "Hukum Ohm menghubungkan arus, tegangan, dan hambatan dalam rangkaian listrik. Rumus dasarnya: I = V / R.",
+        "data_en": "Ohm's Law links current, voltage, and resistance in an electrical circuit. The basic formula: I = V / R."
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n- Arus berbanding lurus dengan tegangan.\n- Arus berbanding terbalik dengan hambatan.\n- Satuan: I (ampere), V (volt), R (ohm).\n- Dapat dipakai untuk menghitung salah satu nilai jika dua lainnya diketahui.",
+        "data_en": "Key points:\n- Current is directly proportional to voltage.\n- Current is inversely proportional to resistance.\n- Units: I (ampere), V (volt), R (ohm).\n- Can be used to calculate one value if the other two are known."
+      }
+    ],
+    "title_en": "Ohm's Law",
+    "description_en": "Ohm's Law describes the relationship between current, voltage, and resistance in an electrical circuit, with the formula I = V / R."
   },
   {
     "id": "l1_kom_resistor",
@@ -132,19 +378,64 @@
     "heroImageUrl": "assets/images/materi/level_1/pengenalan komponen/resistor/hero_resistor.png",
     "videoUrl": "https://youtu.be/Px5ma3U3U1k",
     "videoSummary": [
-      { "type": "heading", "data": "Bab 1: Metode Kedua untuk Resistor" },
-      { "type": "text", "data": "Video ini membahas cara kedua menghitung nilai resistor, khususnya resistor dengan nilai di bawah 1 ohm, menggunakan tabel khusus." },
-      { "type": "text", "data": "Metode ini menyediakan dua cara perhitungan, yaitu cara konvensional dan cara menggunakan bilangan berpangkat. Hasil keduanya sama." },
-      { "type": "heading", "data": "Bab 2: Contoh Perhitungan" },
-      { "type": "text", "data": "Contohnya adalah resistor dengan gelang hijau, hitam, silver, dan emas. Warna hijau bernilai 5, hitam bernilai 0, dan silver sebagai pengali bernilai 0,01." },
-      { "type": "text", "data": "Perhitungannya adalah 50 x 0,01 = 0,5 ohm, dengan toleransi 5% yang ditandai gelang emas." },
-      { "type": "heading", "data": "Bab 3: Cakupan Metode" },
-      { "type": "text", "data": "Metode ini juga berlaku untuk semua resistor dengan rentang nilai dari 1 kiloohm sampai 1 gigaohm." }
+      {
+        "type": "heading",
+        "data": "Bab 1: Metode Kedua untuk Resistor",
+        "data_en": "Chapter 1: The Second Method for Resistors"
+      },
+      {
+        "type": "text",
+        "data": "Video ini membahas cara kedua menghitung nilai resistor, khususnya resistor dengan nilai di bawah 1 ohm, menggunakan tabel khusus.",
+        "data_en": "This video covers the second way of calculating resistor values, especially resistors with values below 1 ohm, using a special table."
+      },
+      {
+        "type": "text",
+        "data": "Metode ini menyediakan dua cara perhitungan, yaitu cara konvensional dan cara menggunakan bilangan berpangkat. Hasil keduanya sama.",
+        "data_en": "This method provides two ways of calculating: the conventional way and the way using powers. Both give the same result."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 2: Contoh Perhitungan",
+        "data_en": "Chapter 2: Calculation Example"
+      },
+      {
+        "type": "text",
+        "data": "Contohnya adalah resistor dengan gelang hijau, hitam, silver, dan emas. Warna hijau bernilai 5, hitam bernilai 0, dan silver sebagai pengali bernilai 0,01.",
+        "data_en": "An example is a resistor with green, black, silver, and gold bands. Green has a value of 5, black has a value of 0, and silver as the multiplier has a value of 0.01."
+      },
+      {
+        "type": "text",
+        "data": "Perhitungannya adalah 50 x 0,01 = 0,5 ohm, dengan toleransi 5% yang ditandai gelang emas.",
+        "data_en": "The calculation is 50 x 0.01 = 0.5 ohm, with a 5% tolerance indicated by the gold band."
+      },
+      {
+        "type": "heading",
+        "data": "Bab 3: Cakupan Metode",
+        "data_en": "Chapter 3: Scope of the Method"
+      },
+      {
+        "type": "text",
+        "data": "Metode ini juga berlaku untuk semua resistor dengan rentang nilai dari 1 kiloohm sampai 1 gigaohm.",
+        "data_en": "This method also applies to all resistors with values ranging from 1 kilohm to 1 gigohm."
+      }
     ],
     "content": [
-      { "type": "text", "data": "Nilai resistor dibaca dari kode warna gelang. Untuk resistor di bawah 1 ohm, gelang pengali bernilai pecahan, sehingga nilai akhirnya bisa berupa desimal." },
-      { "type": "code", "data": "// Contoh: hijau (5), hitam (0), silver (x0,01), emas (toleransi 5%)\n// Nilai = 50 x 0,01 = 0,5 ohm" },
-      { "type": "text", "data": "Poin penting:\n- Dua gelang pertama adalah digit signifikan.\n- Gelang ketiga adalah pengali.\n- Gelang emas menandakan toleransi 5%.\n- Metode yang sama berlaku dari 1 kiloohm hingga 1 gigaohm." }
-    ]
+      {
+        "type": "text",
+        "data": "Nilai resistor dibaca dari kode warna gelang. Untuk resistor di bawah 1 ohm, gelang pengali bernilai pecahan, sehingga nilai akhirnya bisa berupa desimal.",
+        "data_en": "Resistor values are read from the color bands. For resistors below 1 ohm, the multiplier band has a fractional value, so the final value can be a decimal."
+      },
+      {
+        "type": "code",
+        "data": "// Contoh: hijau (5), hitam (0), silver (x0,01), emas (toleransi 5%)\n// Nilai = 50 x 0,01 = 0,5 ohm"
+      },
+      {
+        "type": "text",
+        "data": "Poin penting:\n- Dua gelang pertama adalah digit signifikan.\n- Gelang ketiga adalah pengali.\n- Gelang emas menandakan toleransi 5%.\n- Metode yang sama berlaku dari 1 kiloohm hingga 1 gigaohm.",
+        "data_en": "Key points:\n- The first two bands are the significant digits.\n- The third band is the multiplier.\n- The gold band indicates a 5% tolerance.\n- The same method applies from 1 kilohm to 1 gigohm."
+      }
+    ],
+    "title_en": "Resistor (How to Calculate the Value)",
+    "description_en": "How to calculate resistor values using the color code, including resistors below 1 ohm using the second method."
   }
 ]

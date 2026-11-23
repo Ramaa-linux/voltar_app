@@ -363,9 +363,7 @@ class _StepTile extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      step.localizedTitleKey != null
-                          ? context.t(step.localizedTitleKey!)
-                          : step.title,
+                      localizedString(context, step.title, step.titleEn),
                       style: AppTypography.body.copyWith(
                         fontWeight: FontWeight.w600,
                         color: _isLocked
@@ -376,7 +374,10 @@ class _StepTile extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       step.type == LearningStepType.materi
-                          ? (step.estimatedTime ?? context.t('estimatedTimeShort', args: ['5']))
+                          ? (step.localizedEstimatedTimeKey != null
+                              ? context.t(step.localizedEstimatedTimeKey!)
+                              : (step.estimatedTime ??
+                                  context.t('estimatedTimeShort', args: ['5'])))
                           : context.t('pertanyaan', args: [(step.questions?.length ?? 5).toString()]),
                       style: AppTypography.caption,
                     ),
@@ -471,7 +472,7 @@ class _FolderStepTile extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      step.title,
+                      localizedString(context, step.title, step.titleEn),
                       style: AppTypography.body.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppColors.textPrimary,
@@ -482,9 +483,11 @@ class _FolderStepTile extends StatelessWidget {
                         'folderSubtitle',
                         args: [
                           '${sub.length}',
-                          step.localizedDescriptionKey != null
-                              ? context.t(step.localizedDescriptionKey!)
-                              : step.description,
+                          localizedString(
+                            context,
+                            step.description,
+                            step.descriptionEn,
+                          ),
                         ],
                       ),
                       style: AppTypography.caption,
@@ -619,9 +622,7 @@ class _SubMateriTile extends StatelessWidget {
                   ),
           ),
           title: Text(
-            step.localizedTitleKey != null
-                ? context.t(step.localizedTitleKey!)
-                : step.title,
+            localizedString(context, step.title, step.titleEn),
             style: AppTypography.body.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 13,

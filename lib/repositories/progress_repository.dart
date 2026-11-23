@@ -50,6 +50,7 @@ class HomeProgressSummary {
     required this.currentLevel,
     required this.nextStepId,
     required this.nextStepTitle,
+    this.nextStepTitleEn,
     required this.nextStepLevel,
     required this.allCompleted,
     required this.streakDays,
@@ -66,6 +67,7 @@ class HomeProgressSummary {
   final int currentLevel;
   final String? nextStepId;
   final String? nextStepTitle;
+  final String? nextStepTitleEn;
   final int? nextStepLevel;
   final LearningStepType? nextStepType;
   final int nextStepLevelCompleted;
@@ -461,7 +463,13 @@ class ProgressRepository {
       final int streak = await getCurrentStreak(today: today);
 
       final List<
-        ({String id, String title, int levelNumber, LearningStepType type})
+        ({
+          String id,
+          String title,
+          String? titleEn,
+          int levelNumber,
+          LearningStepType type,
+        })
       >
       allSteps = [];
       for (final LevelModel level in levels) {
@@ -477,6 +485,7 @@ class ProgressRepository {
               allSteps.add((
                 id: step.id,
                 title: step.title,
+                titleEn: step.titleEn,
                 levelNumber: level.levelNumber,
                 type: step.type,
               ));
@@ -485,6 +494,7 @@ class ProgressRepository {
             allSteps.add((
               id: step.id,
               title: step.title,
+              titleEn: step.titleEn,
               levelNumber: level.levelNumber,
               type: step.type,
             ));
@@ -523,6 +533,7 @@ class ProgressRepository {
 
       String? nextStepId;
       String? nextStepTitle;
+      String? nextStepTitleEn;
       int? nextStepLevel;
       LearningStepType? nextStepType;
       int nextStepLevelCompleted = 0;
@@ -542,6 +553,7 @@ class ProgressRepository {
             if (isUnlocked) {
               nextStepId = s.id;
               nextStepTitle = s.title;
+              nextStepTitleEn = s.titleEn;
               nextStepLevel = s.levelNumber;
               nextStepType = s.type;
 
@@ -588,6 +600,7 @@ class ProgressRepository {
         currentLevel: currentLevel,
         nextStepId: nextStepId,
         nextStepTitle: nextStepTitle,
+        nextStepTitleEn: nextStepTitleEn,
         nextStepLevel: nextStepLevel,
         nextStepType: nextStepType,
         nextStepLevelCompleted: nextStepLevelCompleted,

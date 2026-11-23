@@ -11,18 +11,24 @@ class QuizQuestion {
     required this.question,
     required this.options,
     required this.correctAnswerIndex,
+    this.questionEn,
+    this.optionsEn,
   });
 
   final String id;
   final String question;
   final List<String> options;
   final int correctAnswerIndex;
+  final String? questionEn;
+  final List<String>? optionsEn;
 
   factory QuizQuestion.fromJson(Map<String, dynamic> json) {
     return QuizQuestion(
       id: json['id'] as String,
       question: json['question'] as String,
+      questionEn: json['question_en'] as String?,
       options: (json['options'] as List<dynamic>).cast<String>(),
+      optionsEn: (json['options_en'] as List<dynamic>?)?.cast<String>(),
       correctAnswerIndex: json['correctAnswerIndex'] as int,
     );
   }
@@ -30,7 +36,9 @@ class QuizQuestion {
   Map<String, dynamic> toJson() => {
     'id': id,
     'question': question,
+    if (questionEn != null) 'question_en': questionEn,
     'options': options,
+    if (optionsEn != null) 'options_en': optionsEn,
     'correctAnswerIndex': correctAnswerIndex,
   };
 }
@@ -41,21 +49,25 @@ class ContentBlock {
   const ContentBlock({
     required this.type,
     required this.data,
+    this.dataEn,
   });
 
   final ContentBlockType type;
   final String data;
+  final String? dataEn;
 
   factory ContentBlock.fromJson(Map<String, dynamic> json) {
     return ContentBlock(
       type: ContentBlockType.values.byName(json['type'] as String),
       data: json['data'] as String,
+      dataEn: json['data_en'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() => {
     'type': type.name,
     'data': data,
+    if (dataEn != null) 'data_en': dataEn,
   };
 }
 
@@ -77,6 +89,8 @@ class LearningStep {
     this.videoSummary,
     this.questions,
     this.subMateri,
+    this.titleEn,
+    this.descriptionEn,
     // Localization keys (populated by [MateriRepository]; null = use raw JSON value)
     this.localizedTitleKey,
     this.localizedDescriptionKey,
@@ -98,6 +112,8 @@ class LearningStep {
   final List<ContentBlock>? videoSummary;
   final List<QuizQuestion>? questions;
   final List<LearningStep>? subMateri;
+  final String? titleEn;
+  final String? descriptionEn;
   final String? localizedTitleKey;
   final String? localizedDescriptionKey;
   final String? localizedEstimatedTimeKey;
@@ -119,6 +135,8 @@ class LearningStep {
     List<ContentBlock>? videoSummary,
     List<QuizQuestion>? questions,
     List<LearningStep>? subMateri,
+    String? titleEn,
+    String? descriptionEn,
     String? localizedTitleKey,
     String? localizedDescriptionKey,
     String? localizedEstimatedTimeKey,
@@ -139,6 +157,8 @@ class LearningStep {
       videoSummary: videoSummary ?? this.videoSummary,
       questions: questions ?? this.questions,
       subMateri: subMateri ?? this.subMateri,
+      titleEn: titleEn ?? this.titleEn,
+      descriptionEn: descriptionEn ?? this.descriptionEn,
       localizedTitleKey: localizedTitleKey ?? this.localizedTitleKey,
       localizedDescriptionKey:
           localizedDescriptionKey ?? this.localizedDescriptionKey,
@@ -160,6 +180,8 @@ class LearningStep {
       type: type,
       title: json['title'] as String,
       description: json['description'] as String,
+      titleEn: json['title_en'] as String?,
+      descriptionEn: json['description_en'] as String?,
       estimatedTime: json['estimatedTime'] as String?,
       heroImageUrl: json['heroImageUrl'] as String?,
       videoUrl: json['videoUrl'] as String?,
@@ -210,6 +232,8 @@ class LearningStep {
     'type': type.name,
     'title': title,
     'description': description,
+    if (titleEn != null) 'title_en': titleEn,
+    if (descriptionEn != null) 'description_en': descriptionEn,
     'estimatedTime': estimatedTime,
     'heroImageUrl': heroImageUrl,
     'videoUrl': videoUrl,

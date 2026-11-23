@@ -8,7 +8,14 @@
       {
         "id": "q1",
         "question": "Pin input analog pada Arduino Uno adalah...",
+        "question_en": "The analog input pins on the Arduino Uno are...",
         "options": [
+          "D0–D13",
+          "A0–A5",
+          "RX/TX",
+          "RESET"
+        ],
+        "options_en": [
           "D0–D13",
           "A0–A5",
           "RX/TX",
@@ -19,7 +26,14 @@
       {
         "id": "q2",
         "question": "Rentang nilai hasil konversi ADC 10-bit pada Arduino adalah...",
+        "question_en": "The output value range of the 10-bit ADC on an Arduino is...",
         "options": [
+          "0–100",
+          "0–255",
+          "0–1023",
+          "0–5"
+        ],
+        "options_en": [
           "0–100",
           "0–255",
           "0–1023",
@@ -30,7 +44,14 @@
       {
         "id": "q3",
         "question": "Rentang nilai pada analogWrite() untuk PWM adalah...",
+        "question_en": "The value range for analogWrite() in PWM is...",
         "options": [
+          "0–100",
+          "0–255",
+          "0–1023",
+          "0–5"
+        ],
+        "options_en": [
           "0–100",
           "0–255",
           "0–1023",
@@ -41,7 +62,14 @@
       {
         "id": "q4",
         "question": "Fungsi yang digunakan untuk memetakan rentang nilai 0–1023 ke 0–255 adalah...",
+        "question_en": "The function used to map the value range 0–1023 to 0–255 is...",
         "options": [
+          "map()",
+          "delay()",
+          "pinMode()",
+          "Serial.begin()"
+        ],
+        "options_en": [
           "map()",
           "delay()",
           "pinMode()",
@@ -49,7 +77,9 @@
         ],
         "correctAnswerIndex": 0
       }
-    ]
+    ],
+    "title_en": "Level 3 Pre-Test",
+    "description_en": "Measure your prior knowledge of analog input and sensors."
   },
   {
     "id": "l3_adc",
@@ -62,39 +92,49 @@
     "videoSummary": [
       {
         "type": "heading",
-        "data": "Ringkasan"
+        "data": "Ringkasan",
+        "data_en": "Summary"
       },
       {
         "type": "text",
-        "data": "Video ini membahas pin analog Arduino Uno dengan potensiometer sebagai input dan LED sebagai indikator. Dimulai dari perbedaan pin digital dan analog, konsep Analog to Digital Converter (ADC), hingga cara membaca tegangan potensiometer menjadi nilai digital 0 sampai 1023. Nilai itu dipakai untuk menyalakan LED sesuai rentang tegangan. Pin analog penting untuk sensor yang mengeluarkan tegangan kontinu, berbeda dengan sinyal digital yang hanya bernilai 0 dan 1."
+        "data": "Video ini membahas pin analog Arduino Uno dengan potensiometer sebagai input dan LED sebagai indikator. Dimulai dari perbedaan pin digital dan analog, konsep Analog to Digital Converter (ADC), hingga cara membaca tegangan potensiometer menjadi nilai digital 0 sampai 1023. Nilai itu dipakai untuk menyalakan LED sesuai rentang tegangan. Pin analog penting untuk sensor yang mengeluarkan tegangan kontinu, berbeda dengan sinyal digital yang hanya bernilai 0 dan 1.",
+        "data_en": "This video covers the analog pins of the Arduino Uno with a potentiometer as the input and an LED as the indicator. It starts from the difference between digital and analog pins, the concept of the Analog to Digital Converter (ADC), to how to read the potentiometer voltage as a digital value from 0 to 1023. That value is used to light an LED according to the voltage range. Analog pins are important for sensors that output a continuous voltage, unlike digital signals that only have the values 0 and 1."
       },
       {
         "type": "heading",
-        "data": "Sorotan Utama"
+        "data": "Sorotan Utama",
+        "data_en": "Key Highlights"
       },
       {
         "type": "text",
-        "data": "• Input digital hanya 0 dan 1, sedangkan input analog bernilai kontinu antara 0 sampai 5 Volt.\n• ADC Arduino mengubah sinyal analog menjadi nilai digital 0 sampai 1023.\n• Potensiometer adalah sensor analog yang tegangan keluarannya bisa diatur manual.\n• Rumus tegangan: V = (nilai ADC / 1023) × 5 V.\n• Struktur if-else mengatur LED sesuai rentang nilai analog.\n• Pilih jenis Arduino dengan jumlah pin analog sesuai kebutuhan, misalnya Arduino Mega untuk banyak sensor."
+        "data": "• Input digital hanya 0 dan 1, sedangkan input analog bernilai kontinu antara 0 sampai 5 Volt.\n• ADC Arduino mengubah sinyal analog menjadi nilai digital 0 sampai 1023.\n• Potensiometer adalah sensor analog yang tegangan keluarannya bisa diatur manual.\n• Rumus tegangan: V = (nilai ADC / 1023) × 5 V.\n• Struktur if-else mengatur LED sesuai rentang nilai analog.\n• Pilih jenis Arduino dengan jumlah pin analog sesuai kebutuhan, misalnya Arduino Mega untuk banyak sensor.",
+        "data_en": "• Digital input is only 0 and 1, while analog input has a continuous value between 0 and 5 volts.\n• The Arduino ADC converts an analog signal into a digital value from 0 to 1023.\n• A potentiometer is an analog sensor whose output voltage can be adjusted manually.\n• Voltage formula: V = (ADC value / 1023) × 5 V.\n• An if-else structure controls the LEDs according to the analog value range.\n• Choose an Arduino type with the number of analog pins you need, for example an Arduino Mega for many sensors."
       },
       {
         "type": "heading",
-        "data": "Wawasan Penting"
+        "data": "Wawasan Penting",
+        "data_en": "Key Insights"
       },
       {
         "type": "text",
-        "data": "• ADC itu esensial: ADC 10-bit mengubah tegangan kontinu menjadi angka 0-1023. Tanpa ADC, Arduino hanya paham nyala atau mati.\n• Potensiometer cocok untuk belajar: memutar knob membuat nilai ADC di serial monitor naik atau turun sehingga hubungan tegangan dan nilai terbaca mudah dipahami.\n• Rumus konversi: Tegangan input = (nilai ADC / 1023) × 5 Volt, dipakai untuk mengubah angka digital menjadi besaran tegangan nyata.\n• Pengkondisian LED: contoh if-else dengan nilai ADC di bawah 350 menyalakan LED merah, 351-700 kuning, dan di atas 700 hijau.\n• Batasan pin: Arduino Uno hanya punya enam pin analog. Arduino Mega punya lebih banyak untuk kebutuhan yang lebih kompleks.\n• Hardware dan software harus sejalan: pemasangan potensiometer, resistor, dan LED yang benar dipadukan dengan program yang logis.\n• Banyak sensor fisik (suhu, arus, tegangan, posisi) memberi keluaran analog, sehingga materi ini menjadi dasar untuk IoT, robotika, dan otomasi."
+        "data": "• ADC itu esensial: ADC 10-bit mengubah tegangan kontinu menjadi angka 0-1023. Tanpa ADC, Arduino hanya paham nyala atau mati.\n• Potensiometer cocok untuk belajar: memutar knob membuat nilai ADC di serial monitor naik atau turun sehingga hubungan tegangan dan nilai terbaca mudah dipahami.\n• Rumus konversi: Tegangan input = (nilai ADC / 1023) × 5 Volt, dipakai untuk mengubah angka digital menjadi besaran tegangan nyata.\n• Pengkondisian LED: contoh if-else dengan nilai ADC di bawah 350 menyalakan LED merah, 351-700 kuning, dan di atas 700 hijau.\n• Batasan pin: Arduino Uno hanya punya enam pin analog. Arduino Mega punya lebih banyak untuk kebutuhan yang lebih kompleks.\n• Hardware dan software harus sejalan: pemasangan potensiometer, resistor, dan LED yang benar dipadukan dengan program yang logis.\n• Banyak sensor fisik (suhu, arus, tegangan, posisi) memberi keluaran analog, sehingga materi ini menjadi dasar untuk IoT, robotika, dan otomasi.",
+        "data_en": "• The ADC is essential: a 10-bit ADC converts a continuous voltage into a number from 0 to 1023. Without an ADC, the Arduino only understands on or off.\n• A potentiometer is great for learning: turning the knob makes the ADC value on the serial monitor go up or down, so the relationship between voltage and value is easy to understand.\n• Conversion formula: Input voltage = (ADC value / 1023) × 5 volts, used to convert a digital number into an actual voltage quantity.\n• LED conditioning: an if-else example where an ADC value below 350 lights the red LED, 351-700 the yellow LED, and above 700 the green LED.\n• Pin limits: the Arduino Uno only has six analog pins. The Arduino Mega has more for more complex needs.\n• Hardware and software must go hand in hand: correct wiring of the potentiometer, resistors, and LEDs combined with logical code.\n• Many physical sensors (temperature, current, voltage, position) give analog output, so this topic is the foundation for IoT, robotics, and automation."
       }
     ],
     "content": [
       {
         "type": "text",
-        "data": "Poin penting:\n• Pin digital: hanya HIGH (1) atau LOW (0).\n• Pin analog: membaca tegangan 0-5 V sebagai angka 0-1023 (ADC 10-bit).\n• Potensiometer menghasilkan tegangan yang berubah saat knob diputar.\n• Arduino Uno punya enam pin analog; Arduino Mega punya lebih banyak."
+        "data": "Poin penting:\n• Pin digital: hanya HIGH (1) atau LOW (0).\n• Pin analog: membaca tegangan 0-5 V sebagai angka 0-1023 (ADC 10-bit).\n• Potensiometer menghasilkan tegangan yang berubah saat knob diputar.\n• Arduino Uno punya enam pin analog; Arduino Mega punya lebih banyak.",
+        "data_en": "Key points:\n• Digital pins: only HIGH (1) or LOW (0).\n• Analog pins: read a 0-5 V voltage as a number from 0 to 1023 (10-bit ADC).\n• A potentiometer produces a voltage that changes as the knob is turned.\n• The Arduino Uno has six analog pins; the Arduino Mega has more."
       },
       {
         "type": "text",
-        "data": "Rumus konversi:\nV = (nilai ADC / 1023) × 5 V\n\nContoh pengondisian LED:\n• ADC < 350: LED merah menyala\n• ADC 351-700: LED kuning menyala\n• ADC > 700: LED hijau menyala"
+        "data": "Rumus konversi:\nV = (nilai ADC / 1023) × 5 V\n\nContoh pengondisian LED:\n• ADC < 350: LED merah menyala\n• ADC 351-700: LED kuning menyala\n• ADC > 700: LED hijau menyala",
+        "data_en": "Conversion formula:\nV = (ADC value / 1023) × 5 V\n\nLED conditioning example:\n• ADC < 350: red LED on\n• ADC 351-700: yellow LED on\n• ADC > 700: green LED on"
       }
-    ]
+    ],
+    "title_en": "ADC (Analog to Digital Converter)",
+    "description_en": "Understanding Arduino analog input, 0-1023 ADC conversion, and reading a potentiometer to control an indicator LED."
   },
   {
     "id": "l3_pwm",
@@ -107,39 +147,49 @@
     "videoSummary": [
       {
         "type": "heading",
-        "data": "Ringkasan"
+        "data": "Ringkasan",
+        "data_en": "Summary"
       },
       {
         "type": "text",
-        "data": "Video ini menjelaskan konsep Pulse Width Modulation (PWM) dan penerapannya untuk mengatur kecerahan LED. Dengan PWM, Arduino dapat menghasilkan berbagai nilai tegangan antara 0 sampai 5 volt lewat pin digital yang mendukung PWM, tidak hanya 0 atau 5 volt. Pada contoh praktik, nilai analog potensiometer (0-1023) dikonversi dengan map() menjadi 0-255, lalu dipakai sebagai parameter analogWrite() untuk mengatur intensitas LED. Nilai input dan output dipantau di serial monitor."
+        "data": "Video ini menjelaskan konsep Pulse Width Modulation (PWM) dan penerapannya untuk mengatur kecerahan LED. Dengan PWM, Arduino dapat menghasilkan berbagai nilai tegangan antara 0 sampai 5 volt lewat pin digital yang mendukung PWM, tidak hanya 0 atau 5 volt. Pada contoh praktik, nilai analog potensiometer (0-1023) dikonversi dengan map() menjadi 0-255, lalu dipakai sebagai parameter analogWrite() untuk mengatur intensitas LED. Nilai input dan output dipantau di serial monitor.",
+        "data_en": "This video explains the concept of Pulse Width Modulation (PWM) and how it is applied to control LED brightness. With PWM, the Arduino can produce various voltage values between 0 and 5 volts through PWM-capable digital pins, not just 0 or 5 volts. In the practical example, the potentiometer's analog value (0-1023) is converted with map() to 0-255, then used as the parameter of analogWrite() to control the LED intensity. The input and output values are monitored on the serial monitor."
       },
       {
         "type": "heading",
-        "data": "Poin-poin Penting"
+        "data": "Poin-poin Penting",
+        "data_en": "Key Points"
       },
       {
         "type": "text",
-        "data": "• PWM memungkinkan tegangan variatif (0-5 V) pada pin digital Arduino.\n• analogWrite() menerima nilai 0-255 untuk mengatur output PWM.\n• Potensiometer memberi nilai analog 0-1023.\n• map() mengubah nilai analog menjadi rentang PWM 0-255.\n• Arduino Nano mendukung PWM di pin digital 3, 5, 6, 9, 10, dan 11.\n• Kecerahan LED berubah real-time sesuai putaran potensiometer.\n• Serial monitor menampilkan nilai input potensiometer dan output PWM."
+        "data": "• PWM memungkinkan tegangan variatif (0-5 V) pada pin digital Arduino.\n• analogWrite() menerima nilai 0-255 untuk mengatur output PWM.\n• Potensiometer memberi nilai analog 0-1023.\n• map() mengubah nilai analog menjadi rentang PWM 0-255.\n• Arduino Nano mendukung PWM di pin digital 3, 5, 6, 9, 10, dan 11.\n• Kecerahan LED berubah real-time sesuai putaran potensiometer.\n• Serial monitor menampilkan nilai input potensiometer dan output PWM.",
+        "data_en": "• PWM enables variable voltage (0-5 V) on Arduino digital pins.\n• analogWrite() accepts a value of 0-255 to set the PWM output.\n• A potentiometer gives an analog value of 0-1023.\n• map() converts the analog value into the 0-255 PWM range.\n• The Arduino Nano supports PWM on digital pins 3, 5, 6, 9, 10, and 11.\n• LED brightness changes in real time as the potentiometer is turned.\n• The serial monitor displays the potentiometer input value and the PWM output."
       },
       {
         "type": "heading",
-        "data": "Insight Kunci"
+        "data": "Insight Kunci",
+        "data_en": "Key Insights"
       },
       {
         "type": "text",
-        "data": "• PWM efisien untuk kontrol tegangan: sinyal digital dihidupkan dan dimatikan sangat cepat sehingga tegangan rata-rata menjadi variatif tanpa DAC fisik atau hardware tambahan.\n• Potensiometer adalah input analog yang mudah dipakai sehingga rangkaian interaktif dan mudah diatur manual.\n• map() penting karena ADC 10-bit (0-1023) dan PWM 8-bit (0-255) memiliki skala berbeda; map() mengonversinya secara proporsional.\n• Tidak semua pin digital mendukung PWM; pahami pin yang didukung tiap board agar program berjalan benar.\n• Serial monitor mempercepat debugging karena nilai input dan output bisa dibandingkan langsung.\n• Dibanding on/off biasa, PWM membuat gradasi kecerahan LED lebih halus, berguna untuk pencahayaan dekoratif, indikator, atau display.\n• PWM adalah fondasi sebelum mengendalikan motor, servo, atau perangkat analog lain."
+        "data": "• PWM efisien untuk kontrol tegangan: sinyal digital dihidupkan dan dimatikan sangat cepat sehingga tegangan rata-rata menjadi variatif tanpa DAC fisik atau hardware tambahan.\n• Potensiometer adalah input analog yang mudah dipakai sehingga rangkaian interaktif dan mudah diatur manual.\n• map() penting karena ADC 10-bit (0-1023) dan PWM 8-bit (0-255) memiliki skala berbeda; map() mengonversinya secara proporsional.\n• Tidak semua pin digital mendukung PWM; pahami pin yang didukung tiap board agar program berjalan benar.\n• Serial monitor mempercepat debugging karena nilai input dan output bisa dibandingkan langsung.\n• Dibanding on/off biasa, PWM membuat gradasi kecerahan LED lebih halus, berguna untuk pencahayaan dekoratif, indikator, atau display.\n• PWM adalah fondasi sebelum mengendalikan motor, servo, atau perangkat analog lain.",
+        "data_en": "• PWM is efficient for voltage control: the digital signal is switched on and off very quickly so the average voltage becomes variable without a physical DAC or additional hardware.\n• A potentiometer is an easy-to-use analog input, making the circuit interactive and easy to adjust manually.\n• map() is important because the 10-bit ADC (0-1023) and 8-bit PWM (0-255) have different scales; map() converts between them proportionally.\n• Not all digital pins support PWM; know which pins each board supports so the program works correctly.\n• The serial monitor speeds up debugging because input and output values can be compared directly.\n• Compared to plain on/off, PWM makes LED brightness gradation smoother, which is useful for decorative lighting, indicators, or displays.\n• PWM is the foundation before controlling motors, servos, or other analog devices."
       }
     ],
     "content": [
       {
         "type": "text",
-        "data": "Poin penting:\n• PWM meniru tegangan analog dengan menyalakan dan mematikan sinyal digital secara cepat.\n• analogWrite(pin, nilai) dengan nilai 0-255.\n• Gunakan hanya pin PWM (3, 5, 6, 9, 10, 11 pada Arduino Nano).\n• map(nilai, 0, 1023, 0, 255) menyesuaikan nilai potensiometer ke rentang PWM."
+        "data": "Poin penting:\n• PWM meniru tegangan analog dengan menyalakan dan mematikan sinyal digital secara cepat.\n• analogWrite(pin, nilai) dengan nilai 0-255.\n• Gunakan hanya pin PWM (3, 5, 6, 9, 10, 11 pada Arduino Nano).\n• map(nilai, 0, 1023, 0, 255) menyesuaikan nilai potensiometer ke rentang PWM.",
+        "data_en": "Key points:\n• PWM imitates analog voltage by switching a digital signal on and off quickly.\n• analogWrite(pin, value) with a value of 0-255.\n• Use only PWM pins (3, 5, 6, 9, 10, 11 on the Arduino Nano).\n• map(value, 0, 1023, 0, 255) adapts the potentiometer value to the PWM range."
       },
       {
         "type": "text",
-        "data": "Alur program:\n1. Baca potensiometer dengan analogRead() (0-1023).\n2. Ubah ke 0-255 dengan map().\n3. Kirim hasilnya ke LED dengan analogWrite().\n4. Tampilkan nilai input dan output di serial monitor."
+        "data": "Alur program:\n1. Baca potensiometer dengan analogRead() (0-1023).\n2. Ubah ke 0-255 dengan map().\n3. Kirim hasilnya ke LED dengan analogWrite().\n4. Tampilkan nilai input dan output di serial monitor.",
+        "data_en": "Program flow:\n1. Read the potentiometer with analogRead() (0-1023).\n2. Convert to 0-255 with map().\n3. Send the result to the LED with analogWrite().\n4. Display the input and output values on the serial monitor."
       }
-    ]
+    ],
+    "title_en": "PWM (Pulse Width Modulation)",
+    "description_en": "Controlling LED brightness with PWM, analogWrite(), and a potentiometer using the map() function."
   },
   {
     "id": "l3_jenis_prinsip_kerja_sensor",
@@ -152,39 +202,49 @@
     "videoSummary": [
       {
         "type": "heading",
-        "data": "Ringkasan"
+        "data": "Ringkasan",
+        "data_en": "Summary"
       },
       {
         "type": "text",
-        "data": "Video ini memperkenalkan 37 jenis sensor untuk belajar elektronika dan mengembangkan aplikasi mikrokontroler. Pembicara menunjukkan sensor satu per satu sambil menguji fungsinya. Sebagian sudah dicoba, sebagian masih dievaluasi. Video memberi gambaran fungsi dasar maupun khusus berbagai sensor yang cocok untuk eksperimen pemula dan hobiis."
+        "data": "Video ini memperkenalkan 37 jenis sensor untuk belajar elektronika dan mengembangkan aplikasi mikrokontroler. Pembicara menunjukkan sensor satu per satu sambil menguji fungsinya. Sebagian sudah dicoba, sebagian masih dievaluasi. Video memberi gambaran fungsi dasar maupun khusus berbagai sensor yang cocok untuk eksperimen pemula dan hobiis.",
+        "data_en": "This video introduces 37 types of sensors for learning electronics and developing microcontroller applications. The presenter shows the sensors one by one while testing their functions. Some have been tried, others are still being evaluated. The video gives an overview of the basic and special functions of various sensors suitable for beginner and hobbyist experiments."
       },
       {
         "type": "heading",
-        "data": "Sensor yang Ditampilkan"
+        "data": "Sensor yang Ditampilkan",
+        "data_en": "Sensors Shown"
       },
       {
         "type": "text",
-        "data": "• Joystick\n• Modul sensor suara (besar dan kecil)\n• Sensor garis (line tracking)\n• Sensor jarak\n• Sensor suhu dan kelembaban (termistor NTC dan analog)\n• Sensor sentuh (metal touch)\n• Sensor magnetik\n• LED RGB dan LED dua warna\n• Sensor laser\n• Potensiometer rotary\n• Sensor fotoresistor"
+        "data": "• Joystick\n• Modul sensor suara (besar dan kecil)\n• Sensor garis (line tracking)\n• Sensor jarak\n• Sensor suhu dan kelembaban (termistor NTC dan analog)\n• Sensor sentuh (metal touch)\n• Sensor magnetik\n• LED RGB dan LED dua warna\n• Sensor laser\n• Potensiometer rotary\n• Sensor fotoresistor",
+        "data_en": "• Joystick\n• Sound sensor module (large and small)\n• Line sensor (line tracking)\n• Distance sensor\n• Temperature and humidity sensor (NTC thermistor and analog)\n• Touch sensor (metal touch)\n• Magnetic sensor\n• RGB LED and two-color LED\n• Laser sensor\n• Rotary potentiometer\n• Photoresistor sensor"
       },
       {
         "type": "heading",
-        "data": "Wawasan Kunci"
+        "data": "Wawasan Kunci",
+        "data_en": "Key Insights"
       },
       {
         "type": "text",
-        "data": "• Paket sensor lengkap mempercepat belajar karena bisa langsung dicoba, dari input analog hingga digital. Paket 37 sensor ini sekitar Rp190.000.\n• Ada sensor dengan fungsi sama tetapi bentuk dan ukuran modul berbeda (misalnya modul suara besar dan kecil), sehingga bisa disesuaikan dengan ruang proyek.\n• Sensor magnetik mendeteksi magnet atau logam; sensor metal touch dapat dipakai untuk kontak sentuh tanpa tombol fisik.\n• LED RGB dan LED dua warna memungkinkan eksperimen pengaturan warna dengan mikrokontroler.\n• Sensor suhu (termistor NTC maupun analog) dan sensor kelembaban penting untuk monitoring lingkungan dan IoT.\n• Sensor garis dan sensor laser berguna untuk robot bergerak otomatis dan pengindraan jarak.\n• Sensor banyak dipakai pada aplikasi robotik dan kontrol otomatis."
+        "data": "• Paket sensor lengkap mempercepat belajar karena bisa langsung dicoba, dari input analog hingga digital. Paket 37 sensor ini sekitar Rp190.000.\n• Ada sensor dengan fungsi sama tetapi bentuk dan ukuran modul berbeda (misalnya modul suara besar dan kecil), sehingga bisa disesuaikan dengan ruang proyek.\n• Sensor magnetik mendeteksi magnet atau logam; sensor metal touch dapat dipakai untuk kontak sentuh tanpa tombol fisik.\n• LED RGB dan LED dua warna memungkinkan eksperimen pengaturan warna dengan mikrokontroler.\n• Sensor suhu (termistor NTC maupun analog) dan sensor kelembaban penting untuk monitoring lingkungan dan IoT.\n• Sensor garis dan sensor laser berguna untuk robot bergerak otomatis dan pengindraan jarak.\n• Sensor banyak dipakai pada aplikasi robotik dan kontrol otomatis.",
+        "data_en": "• A complete sensor kit speeds up learning because you can try them right away, from analog to digital inputs. This 37-sensor kit costs about Rp190,000.\n• Some sensors have the same function but different module shapes and sizes (for example large and small sound modules), so they can be matched to the project space.\n• A magnetic sensor detects magnets or metal; a metal touch sensor can be used for touch contact without a physical button.\n• RGB LEDs and two-color LEDs allow experiments with color control using a microcontroller.\n• Temperature sensors (NTC thermistors and analog) and humidity sensors are important for environmental monitoring and IoT.\n• Line sensors and laser sensors are useful for autonomous robots and distance sensing.\n• Sensors are widely used in robotics and automatic control applications."
       }
     ],
     "content": [
       {
         "type": "text",
-        "data": "Poin penting:\n• Sensor mengubah kondisi fisik (cahaya, suhu, jarak, suara, magnet) menjadi sinyal listrik yang dibaca mikrokontroler.\n• Ada sensor analog dan digital; sebagian sensor sama fungsinya tetapi berbeda bentuk dan ukuran modul.\n• Sensor suhu: termistor NTC dan sensor analog; ada juga sensor kelembaban.\n• Sensor garis dan laser dipakai untuk robot dan pengindraan jarak.\n• Sensor magnetik mendeteksi magnet atau logam; sensor sentuh dipakai sebagai pengganti tombol."
+        "data": "Poin penting:\n• Sensor mengubah kondisi fisik (cahaya, suhu, jarak, suara, magnet) menjadi sinyal listrik yang dibaca mikrokontroler.\n• Ada sensor analog dan digital; sebagian sensor sama fungsinya tetapi berbeda bentuk dan ukuran modul.\n• Sensor suhu: termistor NTC dan sensor analog; ada juga sensor kelembaban.\n• Sensor garis dan laser dipakai untuk robot dan pengindraan jarak.\n• Sensor magnetik mendeteksi magnet atau logam; sensor sentuh dipakai sebagai pengganti tombol.",
+        "data_en": "Key points:\n• A sensor converts a physical condition (light, temperature, distance, sound, magnetism) into an electrical signal read by a microcontroller.\n• There are analog and digital sensors; some sensors have the same function but different module shapes and sizes.\n• Temperature sensors: NTC thermistors and analog sensors; there are also humidity sensors.\n• Line and laser sensors are used for robots and distance sensing.\n• A magnetic sensor detects magnets or metal; a touch sensor is used as a button replacement."
       },
       {
         "type": "text",
-        "data": "Contoh sensor yang dibahas: joystick, modul suara, sensor garis, sensor jarak, sensor suhu, sensor sentuh, sensor magnetik, LED RGB, sensor laser, potensiometer, dan fotoresistor."
+        "data": "Contoh sensor yang dibahas: joystick, modul suara, sensor garis, sensor jarak, sensor suhu, sensor sentuh, sensor magnetik, LED RGB, sensor laser, potensiometer, dan fotoresistor.",
+        "data_en": "Sensors covered as examples: joystick, sound module, line sensor, distance sensor, temperature sensor, touch sensor, magnetic sensor, RGB LED, laser sensor, potentiometer, and photoresistor."
       }
-    ]
+    ],
+    "title_en": "Types & Working Principles of Sensors",
+    "description_en": "Getting to know various types of sensors for learning electronics, from joysticks and temperature sensors to line and laser sensors."
   },
   {
     "id": "l3_posttest",
@@ -195,20 +255,34 @@
       {
         "id": "q1",
         "question": "Rumus konversi nilai ADC menjadi tegangan (dengan referensi 5 V) adalah...",
+        "question_en": "The formula to convert an ADC value to voltage (with a 5 V reference) is...",
         "options": [
           "V = (nilai ADC / 255) × 5 V",
           "V = (nilai ADC / 1023) × 5 V",
           "V = nilai ADC × 5 V",
           "V = 1023 / nilai ADC"
         ],
+        "options_en": [
+          "V = (ADC value / 255) × 5 V",
+          "V = (ADC value / 1023) × 5 V",
+          "V = ADC value × 5 V",
+          "V = 1023 / ADC value"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q2",
         "question": "Jika analogRead menghasilkan sekitar 512, tegangan yang dibaca mendekati...",
+        "question_en": "If analogRead returns around 512, the measured voltage is close to...",
         "options": [
           "1,25 V",
           "2,5 V",
+          "5 V",
+          "0 V"
+        ],
+        "options_en": [
+          "1.25 V",
+          "2.5 V",
           "5 V",
           "0 V"
         ],
@@ -217,7 +291,14 @@
       {
         "id": "q3",
         "question": "Pin berikut yang mendukung keluaran PWM adalah...",
+        "question_en": "Which of the following pins supports PWM output?",
         "options": [
+          "D2",
+          "D4",
+          "D9",
+          "A0"
+        ],
+        "options_en": [
           "D2",
           "D4",
           "D9",
@@ -228,7 +309,14 @@
       {
         "id": "q4",
         "question": "Perintah untuk mengatur kecerahan LED melalui sinyal PWM adalah...",
+        "question_en": "The command to adjust LED brightness using a PWM signal is...",
         "options": [
+          "digitalWrite()",
+          "analogWrite()",
+          "analogRead()",
+          "digitalRead()"
+        ],
+        "options_en": [
           "digitalWrite()",
           "analogWrite()",
           "analogRead()",
@@ -239,14 +327,23 @@
       {
         "id": "q5",
         "question": "Fungsi utama sensor dalam sistem mikrokontroler adalah...",
+        "question_en": "The main function of a sensor in a microcontroller system is...",
         "options": [
           "Mengubah kondisi fisik menjadi sinyal listrik",
           "Menyimpan program secara permanen",
           "Menggantikan catu daya utama",
           "Memutus arus saat korsleting"
         ],
+        "options_en": [
+          "Converting a physical condition into an electrical signal",
+          "Storing the program permanently",
+          "Replacing the main power supply",
+          "Cutting off current during a short circuit"
+        ],
         "correctAnswerIndex": 0
       }
-    ]
+    ],
+    "title_en": "Level 3 Post-Test",
+    "description_en": "Test your understanding after studying."
   }
 ]

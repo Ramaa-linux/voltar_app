@@ -1390,3 +1390,12 @@ extension LocalizationHelper on BuildContext {
     }
   }
 }
+
+/// Returns [idValue] (Indonesian source string from JSON) or [enValue]
+/// (English string from JSON) depending on the current locale.
+/// Used for locale-aware display of JSON-driven materi & kuis content.
+String localizedString(BuildContext context, String idValue, String? enValue) {
+  final locale = Localizations.localeOf(context).languageCode;
+  if (locale == 'en' && enValue != null && enValue.isNotEmpty) return enValue;
+  return idValue;
+}

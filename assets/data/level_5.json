@@ -8,28 +8,78 @@
       {
         "id": "q1",
         "question": "Relay berfungsi sebagai...",
-        "options": ["Saklar yang dikendalikan sinyal kecil", "Penguat suara", "Sensor suhu", "Penyimpan data"],
+        "question_en": "A relay functions as...",
+        "options": [
+          "Saklar yang dikendalikan sinyal kecil",
+          "Penguat suara",
+          "Sensor suhu",
+          "Penyimpan data"
+        ],
+        "options_en": [
+          "A switch controlled by a small signal",
+          "An audio amplifier",
+          "A temperature sensor",
+          "A data storage device"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q2",
         "question": "Sensor DHT11 mengukur...",
-        "options": ["Suhu dan kelembaban", "Jarak", "Kadar gas", "Cahaya"],
+        "question_en": "The DHT11 sensor measures...",
+        "options": [
+          "Suhu dan kelembaban",
+          "Jarak",
+          "Kadar gas",
+          "Cahaya"
+        ],
+        "options_en": [
+          "Temperature and humidity",
+          "Distance",
+          "Gas concentration",
+          "Light"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q3",
         "question": "OLED I2C pada Arduino Uno dihubungkan ke pin...",
-        "options": ["A4 (SDA) dan A5 (SCL)", "D0 dan D1", "D2 dan D3", "A0 dan A1"],
+        "question_en": "An I2C OLED on the Arduino Uno is connected to pins...",
+        "options": [
+          "A4 (SDA) dan A5 (SCL)",
+          "D0 dan D1",
+          "D2 dan D3",
+          "A0 dan A1"
+        ],
+        "options_en": [
+          "A4 (SDA) and A5 (SCL)",
+          "D0 and D1",
+          "D2 and D3",
+          "A0 and A1"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q4",
         "question": "Alamat I2C OLED SSD1306 yang umum adalah...",
-        "options": ["0x3C", "0xFF", "0x00", "0x68"],
+        "question_en": "A common I2C address for an SSD1306 OLED is...",
+        "options": [
+          "0x3C",
+          "0xFF",
+          "0x00",
+          "0x68"
+        ],
+        "options_en": [
+          "0x3C",
+          "0xFF",
+          "0x00",
+          "0x68"
+        ],
         "correctAnswerIndex": 0
       }
-    ]
+    ],
+    "title_en": "Level 5 Pre-Test",
+    "description_en": "Measure your prior knowledge before building the final project."
   },
   {
     "id": "l5_m1",
@@ -40,13 +90,17 @@
     "content": [
       {
         "type": "text",
-        "data": "Cara kerja sistem:\n• DHT11 membaca suhu.\n• Suhu mencapai batas atas → kipas ON lewat relay.\n• Suhu turun melewati batas bawah → kipas OFF.\n• OLED menampilkan suhu dan status kipas.\n\nPenggunaan dua batas (histeresis) mencegah relay menyala-mati terus-menerus di sekitar satu nilai suhu."
+        "data": "Cara kerja sistem:\n• DHT11 membaca suhu.\n• Suhu mencapai batas atas → kipas ON lewat relay.\n• Suhu turun melewati batas bawah → kipas OFF.\n• OLED menampilkan suhu dan status kipas.\n\nPenggunaan dua batas (histeresis) mencegah relay menyala-mati terus-menerus di sekitar satu nilai suhu.",
+        "data_en": "How the system works:\n• The DHT11 reads the temperature.\n• Temperature reaches the upper limit → fan ON via the relay.\n• Temperature drops past the lower limit → fan OFF.\n• The OLED displays the temperature and fan status.\n\nUsing two thresholds (hysteresis) prevents the relay from switching on and off continuously around a single temperature value."
       },
       {
         "type": "text",
-        "data": "Alat dan bahan:\n• Arduino Uno\n• DHT11\n• OLED I2C 128×64\n• Modul relay 5 V\n• Kipas DC kecil dengan catu terpisah\n• Breadboard dan kabel jumper"
+        "data": "Alat dan bahan:\n• Arduino Uno\n• DHT11\n• OLED I2C 128×64\n• Modul relay 5 V\n• Kipas DC kecil dengan catu terpisah\n• Breadboard dan kabel jumper",
+        "data_en": "Tools and materials:\n• Arduino Uno\n• DHT11\n• 128×64 I2C OLED\n• 5 V relay module\n• Small DC fan with a separate power supply\n• Breadboard and jumper wires"
       }
-    ]
+    ],
+    "title_en": "Project Description & Hysteresis",
+    "description_en": "An automatic temperature-based cooling fan."
   },
   {
     "id": "l5_m2",
@@ -57,13 +111,17 @@
     "content": [
       {
         "type": "text",
-        "data": "Sisi kontrol (Arduino, 5 V):\n• DHT11: VCC → 5V, DATA → D2, GND → GND\n• OLED: VCC → 5V, GND → GND, SDA → A4, SCL → A5\n• Modul relay: VCC → 5V, GND → GND, IN → D7 (active LOW)"
+        "data": "Sisi kontrol (Arduino, 5 V):\n• DHT11: VCC → 5V, DATA → D2, GND → GND\n• OLED: VCC → 5V, GND → GND, SDA → A4, SCL → A5\n• Modul relay: VCC → 5V, GND → GND, IN → D7 (active LOW)",
+        "data_en": "Control side (Arduino, 5 V):\n• DHT11: VCC → 5V, DATA → D2, GND → GND\n• OLED: VCC → 5V, GND → GND, SDA → A4, SCL → A5\n• Relay module: VCC → 5V, GND → GND, IN → D7 (active LOW)"
       },
       {
         "type": "text",
-        "data": "Sisi beban (catu kipas terpisah):\n• Catu kipas (+) → terminal COM relay\n• Terminal NO relay → kipas (+)\n• Kipas (−) → catu kipas (−), langsung tanpa relay\n\nRelay memisahkan kedua sisi: sisi beban tidak terhubung ke Arduino sama sekali. Gunakan terminal NO (normally open) agar kipas mati saat relay tidak aktif atau Arduino kehilangan daya."
+        "data": "Sisi beban (catu kipas terpisah):\n• Catu kipas (+) → terminal COM relay\n• Terminal NO relay → kipas (+)\n• Kipas (−) → catu kipas (−), langsung tanpa relay\n\nRelay memisahkan kedua sisi: sisi beban tidak terhubung ke Arduino sama sekali. Gunakan terminal NO (normally open) agar kipas mati saat relay tidak aktif atau Arduino kehilangan daya.",
+        "data_en": "Load side (separate fan power supply):\n• Fan supply (+) → relay COM terminal\n• Relay NO terminal → fan (+)\n• Fan (−) → fan supply (−), directly without the relay\n\nThe relay isolates the two sides: the load side is not connected to the Arduino at all. Use the NO (normally open) terminal so the fan is off when the relay is inactive or the Arduino loses power."
       }
-    ]
+    ],
+    "title_en": "Complete Circuit",
+    "description_en": "Control-side and load-side connections."
   },
   {
     "id": "l5_m3",
@@ -78,9 +136,12 @@
       },
       {
         "type": "text",
-        "data": "Logika utama:\n• t ≥ 30 °C → kipasNyala = true\n• t ≤ 28 °C → kipasNyala = false\n• Di antara 28–30 °C status tidak berubah (histeresis)\n• Jika pembacaan gagal (isnan), status kipas dipertahankan dan OLED menampilkan Error"
+        "data": "Logika utama:\n• t ≥ 30 °C → kipasNyala = true\n• t ≤ 28 °C → kipasNyala = false\n• Di antara 28–30 °C status tidak berubah (histeresis)\n• Jika pembacaan gagal (isnan), status kipas dipertahankan dan OLED menampilkan Error",
+        "data_en": "Main logic:\n• t ≥ 30 °C → kipasNyala = true\n• t ≤ 28 °C → kipasNyala = false\n• Between 28–30 °C the state does not change (hysteresis)\n• If the reading fails (isnan), the fan state is kept and the OLED displays Error"
       }
-    ]
+    ],
+    "title_en": "Automatic Fan Program Code",
+    "description_en": "A complete sketch with hysteresis and an OLED display."
   },
   {
     "id": "l5_m4",
@@ -91,17 +152,22 @@
     "content": [
       {
         "type": "text",
-        "data": "Skenario pengujian:\n1. Suhu < 28 °C → kipas OFF, OLED menampilkan suhu\n2. Sensor dihangatkan ≥ 30 °C → kipas ON\n3. Suhu turun ke 28–30 °C → kipas tetap ON (histeresis)\n4. Suhu ≤ 28 °C → kipas OFF\n5. Kabel DATA DHT11 dicabut → OLED menampilkan Error, status kipas tidak berubah"
+        "data": "Skenario pengujian:\n1. Suhu < 28 °C → kipas OFF, OLED menampilkan suhu\n2. Sensor dihangatkan ≥ 30 °C → kipas ON\n3. Suhu turun ke 28–30 °C → kipas tetap ON (histeresis)\n4. Suhu ≤ 28 °C → kipas OFF\n5. Kabel DATA DHT11 dicabut → OLED menampilkan Error, status kipas tidak berubah",
+        "data_en": "Test scenarios:\n1. Temperature < 28 °C → fan OFF, OLED displays the temperature\n2. Sensor warmed to ≥ 30 °C → fan ON\n3. Temperature falls to 28–30 °C → fan stays ON (hysteresis)\n4. Temperature ≤ 28 °C → fan OFF\n5. DHT11 DATA wire unplugged → OLED displays Error, fan state unchanged"
       },
       {
         "type": "text",
-        "data": "Analisis ketelitian sensor (bandingkan dengan termometer pembanding di beberapa titik suhu):\n• Galat mutlak = |DHT11 − pembanding|\n• Galat (%) = galat mutlak / pembanding × 100%\n• Hitung rata-ratanya, bandingkan dengan akurasi pada datasheet.\n• Catat juga waktu kipas menyala setelah suhu mencapai 30 °C untuk menilai kecepatan respons."
+        "data": "Analisis ketelitian sensor (bandingkan dengan termometer pembanding di beberapa titik suhu):\n• Galat mutlak = |DHT11 − pembanding|\n• Galat (%) = galat mutlak / pembanding × 100%\n• Hitung rata-ratanya, bandingkan dengan akurasi pada datasheet.\n• Catat juga waktu kipas menyala setelah suhu mencapai 30 °C untuk menilai kecepatan respons.",
+        "data_en": "Sensor accuracy analysis (compare with a reference thermometer at several temperature points):\n• Absolute error = |DHT11 − reference|\n• Error (%) = absolute error / reference × 100%\n• Calculate the average and compare it with the accuracy in the datasheet.\n• Also record the time it takes for the fan to turn on after the temperature reaches 30 °C to assess response speed."
       },
       {
         "type": "text",
-        "data": "Ide pengembangan:\n• Kendali kecepatan kipas dengan PWM dan driver motor\n• Buzzer sebagai alarm suhu berlebih\n• Log suhu ke kartu SD lewat SPI"
+        "data": "Ide pengembangan:\n• Kendali kecepatan kipas dengan PWM dan driver motor\n• Buzzer sebagai alarm suhu berlebih\n• Log suhu ke kartu SD lewat SPI",
+        "data_en": "Development ideas:\n• Fan speed control with PWM and a motor driver\n• A buzzer as an over-temperature alarm\n• Log temperature to an SD card via SPI"
       }
-    ]
+    ],
+    "title_en": "Testing & Development",
+    "description_en": "Test scenarios, error analysis, and development ideas."
   },
   {
     "id": "l5_posttest",
@@ -112,33 +178,95 @@
       {
         "id": "q1",
         "question": "Tujuan penggunaan dua batas suhu (histeresis) adalah...",
-        "options": ["Mencegah relay menyala-mati terus-menerus", "Mempercepat pembacaan sensor", "Menghemat memori", "Mengganti sensor"],
+        "question_en": "The purpose of using two temperature thresholds (hysteresis) is...",
+        "options": [
+          "Mencegah relay menyala-mati terus-menerus",
+          "Mempercepat pembacaan sensor",
+          "Menghemat memori",
+          "Mengganti sensor"
+        ],
+        "options_en": [
+          "Preventing the relay from rapidly switching on and off",
+          "Speeding up sensor readings",
+          "Saving memory",
+          "Replacing the sensor"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q2",
         "question": "Pada proyek ini, kipas menyala ketika suhu...",
-        "options": ["≤ 28 °C", "≥ 30 °C", "Tepat 29 °C", "Tidak terbaca"],
+        "question_en": "In this project, the fan turns on when the temperature is...",
+        "options": [
+          "≤ 28 °C",
+          "≥ 30 °C",
+          "Tepat 29 °C",
+          "Tidak terbaca"
+        ],
+        "options_en": [
+          "≤ 28 °C",
+          "≥ 30 °C",
+          "Exactly 29 °C",
+          "Unreadable"
+        ],
         "correctAnswerIndex": 1
       },
       {
         "id": "q3",
         "question": "Mengapa dipilih terminal NO (normally open) pada relay?",
-        "options": ["Kipas mati saat relay tidak aktif atau Arduino kehilangan daya", "Lebih murah", "Lebih cepat", "Terminal NC pasti rusak"],
+        "question_en": "Why is the NO (normally open) terminal chosen on the relay?",
+        "options": [
+          "Kipas mati saat relay tidak aktif atau Arduino kehilangan daya",
+          "Lebih murah",
+          "Lebih cepat",
+          "Terminal NC pasti rusak"
+        ],
+        "options_en": [
+          "The fan stays off when the relay is inactive or the Arduino loses power",
+          "It is cheaper",
+          "It is faster",
+          "The NC terminal is always broken"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q4",
         "question": "Jika isnan(t) bernilai true, artinya...",
-        "options": ["Pembacaan sensor gagal", "Suhu sangat tinggi", "Kipas sedang ON", "OLED rusak"],
+        "question_en": "If isnan(t) evaluates to true, it means...",
+        "options": [
+          "Pembacaan sensor gagal",
+          "Suhu sangat tinggi",
+          "Kipas sedang ON",
+          "OLED rusak"
+        ],
+        "options_en": [
+          "The sensor reading failed",
+          "The temperature is very high",
+          "The fan is ON",
+          "The OLED is broken"
+        ],
         "correctAnswerIndex": 0
       },
       {
         "id": "q5",
         "question": "Rumus galat (%) pada analisis sensor adalah...",
-        "options": ["Galat mutlak / pembanding × 100%", "Pembanding / galat mutlak", "DHT11 × 100%", "Galat mutlak − pembanding"],
+        "question_en": "The percentage error (%) formula in sensor analysis is...",
+        "options": [
+          "Galat mutlak / pembanding × 100%",
+          "Pembanding / galat mutlak",
+          "DHT11 × 100%",
+          "Galat mutlak − pembanding"
+        ],
+        "options_en": [
+          "Absolute error / reference × 100%",
+          "Reference / absolute error",
+          "DHT11 × 100%",
+          "Absolute error − reference"
+        ],
         "correctAnswerIndex": 0
       }
-    ]
+    ],
+    "title_en": "Level 5 Post-Test",
+    "description_en": "Test your understanding after completing the final project."
   }
 ]

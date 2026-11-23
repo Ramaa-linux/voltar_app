@@ -22,11 +22,10 @@ class ContentBlockRenderer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Kode Arduino (type: code) disengaji dari ekstraksi ARB — gunakan data mentah.
-    final String displayText =
-        localizedKey != null && block.type != ContentBlockType.code
-            ? context.t(localizedKey!)
-            : block.data;
+    // ponytail: JSON _en fields take precedence over generated ARB keys; extend localizedString if adding >2 locales.
+    final String displayText = block.type == ContentBlockType.code
+        ? block.data
+        : localizedString(context, block.data, block.dataEn);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.xl),

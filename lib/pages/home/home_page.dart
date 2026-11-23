@@ -444,7 +444,13 @@ class _ContinueLearningCard extends ConsumerWidget {
     final bool allCompleted = summary.allCompleted;
     final String title = allCompleted
         ? context.t('homeAllCompleted')
-        : (summary.nextStepTitle ?? context.t('homeContinue'));
+        : (summary.nextStepTitle != null
+            ? localizedString(
+                context,
+                summary.nextStepTitle!,
+                summary.nextStepTitleEn,
+              )
+            : context.t('homeContinue'));
 
     final String subtitle;
     if (allCompleted) {

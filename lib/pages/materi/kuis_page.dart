@@ -55,9 +55,7 @@ class _KuisPageState extends ConsumerState<KuisPage> {
         ),
         title: stepAsync.when(
           data: (step) => Text(
-            step.localizedTitleKey != null
-                ? context.t(step.localizedTitleKey!)
-                : step.title,
+            localizedString(context, step.title, step.titleEn),
             style: AppTypography.title.copyWith(fontSize: 16),
           ),
           loading: () => const SizedBox.shrink(),
@@ -130,22 +128,25 @@ class _KuisPageState extends ConsumerState<KuisPage> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    step.localizedQuestionKeys != null &&
-                            step.localizedQuestionKeys![_currentIndex] != null
-                        ? context.t(
-                            step.localizedQuestionKeys![_currentIndex]!)
-                        : currentQuestion.question,
+                    localizedString(
+                      context,
+                      currentQuestion.question,
+                      currentQuestion.questionEn,
+                    ),
                     style: AppTypography.heading.copyWith(fontSize: 18),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   for (int i = 0; i < currentQuestion.options.length; i++) ...[
                     _buildOptionTile(
                       index: i,
-                      text: (step.localizedOptionKeys != null &&
-                              step.localizedOptionKeys![_currentIndex] != null)
-                          ? context.t(
-                              step.localizedOptionKeys![_currentIndex]![i])
-                          : currentQuestion.options[i],
+                      text: localizedString(
+                        context,
+                        currentQuestion.options[i],
+                        currentQuestion.optionsEn != null &&
+                                i < currentQuestion.optionsEn!.length
+                            ? currentQuestion.optionsEn![i]
+                            : null,
+                      ),
                       isSelected: selectedOption == i,
                       onTap: () =>
                           setState(() => _selectedAnswers[_currentIndex] = i),

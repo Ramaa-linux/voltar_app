@@ -139,9 +139,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                           ),
                           const SizedBox(height: AppSpacing.xs),
                           Text(
-                            step.localizedTitleKey != null
-                                ? context.t(step.localizedTitleKey!)
-                                : step.title,
+                            localizedString(context, step.title, step.titleEn),
                             style: AppTypography.title,
                           ),
                         ],
@@ -197,9 +195,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    step.localizedDescriptionKey != null
-                        ? context.t(step.localizedDescriptionKey!)
-                        : step.description,
+                    localizedString(context, step.description, step.descriptionEn),
                     style: AppTypography.body.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -330,7 +326,10 @@ class _MateriDetailViewState extends State<MateriDetailView> {
           padding: const EdgeInsets.all(AppSpacing.pagePadding),
           child: Center(
             child: Text(
-              context.t('simulasiSegeraHadir', args: [step.title]),
+              context.t(
+                'simulasiSegeraHadir',
+                args: [localizedString(context, step.title, step.titleEn)],
+              ),
               style: AppTypography.bodyMuted,
               textAlign: TextAlign.center,
             ),
@@ -340,12 +339,13 @@ class _MateriDetailViewState extends State<MateriDetailView> {
   }
 
   void _showMarkDoneDialog(BuildContext context, LearningStep step) {
+    final String stepTitle = localizedString(context, step.title, step.titleEn);
     showDialog<void>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(context.t('tandaiSelesaiDialog')),
         content: Text(
-          context.t('konfirmasiTandaiSelesai', args: [step.title]),
+          context.t('konfirmasiTandaiSelesai', args: [stepTitle]),
         ),
         actions: <Widget>[
           TextButton(
@@ -358,7 +358,7 @@ class _MateriDetailViewState extends State<MateriDetailView> {
               setState(() => _isDone = true);
               ScaffoldMessenger.of(this.context).showSnackBar(
                 SnackBar(
-                  content: Text(context.t('ditandaiSelesai', args: [step.title])),
+                  content: Text(context.t('ditandaiSelesai', args: [stepTitle])),
                   backgroundColor: AppColors.success,
                 ),
               );

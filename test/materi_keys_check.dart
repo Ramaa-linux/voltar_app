@@ -43,6 +43,44 @@ void main() {
   expectKey('materiKomponenL1KomLedTitle');
   expectKey('materiKomponenL1KomLedDescription');
 
+  // 4. Verify all JSON _en fields (title_en, description_en, data_en, question_en, options_en)
+  final files = [
+    for (int i = 1; i <= 5; i++) 'assets/data/level_$i.json',
+    'assets/data/materi_komponen_level_1.json',
+  ];
+  for (final path in files) {
+    final list = jsonDecode(File(path).readAsStringSync()) as List<dynamic>;
+    void checkStep(Map<String, dynamic> step) {
+      final id = step['id'];
+      assert((step['title_en'] as String?)?.isNotEmpty == true, '$path:$id missing title_en');
+      assert((step['description_en'] as String?)?.isNotEmpty == true, '$path:$id missing description_en');
+      for (final b in (step['content'] as List<dynamic>? ?? const [])) {
+        final map = b as Map<String, dynamic>;
+        if (map['type'] != 'code') {
+          assert((map['data_en'] as String?)?.isNotEmpty == true, '$path:$id content missing data_en');
+        }
+      }
+      for (final b in (step['videoSummary'] as List<dynamic>? ?? const [])) {
+        final map = b as Map<String, dynamic>;
+        assert((map['data_en'] as String?)?.isNotEmpty == true, '$path:$id videoSummary missing data_en');
+      }
+      for (final q in (step['questions'] as List<dynamic>? ?? const [])) {
+        final map = q as Map<String, dynamic>;
+        assert((map['question_en'] as String?)?.isNotEmpty == true, '$path:$id question missing question_en');
+        final opts = map['options'] as List<dynamic>;
+        final optsEn = map['options_en'] as List<dynamic>?;
+        assert(optsEn != null && optsEn.length == opts.length, '$path:$id question missing options_en');
+      }
+      for (final sub in (step['subMateri'] as List<dynamic>? ?? const [])) {
+        checkStep(sub as Map<String, dynamic>);
+      }
+    }
+
+    for (final item in list) {
+      checkStep(item as Map<String, dynamic>);
+    }
+  }
+
   print('=== Self-check selesai ===');
   print('Diperiksa: $checked kunci');
   print('Hilang: $missing kunci');
