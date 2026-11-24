@@ -5,7 +5,6 @@ import "package:cloud_firestore/cloud_firestore.dart";
 
 import "../../router/app_routes.dart";
 import "../../services/auth_service.dart";
-import "../../shell/guru_shell.dart";
 import "../../theme/app_borders.dart";
 import "../../theme/app_colors.dart";
 import "../../theme/app_spacing.dart";
@@ -130,12 +129,11 @@ class GuruKelasPage extends ConsumerWidget {
                           final String classId = docs[index].id;
                           final String nama = data["name"] as String? ?? "Tanpa Nama";
                           final String classCode = data["classCode"] as String? ?? "-";
-                          final int jumlahSiswa = data["studentCount"] as int? ?? 0;
 
                           return _KelasCard(
                             nama: nama,
+                            classId: classId,
                             classCode: classCode,
-                            jumlahSiswa: jumlahSiswa,
                             onTap: () => context.push(
                               "${AppRoutes.guruKelas}/$classId",
                             ),
@@ -241,80 +239,90 @@ class GuruKelasPage extends ConsumerWidget {
   }
 }
 
-class _KelasCard extends StatelessWidget {
+class _KelasCard extends ConsumerWidget {
   const _KelasCard({
     required this.nama,
+    required this.classId,
     required this.classCode,
-    required this.jumlahSiswa,
     required this.onTap,
   });
 
   final String nama;
+  final String classId;
   final String classCode;
-  final int jumlahSiswa;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return PressScale(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          border: AppBorders.standard,
-        ),
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(AppRadius.button),
-              ),
-              child: Center(
-                child: AppIcon(AppIconName.folder, size: 24, color: AppColors.primary),
-              ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FutureBuilder<int>(
+      future: FirebaseFirestore.instance
+          .collection("users")
+          .where("classId", isEqualTo: classId)
+          .get()
+          .then((snap) => snap.docs.length),
+      builder: (context, snapshot) {
+        final int siswa = snapshot.data ?? 0;
+        return PressScale(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              border: AppBorders.standard,
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(nama, style: AppTypography.title.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: AppSpacing.xs),
-                  Row(
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(AppRadius.button),
+                  ),
+                  child: Center(
+                    child: AppIcon(AppIconName.folder, size: 24, color: AppColors.primary),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(context.t('guruKelasCardSiswa', args: [jumlahSiswa]), style: AppTypography.bodyMuted),
-                      const SizedBox(width: AppSpacing.md),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.sm,
-                          vertical: AppSpacing.xs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryLight,
-                          borderRadius: BorderRadius.circular(AppRadius.input),
-                        ),
-                        child: Text(
-                          classCode,
-                          style: AppTypography.label.copyWith(
-                            color: AppColors.primaryDark,
-                            fontWeight: FontWeight.w700,
+                      Text(nama, style: AppTypography.title.copyWith(fontWeight: FontWeight.w700)),
+                      const SizedBox(height: AppSpacing.xs),
+                      Row(
+                        children: <Widget>[
+                          Text(context.t('guruKelasCardSiswa', args: [siswa]), style: AppTypography.bodyMuted),
+                          const SizedBox(width: AppSpacing.md),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xs,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryLight,
+                              borderRadius: BorderRadius.circular(AppRadius.input),
+                            ),
+                            child: Text(
+                              classCode,
+                              style: AppTypography.label.copyWith(
+                                color: AppColors.primaryDark,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const AppIcon(AppIconName.chevronRight, size: 20, color: AppColors.textTertiary),
+              ],
             ),
-            const AppIcon(AppIconName.chevronRight, size: 20, color: AppColors.textTertiary),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

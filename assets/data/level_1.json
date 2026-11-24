@@ -538,95 +538,365 @@
     "questions": [
       {
         "id": "q1",
-        "question": "Rumus hukum Ohm adalah...",
-        "question_en": "Ohm's Law formula is...",
+        "question": "Sebuah resistor 240 Ω dihubungkan ke catu daya 12 V. Berapa arus yang mengalir melalui resistor tersebut?",
+        "question_en": "A 240 Ω resistor is connected to a 12 V supply. How much current flows through the resistor?",
         "options": [
-          "V = I / R",
-          "V = I × R",
-          "R = V × I",
-          "I = V × R"
+            "5 mA",
+            "20 mA",
+            "50 mA",
+            "200 mA"
         ],
         "options_en": [
-          "V = I / R",
-          "V = I × R",
-          "R = V × I",
-          "I = V × R"
-        ],
-        "correctAnswerIndex": 1
-      },
-      {
-        "id": "q2",
-        "question": "Hasil hitung resistor LED adalah 150 Ω. Nilai standar aman yang dipilih pada modul adalah...",
-        "question_en": "The calculated LED resistor value is 150 Ω. The safe standard value chosen in the module is...",
-        "options": [
-          "10 Ω",
-          "150 Ω",
-          "220 Ω",
-          "10 kΩ"
-        ],
-        "options_en": [
-          "10 Ω",
-          "150 Ω",
-          "220 Ω",
-          "10 kΩ"
+            "5 mA",
+            "20 mA",
+            "50 mA",
+            "200 mA"
         ],
         "correctAnswerIndex": 2
-      },
-      {
-        "id": "q3",
-        "question": "Arus LED 2 V dengan resistor 220 Ω pada catu 5 V adalah sekitar...",
-        "question_en": "The current of a 2 V LED with a 220 Ω resistor on a 5 V supply is approximately...",
+    },
+    {
+        "id": "q2",
+        "question": "Sebuah resistor 150 Ω harus dialiri arus 20 mA. Berapa tegangan yang harus diberikan pada resistor tersebut?",
+        "question_en": "A 150 Ω resistor must carry a current of 20 mA. What voltage must be applied across the resistor?",
         "options": [
-          "13,6 mA",
-          "20 mA",
-          "36 mA",
-          "1,36 A"
+            "0,3 V",
+            "7,5 V",
+            "30 V",
+            "3 V"
         ],
         "options_en": [
-          "13.6 mA",
-          "20 mA",
-          "36 mA",
-          "1.36 A"
+            "0.3 V",
+            "7.5 V",
+            "30 V",
+            "3 V"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q3",
+        "question": "Sebuah LED merah (tegangan maju 2 V) dipasang pada pin Arduino 5 V dan diinginkan arus 15 mA. Berapa nilai resistor pembatas arus yang dibutuhkan?",
+        "question_en": "A red LED (forward voltage 2 V) is connected to a 5 V Arduino pin and a current of 15 mA is desired. What current-limiting resistor value is required?",
+        "options": [
+            "100 Ω",
+            "200 Ω",
+            "330 Ω",
+            "470 Ω"
+        ],
+        "options_en": [
+            "100 Ω",
+            "200 Ω",
+            "330 Ω",
+            "470 Ω"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q4",
+        "question": "Sebuah LED biru (tegangan maju 3 V) akan dinyalakan dengan baterai 9 V pada arus 20 mA. Berapa nilai resistor seri yang tepat?",
+        "question_en": "A blue LED (forward voltage 3 V) will be powered by a 9 V battery at a current of 20 mA. What is the correct series resistor value?",
+        "options": [
+            "200 Ω",
+            "250 Ω",
+            "300 Ω",
+            "450 Ω"
+        ],
+        "options_en": [
+            "200 Ω",
+            "250 Ω",
+            "300 Ω",
+            "450 Ω"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q5",
+        "question": "Sebuah resistor memiliki gelang warna berurutan: coklat, hitam, merah, emas. Berapa nilai resistor tersebut?",
+        "question_en": "A resistor has the following color bands in order: brown, black, red, gold. What is the value of this resistor?",
+        "options": [
+            "1 kΩ ± 5%",
+            "10 Ω ± 5%",
+            "10 kΩ ± 5%",
+            "100 kΩ ± 5%"
+        ],
+        "options_en": [
+            "1 kΩ ± 5%",
+            "10 Ω ± 5%",
+            "10 kΩ ± 5%",
+            "100 kΩ ± 5%"
         ],
         "correctAnswerIndex": 0
-      },
-      {
-        "id": "q4",
-        "question": "Batas arus yang aman per pin Arduino Uno adalah sekitar...",
-        "question_en": "The safe current limit per Arduino Uno pin is approximately...",
+    },
+    {
+        "id": "q6",
+        "question": "Sebuah resistor memiliki gelang warna berurutan: merah, merah, silver, emas. Berapa nilai resistor tersebut?",
+        "question_en": "A resistor has the following color bands in order: red, red, silver, gold. What is the value of this resistor?",
         "options": [
-          "5 mA",
-          "20 mA",
-          "200 mA",
-          "1 A"
+            "220 Ω",
+            "22 Ω",
+            "2,2 Ω",
+            "0,22 Ω"
         ],
         "options_en": [
-          "5 mA",
-          "20 mA",
-          "200 mA",
-          "1 A"
+            "220 Ω",
+            "22 Ω",
+            "2.2 Ω",
+            "0.22 Ω"
         ],
-        "correctAnswerIndex": 1
-      },
-      {
-        "id": "q5",
-        "question": "Pada praktikum LED eksternal, resistor dan LED dihubungkan ke pin...",
-        "question_en": "In the external LED practice, the resistor and LED are connected to pin...",
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q7",
+        "question": "Sebuah LED (tegangan maju 2 V) dirangkai seri dengan resistor 330 Ω pada catu 5 V. Berapa arus yang mengalir pada LED?",
+        "question_en": "An LED (forward voltage 2 V) is connected in series with a 330 Ω resistor on a 5 V supply. How much current flows through the LED?",
         "options": [
-          "D13",
-          "D8",
-          "D2",
-          "A0"
+            "9,1 mA",
+            "15 mA",
+            "20 mA",
+            "30 mA"
         ],
         "options_en": [
-          "D13",
-          "D8",
-          "D2",
-          "A0"
+            "9.1 mA",
+            "15 mA",
+            "20 mA",
+            "30 mA"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q8",
+        "question": "Seorang siswa memasang satu kaki resistor dan kaki anoda LED pada nomor kolom yang sama di breadboard, tetapi resistor berada di sisi atas celah tengah sedangkan LED di sisi bawah celah tengah. Saat dinyalakan, LED tidak menyala. Apa analisis penyebab yang paling tepat?",
+        "question_en": "A student places one resistor leg and the LED anode in the same column number on a breadboard, but the resistor is on the upper side of the center gap while the LED is on the lower side. When powered, the LED does not light up. What is the most accurate analysis of the cause?",
+        "options": [
+            "Resistor yang dipakai terlalu besar sehingga arus menjadi nol",
+            "Kedua kaki berada di sisi yang berbeda dari celah tengah, sehingga tidak terhubung secara internal",
+            "Breadboard 830 pin tidak dapat dipakai untuk merangkai LED",
+            "Jalur merah dan biru otomatis menghubungkan semua kolom di bagian tengah"
+        ],
+        "options_en": [
+            "The resistor used is too large so the current becomes zero",
+            "The two legs are on different sides of the center gap, so they are not internally connected",
+            "An 830-pin breadboard cannot be used to build LED circuits",
+            "The red and blue lines automatically connect all columns in the middle section"
         ],
         "correctAnswerIndex": 1
-      }
-    ],
+    },
+    {
+        "id": "q9",
+        "question": "Siswa merangkai: pin D8 → resistor 220 Ω → kaki pendek LED, lalu kaki panjang LED → GND. Program memberi D8 nilai HIGH tetapi LED tidak menyala. Apa analisis penyebab yang paling tepat?",
+        "question_en": "A student builds the circuit: pin D8 → 220 Ω resistor → short LED leg, then long LED leg → GND. The program sets D8 HIGH but the LED does not light up. What is the most accurate analysis of the cause?",
+        "options": [
+            "Resistor 220 Ω terlalu besar sehingga arus mendekati nol",
+            "Tegangan 5 V dari pin terlalu tinggi sehingga LED menolak arus",
+            "Pin D8 hanya dapat dipakai sebagai input",
+            "LED terpasang terbalik: kaki panjang (anoda) menuju GND sehingga arus tidak mengalir"
+        ],
+        "options_en": [
+            "The 220 Ω resistor is too large so the current is close to zero",
+            "The 5 V from the pin is too high so the LED rejects the current",
+            "Pin D8 can only be used as an input",
+            "The LED is installed backwards: the long leg (anode) goes to GND so no current flows"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q10",
+        "question": "Seorang siswa menghubungkan LED merah (tegangan maju 2 V) langsung ke catu 5 V tanpa resistor. LED menyala sangat terang sesaat lalu mati dan tidak menyala lagi. Apa analisis penyebab yang paling tepat?",
+        "question_en": "A student connects a red LED (forward voltage 2 V) directly to a 5 V supply without a resistor. The LED lights up very brightly for a moment, then goes out and never lights again. What is the most accurate analysis of the cause?",
+        "options": [
+            "Arus tidak dibatasi sehingga melonjak melebihi batas LED dan merusaknya",
+            "LED terpasang terbalik sehingga terbakar",
+            "Tegangan maju LED merah berubah menjadi 0 V",
+            "LED merah membutuhkan tegangan lebih tinggi daripada LED biru"
+        ],
+        "options_en": [
+            "The current is not limited, so it surges beyond the LED's limit and damages it",
+            "The LED is installed backwards so it burns out",
+            "The forward voltage of the red LED changes to 0 V",
+            "A red LED requires a higher voltage than a blue LED"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q11",
+        "question": "Sebuah resistor diukur dengan tegangan berbeda dan diperoleh data: 2 V → 8 mA, 4 V → 16 mA, 6 V → 24 mA. Kesimpulan yang paling tepat dari data tersebut adalah...",
+        "question_en": "A resistor is measured at different voltages and the data obtained is: 2 V → 8 mA, 4 V → 16 mA, 6 V → 24 mA. The most accurate conclusion from this data is...",
+        "options": [
+            "Hambatan turun saat tegangan naik",
+            "Arus berbanding terbalik dengan tegangan",
+            "Arus berbanding lurus dengan tegangan dan hambatan konstan sekitar 250 Ω",
+            "Hambatan naik saat tegangan naik sehingga arus ikut naik"
+        ],
+        "options_en": [
+            "Resistance decreases as voltage increases",
+            "Current is inversely proportional to voltage",
+            "Current is directly proportional to voltage and resistance is constant at about 250 Ω",
+            "Resistance increases as voltage increases so current also increases"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q12",
+        "question": "Sebuah kapasitor elektrolitik 470 µF dipasang pada jalur catu 5 V. Kaki bertanda negatif (strip) ternyata terhubung ke jalur +5 V, dan kaki positif terhubung ke GND. Setelah dinyalakan, kapasitor menjadi panas dan menggembung. Apa analisis penyebab yang paling logis?",
+        "question_en": "A 470 µF electrolytic capacitor is installed on a 5 V supply rail. The leg marked negative (stripe) is connected to the +5 V rail, and the positive leg is connected to GND. After powering on, the capacitor becomes hot and bulges. What is the most logical analysis of the cause?",
+        "options": [
+            "Kapasitor terpasang dengan polaritas terbalik",
+            "Kapasitor menyimpan terlalu sedikit energi",
+            "Kaki kapasitor menyentuh celah tengah breadboard",
+            "Kapasitor dipasang terlalu dekat dengan LED"
+        ],
+        "options_en": [
+            "The capacitor is installed with reversed polarity",
+            "The capacitor stores too little energy",
+            "The capacitor legs touch the center gap of the breadboard",
+            "The capacitor is installed too close to the LED"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q13",
+        "question": "Pada rangkaian Arduino 5 V dengan resistor 220 Ω seri LED, voltmeter yang dipasang pada kedua ujung resistor menunjukkan 3 V. Kesimpulan yang paling tepat adalah...",
+        "question_en": "In a 5 V Arduino circuit with a 220 Ω resistor in series with an LED, a voltmeter placed across the resistor reads 3 V. The most accurate conclusion is...",
+        "options": [
+            "Arus sekitar 22,7 mA dan tegangan LED sekitar 3 V",
+            "Arus sekitar 13,6 mA dan tegangan LED sekitar 2 V",
+            "Arus sekitar 13,6 mA dan tegangan LED sekitar 3 V",
+            "Arus sekitar 36 mA dan tegangan LED sekitar 2 V"
+        ],
+        "options_en": [
+            "Current is about 22.7 mA and LED voltage is about 3 V",
+            "Current is about 13.6 mA and LED voltage is about 2 V",
+            "Current is about 13.6 mA and LED voltage is about 3 V",
+            "Current is about 36 mA and LED voltage is about 2 V"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q14",
+        "question": "Seorang siswa membaca resistor bergelang merah, merah, coklat, emas dan menyimpulkan nilainya 2,2 kΩ. Di mana letak kesalahan siswa tersebut?",
+        "question_en": "A student reads a resistor with red, red, brown, gold bands and concludes its value is 2.2 kΩ. Where is the student's mistake?",
+        "options": [
+            "Siswa menukar urutan dua digit pertama",
+            "Siswa mengabaikan gelang toleransi emas",
+            "Siswa menganggap gelang emas sebagai pengali",
+            "Siswa menganggap pengali coklat sebagai ×100, padahal ×10, sehingga nilai yang benar adalah 220 Ω"
+        ],
+        "options_en": [
+            "The student swapped the first two digits",
+            "The student ignored the gold tolerance band",
+            "The student treated the gold band as the multiplier",
+            "The student treated the brown multiplier as ×100 when it is ×10, so the correct value is 220 Ω"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q15",
+        "question": "Seorang teknisi ingin memakai tactile switch (rangkaian DC 4,5–12 V, arus maksimum sekitar 100 mA) untuk menyalakan lampu rumah 220 V AC. Bagaimana penilaian yang paling tepat?",
+        "question_en": "A technician wants to use a tactile switch (DC circuits 4.5–12 V, maximum current about 100 mA) to turn on a 220 V AC household lamp. What is the most appropriate evaluation?",
+        "options": [
+            "Layak, karena push button bisa dipakai pada semua tegangan",
+            "Layak asalkan ditekan perlahan",
+            "Tidak layak: di luar spesifikasi (untuk DC kecil) dan tidak aman, sebaiknya gunakan saklar yang dirancang untuk AC",
+            "Tidak layak, karena tactile switch hanya bisa dipasang pada breadboard"
+        ],
+        "options_en": [
+            "Suitable, because a push button can be used at any voltage",
+            "Suitable as long as it is pressed slowly",
+            "Not suitable: it is outside the specification (small DC circuits) and unsafe, so a switch designed for AC should be used",
+            "Not suitable, because a tactile switch can only be mounted on a breadboard"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q16",
+        "question": "Sebuah rangkaian mikrokontroler membutuhkan kapasitor berkapasitansi besar (sekitar 1000 µF) untuk menstabilkan tegangan catu daya dengan ukuran yang ringkas. Kapasitor mana yang paling tepat dipilih?",
+        "question_en": "A microcontroller circuit needs a large-capacitance capacitor (about 1000 µF) in a compact size to stabilize the power supply voltage. Which capacitor is the most suitable choice?",
+        "options": [
+            "Kapasitor keramik 100 pF",
+            "Variable capacitor",
+            "Kapasitor poliester 10 nF",
+            "Kapasitor elektrolitik 1000 µF (berpolaritas, dipasang sesuai kaki + dan −)"
+        ],
+        "options_en": [
+            "100 pF ceramic capacitor",
+            "Variable capacitor",
+            "10 nF polyester capacitor",
+            "1000 µF electrolytic capacitor (polarized, installed according to the + and − legs)"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q17",
+        "question": "Sebuah proyek memerlukan banyak LED indikator status berukuran sangat kecil dan tipis yang dipasang massal pada PCB dengan ruang terbatas. Jenis LED mana yang paling efisien dipilih?",
+        "question_en": "A project requires many very small and thin status indicator LEDs mass-mounted on a PCB with limited space. Which type of LED is the most efficient choice?",
+        "options": [
+            "LED through-hole 5 mm",
+            "LED SMD",
+            "LED berdaya tinggi dengan heatsink",
+            "LED COB"
+        ],
+        "options_en": [
+            "5 mm through-hole LED",
+            "SMD LED",
+            "High-power LED with a heatsink",
+            "COB LED"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q18",
+        "question": "Hasil perhitungan resistor LED adalah 150 Ω (catu 5 V, LED 2 V, target 20 mA), tetapi hanya tersedia resistor 100 Ω dan 220 Ω. Mana pilihan terbaik dan alasannya?",
+        "question_en": "The calculated LED resistor value is 150 Ω (5 V supply, 2 V LED, 20 mA target), but only 100 Ω and 220 Ω resistors are available. Which is the best choice and why?",
+        "options": [
+            "220 Ω, karena arus sekitar 13,6 mA masih di bawah batas aman 20 mA meskipun LED sedikit lebih redup",
+            "100 Ω, karena nilainya paling mendekati 150 Ω dan LED lebih terang",
+            "100 Ω, karena arus 30 mA masih aman untuk LED dan pin Arduino",
+            "Tanpa resistor, karena LED sudah dibatasi oleh pin Arduino"
+        ],
+        "options_en": [
+            "220 Ω, because the current of about 13.6 mA is still below the 20 mA safe limit even though the LED is slightly dimmer",
+            "100 Ω, because its value is closest to 150 Ω and the LED is brighter",
+            "100 Ω, because a current of 30 mA is still safe for the LED and Arduino pin",
+            "No resistor, because the LED is already limited by the Arduino pin"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q19",
+        "question": "Dua siswa membuat prototipe rangkaian sensor yang nilai komponennya akan sering diganti saat eksperimen. Siswa A menyolder komponen langsung ke papan, sedangkan Siswa B merangkai di breadboard. Pendekatan mana yang lebih tepat dan mengapa?",
+        "question_en": "Two students build a prototype of a sensor circuit whose component values will be changed often during experiments. Student A solders the components directly onto a board, while Student B builds on a breadboard. Which approach is more appropriate and why?",
+        "options": [
+            "Siswa A, karena solder lebih cepat diubah saat eksperimen",
+            "Keduanya sama, karena rangkaian tidak dapat diubah setelah dirakit",
+            "Siswa B, karena breadboard tanpa solder memudahkan perubahan dan pengujian",
+            "Siswa A, karena breadboard tidak bisa diuji dengan multimeter"
+        ],
+        "options_en": [
+            "Student A, because soldering is faster to change during experiments",
+            "Both are the same, because a circuit cannot be changed after it is assembled",
+            "Student B, because a breadboard needs no soldering, making changes and testing easier",
+            "Student A, because a breadboard cannot be tested with a multimeter"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q20",
+        "question": "Dua rancangan untuk menyalakan 3 LED (tegangan maju 2 V) dari Arduino 5 V, masing-masing LED dengan resistor 220 Ω (≈ 13,6 mA per LED). Rancangan X: tiap LED dihubungkan ke pin yang berbeda. Rancangan Y: ketiga LED digabung paralel ke satu pin yang sama. Mana yang lebih baik?",
+        "question_en": "Two designs to power 3 LEDs (forward voltage 2 V) from a 5 V Arduino, each LED with a 220 Ω resistor (≈ 13.6 mA per LED). Design X: each LED is connected to a different pin. Design Y: all three LEDs are connected in parallel to one single pin. Which is better?",
+        "options": [
+            "Rancangan Y, karena lebih hemat pin dan arus totalnya tetap aman",
+            "Rancangan X, karena tiap pin hanya menyuplai sekitar 13,6 mA, sedangkan pada Y satu pin menyuplai sekitar 41 mA yang melebihi batas aman",
+            "Keduanya sama aman, karena tegangannya sama",
+            "Rancangan Y, karena resistor paralel memperkecil arus pada tiap LED"
+        ],
+        "options_en": [
+            "Design Y, because it saves pins and the total current remains safe",
+            "Design X, because each pin supplies only about 13.6 mA, whereas in Y one pin supplies about 41 mA, which exceeds the safe limit",
+            "Both are equally safe, because the voltage is the same",
+            "Design Y, because parallel resistors reduce the current in each LED"
+        ],
+        "correctAnswerIndex": 1
+    }
+],
     "title_en": "Level 1 Post-Test",
     "description_en": "Test your understanding after studying."
   }

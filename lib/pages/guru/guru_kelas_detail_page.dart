@@ -7,7 +7,7 @@ import '../../theme/app_colors.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
 import '../../widgets/app_icon.dart';
-import '../../utils/localization_helper.dart';
+import 'package:voltar/l10n/app_localizations.dart';
 
 /// Halaman Detail Kelas Guru - wrapper yang mengambil data kelas dari Firestore
 /// lalu meneruskan ke DetailKelasPage dengan isTeacher: true.
@@ -19,7 +19,7 @@ class GuruKelasDetailPage extends ConsumerWidget {
   void _onEditKelas(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(context.t('guruKelasComingSoon')),
+        content: Text(AppLocalizations.of(context)!.guruKelasComingSoon),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -39,7 +39,7 @@ class GuruKelasDetailPage extends ConsumerWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                context.t('guruKelasDetailTitle'),
+                AppLocalizations.of(context)!.guruKelasDetailTitle,
                 style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
               ),
               actions: <Widget>[
@@ -51,7 +51,7 @@ class GuruKelasDetailPage extends ConsumerWidget {
                     color: AppColors.primary,
                   ),
                   label: Text(
-                      context.t('guruKelasEdit'),
+                      AppLocalizations.of(context)!.guruKelasEdit,
                       style: AppTypography.label.copyWith(color: AppColors.primary),
                     ),
                   style: TextButton.styleFrom(
@@ -85,3 +85,5 @@ class GuruKelasDetailPage extends ConsumerWidget {
     );
   }
 }
+
+

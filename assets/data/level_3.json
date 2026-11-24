@@ -254,94 +254,364 @@
     "questions": [
       {
         "id": "q1",
-        "question": "Rumus konversi nilai ADC menjadi tegangan (dengan referensi 5 V) adalah...",
-        "question_en": "The formula to convert an ADC value to voltage (with a 5 V reference) is...",
+        "question": "Jika analogRead(A0) menghasilkan nilai 204 pada Arduino Uno (Vref = 5V), berapakah estimasi tegangan input pada pin A0?",
+        "question_en": "If analogRead(A0) returns a value of 204 on an Arduino Uno (Vref = 5V), what is the estimated input voltage at pin A0?",
         "options": [
-          "V = (nilai ADC / 255) × 5 V",
-          "V = (nilai ADC / 1023) × 5 V",
-          "V = nilai ADC × 5 V",
-          "V = 1023 / nilai ADC"
+            "0,5 V",
+            "1,0 V",
+            "2,0 V",
+            "2,5 V"
         ],
         "options_en": [
-          "V = (ADC value / 255) × 5 V",
-          "V = (ADC value / 1023) × 5 V",
-          "V = ADC value × 5 V",
-          "V = 1023 / ADC value"
+            "0.5 V",
+            "1.0 V",
+            "2.0 V",
+            "2.5 V"
         ],
         "correctAnswerIndex": 1
-      },
-      {
+    },
+    {
         "id": "q2",
-        "question": "Jika analogRead menghasilkan sekitar 512, tegangan yang dibaca mendekati...",
-        "question_en": "If analogRead returns around 512, the measured voltage is close to...",
+        "question": "Fungsi map(512, 0, 1023, 0, 255) digunakan untuk mengonversi nilai sensor 10-bit ke rentang PWM 8-bit. Berapakah hasil keluaran integer dari fungsi tersebut?",
+        "question_en": "The function map(512, 0, 1023, 0, 255) is used to convert a 10-bit sensor value to an 8-bit PWM range. What is the integer output of this function?",
         "options": [
-          "1,25 V",
-          "2,5 V",
-          "5 V",
-          "0 V"
+            "64",
+            "127",
+            "191",
+            "255"
         ],
         "options_en": [
-          "1.25 V",
-          "2.5 V",
-          "5 V",
-          "0 V"
+            "64",
+            "127",
+            "191",
+            "255"
         ],
         "correctAnswerIndex": 1
-      },
-      {
+    },
+    {
         "id": "q3",
-        "question": "Pin berikut yang mendukung keluaran PWM adalah...",
-        "question_en": "Which of the following pins supports PWM output?",
+        "question": "Seorang siswa menulis kode `pinMode(4, OUTPUT); analogWrite(4, 150);` pada Arduino Uno dengan harapan LED meredup. Namun LED justru menyala penuh. Mengapa hal ini terjadi?",
+        "question_en": "A student writes `pinMode(4, OUTPUT); analogWrite(4, 150);` on an Arduino Uno expecting the LED to dim. However, the LED turns fully ON instead. Why does this happen?",
         "options": [
-          "D2",
-          "D4",
-          "D9",
-          "A0"
+            "Fungsi analogWrite() memerlukan pinMode diset sebagai INPUT.",
+            "Pin 4 bukan pin PWM pada Arduino Uno, sehingga nilai >= 128 dianggap HIGH (5V).",
+            "Nilai analogWrite() harus berkisar 0–1023, sehingga nilai 150 terlalu kecil.",
+            "LED membutuhkan resistor pull-up agar dapat bekerja dengan sinyal PWM."
         ],
         "options_en": [
-          "D2",
-          "D4",
-          "D9",
-          "A0"
+            "The analogWrite() function requires pinMode to be set as INPUT.",
+            "Pin 4 is not a PWM pin on Arduino Uno, so values >= 128 are treated as HIGH (5V).",
+            "The analogWrite() value range must be 0–1023, so 150 is too small.",
+            "The LED requires a pull-up resistor to function with a PWM signal."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q4",
+        "question": "Perhatikan kode sistem lampu otomatis berikut:\nint val = analogRead(A0);\nif (val > 700) { digitalWrite(LED, LOW); } else { digitalWrite(LED, HIGH); }\nJika sensor LDR dirangkai sehingga nilainya meningkat saat kondisi makin gelap, bagaimana perilaku LED tersebut?",
+        "question_en": "Consider the code snippet for an automatic lighting system:\nint val = analogRead(A0);\nif (val > 700) { digitalWrite(LED, LOW); } else { digitalWrite(LED, HIGH); }\nIf the LDR sensor circuit produces higher values in dark conditions, how will the LED behave?",
+        "options": [
+            "LED menyala saat ruangan gelap.",
+            "LED menyala saat ruangan terang dan mati saat gelap karena logikanya terbalik.",
+            "LED akan berkedip terus-menerus tanpa henti.",
+            "Terjadi error kompilasi karena variabel val bertipe integer."
+        ],
+        "options_en": [
+            "The LED turns ON when the room is dark.",
+            "The LED turns ON when the room is bright and turns OFF when dark because the logic is inverted.",
+            "The LED will blink continuously without stopping.",
+            "A compilation error occurs because the variable val is an integer."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q5",
+        "question": "Anda sedang merancang robot pengikut garis (line follower) yang harus mengikuti garis hitam di atas lantai putih. Komponen sensor manakah yang paling efisien dan tepat untuk mendeteksi batas garis tersebut?",
+        "question_en": "You are designing a line-following robot that must track a black line on a white floor. Which sensor component is most efficient and appropriate for detecting the line boundary?",
+        "options": [
+            "Sensor ultrasonik HC-SR04 yang dihadapkan ke bawah.",
+            "Sensor suhu termistor NTC yang dipadukan dengan LDR.",
+            "Sensor garis infra merah (IR line tracking) di bawah bodi robot.",
+            "Sensor laser dioda yang diarahkan mendatar."
+        ],
+        "options_en": [
+            "An HC-SR04 ultrasonic sensor pointed downward.",
+            "An NTC thermistor temperature sensor paired with an LDR.",
+            "An infrared (IR) line-tracking sensor placed underneath the robot chassis.",
+            "A laser diode sensor aimed horizontally."
         ],
         "correctAnswerIndex": 2
-      },
-      {
-        "id": "q4",
-        "question": "Perintah untuk mengatur kecerahan LED melalui sinyal PWM adalah...",
-        "question_en": "The command to adjust LED brightness using a PWM signal is...",
+    },
+    {
+        "id": "q6",
+        "question": "Sensor suhu LM35 menghasilkan tegangan 10 mV per 1°C. Sensor dihubungkan ke A0 Arduino Uno (Vref = 5V). Jika analogRead(A0) menghasilkan nilai 51, berapakah perkiraan suhu yang terukur?",
+        "question_en": "An LM35 temperature sensor produces 10 mV per 1°C. The sensor is connected to A0 on an Arduino Uno (Vref = 5V). If analogRead(A0) returns 51, what is the estimated measured temperature?",
         "options": [
-          "digitalWrite()",
-          "analogWrite()",
-          "analogRead()",
-          "digitalRead()"
+            "12,5 °C",
+            "25 °C",
+            "50 °C",
+            "75 °C"
         ],
         "options_en": [
-          "digitalWrite()",
-          "analogWrite()",
-          "analogRead()",
-          "digitalRead()"
+            "12.5 °C",
+            "25 °C",
+            "50 °C",
+            "75 °C"
         ],
         "correctAnswerIndex": 1
-      },
-      {
-        "id": "q5",
-        "question": "Fungsi utama sensor dalam sistem mikrokontroler adalah...",
-        "question_en": "The main function of a sensor in a microcontroller system is...",
+    },
+    {
+        "id": "q7",
+        "question": "Seorang siswa menghubungkan potensiometer 10k: Kaki 1 ke 5V, Kaki 2 (wiper) ke GND, dan Kaki 3 ke pin A0. Saat knob diputar mendekati Kaki 1, Arduino mendadak mati dan me-reset. Apa penyebab utama masalah ini?",
+        "question_en": "A student connects a 10k potentiometer: Pin 1 to 5V, Pin 2 (wiper) to GND, and Pin 3 to pin A0. When the knob is turned toward Pin 1, the Arduino suddenly shuts down and resets. What is the main cause of this issue?",
         "options": [
-          "Mengubah kondisi fisik menjadi sinyal listrik",
-          "Menyimpan program secara permanen",
-          "Menggantikan catu daya utama",
-          "Memutus arus saat korsleting"
+            "Pin A0 menerima tegangan berlebih di atas 5V.",
+            "Hubungan wiper ke GND dan Kaki 1 ke 5V menciptakan hubung singkat (short circuit) saat knob diputar.",
+            "Resistansi potensiometer terlalu tinggi untuk pin analog A0.",
+            "ADC Arduino tidak mampu menerima input sinyal yang terhubung ke GND."
         ],
         "options_en": [
-          "Converting a physical condition into an electrical signal",
-          "Storing the program permanently",
-          "Replacing the main power supply",
-          "Cutting off current during a short circuit"
+            "Pin A0 received an overvoltage exceeding 5V.",
+            "Connecting the wiper to GND and Pin 1 to 5V created a direct short circuit when the knob was turned.",
+            "The potentiometer resistance was too high for analog pin A0.",
+            "The Arduino ADC cannot accept input signals connected to GND."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q8",
+        "question": "Anda diminta membuat efek lampu redup-terang (breathing LED). Pendekatan A menggunakan digitalWrite() dengan delay(), sedangkan Pendekatan B menggunakan analogWrite() dalam loop. Mengapa Pendekatan B lebih tepat?",
+        "question_en": "You are asked to create a breathing LED effect. Approach A uses digitalWrite() with delay(), while Approach B uses analogWrite() in a loop. Why is Approach B more appropriate?",
+        "options": [
+            "Pendekatan A mengonsumsi daya listrik yang jauh lebih besar.",
+            "Pendekatan B memanfaatkan sinyal PWM untuk memvariasikan duty cycle sehingga merubah tegangan rata-rata secara halus.",
+            "Kedua pendekatan memberikan hasil efek redup yang identik.",
+            "Pendekatan A hanya bekerja pada pin analog, bukan pin digital."
+        ],
+        "options_en": [
+            "Approach A consumes significantly more power.",
+            "Approach B utilizes a PWM signal to vary the duty cycle, smoothly changing the average output voltage.",
+            "Both approaches produce identical dimming results.",
+            "Approach A only works on analog pins, not digital pins."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q9",
+        "question": "Jika sebuah pin PWM Arduino diprogram dengan perintah analogWrite(9, 64), berapa persen duty cycle sinyal PWM yang dihasilkan?",
+        "question_en": "If an Arduino PWM pin is programmed with analogWrite(9, 64), what is the percentage of the resulting PWM duty cycle?",
+        "options": [
+            "10%",
+            "25%",
+            "50%",
+            "75%"
+        ],
+        "options_en": [
+            "10%",
+            "25%",
+            "50%",
+            "75%"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q10",
+        "question": "Seseorang ingin mengukur intensitas cahaya secara bertahap menggunakan LDR. Namun dalam kodenya tertulis `int sensorValue = digitalRead(A0);`. Dampak apa yang terjadi pada pembacaan sensor?",
+        "question_en": "Someone wants to measure light intensity gradually using an LDR. However, their code writes `int sensorValue = digitalRead(A0);`. What impact does this have on the sensor reading?",
+        "options": [
+            "Program gagal dikompilasi karena error tipe data.",
+            "Pembacaan hanya bernilai 0 atau 1 (diskrit), sehingga gradasi intensitas cahaya hilang.",
+            "Pin A0 akan rusak karena menerima arus tinggi dari digitalRead().",
+            "Nilai pembacaan otomatis terkonversi menjadi 0–255."
+        ],
+        "options_en": [
+            "The program fails to compile due to a data type error.",
+            "The reading will only yield discrete values of 0 or 1, losing all light intensity resolution.",
+            "Pin A0 will be damaged due to receiving high current from digitalRead().",
+            "The reading value automatically converts to 0–255."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q11",
+        "question": "Sebuah sistem ban berjalan otomatis perlu menghitung jumlah kotak barang yang lewat tanpa menyentuh fisik barang tersebut (jarak barang 10–50 cm). Sensor manakah yang paling sesuai?",
+        "question_en": "An automated conveyor belt system needs to count boxes passing by without physically touching them (box distance 10–50 cm). Which sensor is most suitable?",
+        "options": [
+            "Sensor sentuh logam (metal touch sensor)",
+            "Sensor jarak ultrasonik (HC-SR04)",
+            "Sensor suhu termistor NTC",
+            "Potensiometer rotary"
+        ],
+        "options_en": [
+            "Metal touch sensor",
+            "Ultrasonic distance sensor (HC-SR04)",
+            "NTC thermistor temperature sensor",
+            "Rotary potentiometer"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q12",
+        "question": "Anda ingin membuat lampu LED menyala paling terang (PWM 255) saat suasana sangat gelap (ADC 0), dan mati total (PWM 0) saat terang (ADC 1023). Bagaimana penulisan fungsi map() yang benar?",
+        "question_en": "You want an LED to turn fully bright (PWM 255) when it is pitch dark (ADC 0), and completely off (PWM 0) when bright (ADC 1023). How should the map() function be correctly written?",
+        "options": [
+            "map(val, 0, 1023, 0, 255)",
+            "map(val, 0, 1023, 255, 0)",
+            "map(val, 1023, 255, 0, 0)",
+            "map(val, 255, 0, 1023, 0)"
+        ],
+        "options_en": [
+            "map(val, 0, 1023, 0, 255)",
+            "map(val, 0, 1023, 255, 0)",
+            "map(val, 1023, 255, 0, 0)",
+            "map(val, 255, 0, 1023, 0)"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q13",
+        "question": "Sinyal PWM dari pin Arduino 5V memiliki duty cycle 50%. Jika sinyal ini dilewatkan melalui rangkaian filter low-pass RC, berapakah tegangan DC rata-rata yang terukur oleh multimeter pada output filter?",
+        "question_en": "A 5V Arduino PWM output signal has a 50% duty cycle. If this signal is passed through a passive RC low-pass filter, what average DC voltage will a multimeter measure at the filter output?",
+        "options": [
+            "0 V",
+            "2,5 V",
+            "3,3 V",
+            "5 V"
+        ],
+        "options_en": [
+            "0 V",
+            "2.5 V",
+            "3.3 V",
+            "5 V"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q14",
+        "question": "Saat membaca pin A0 menggunakan analogRead(A0) tanpa menyambungkan kabel/sensor apa pun (pin melayang / floating), nilai pada Serial Monitor selalu berubah-ubah secara acak antara 150 hingga 800. Mengapa hal ini terjadi?",
+        "question_en": "When reading pin A0 using analogRead(A0) with no wire or sensor connected (floating pin), the Serial Monitor shows constantly fluctuating values between 150 and 800. Why does this happen?",
+        "options": [
+            "Mikrokontroler Arduino mengalami kerusakan pada modul ADC.",
+            "Pin melayang menangkap gangguan elektromagnetik sekitar (noise) karena impedansi input yang tinggi.",
+            "Fungsi analogRead() wajib didahului oleh delay(1000) agar nilai stabil.",
+            "Pin analog secara otomatis melakukan pemetaan nilai acak jika tidak dipasang resistor pull-up."
+        ],
+        "options_en": [
+            "The Arduino microcontroller's ADC module is damaged.",
+            "A floating pin captures ambient electromagnetic interference (noise) due to high input impedance.",
+            "The analogRead() function requires a mandatory delay(1000) prior to reading to stabilize.",
+            "Analog pins automatically output random mapped values if no pull-up resistor is attached."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q15",
+        "question": "Sistem penyiram tanaman otomatis membaca sensor kelembaban tanah di A0 (0 = sangat basah, 1023 = sangat kering). Anda ingin pompa air di pin 7 menyala HANYA ketika kondisi tanah sangat kering (nilai ADC > 700). Struktur logika manakah yang benar?",
+        "question_en": "An automatic plant watering system reads a soil moisture sensor on A0 (0 = very wet, 1023 = very dry). You want the water pump on pin 7 to activate ONLY when the soil is very dry (ADC value > 700). Which logic structure is correct?",
+        "options": [
+            "if (analogRead(A0) > 700) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }",
+            "if (analogRead(A0) < 700) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }",
+            "if (digitalRead(A0) == HIGH) { analogWrite(7, 700); }",
+            "if (analogRead(A0) == 700) { digitalWrite(7, LOW); }"
+        ],
+        "options_en": [
+            "if (analogRead(A0) > 700) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }",
+            "if (analogRead(A0) < 700) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }",
+            "if (digitalRead(A0) == HIGH) { analogWrite(7, 700); }",
+            "if (analogRead(A0) == 700) { digitalWrite(7, LOW); }"
         ],
         "correctAnswerIndex": 0
-      }
+    },
+    {
+        "id": "q16",
+        "question": "Seorang pengembang mengeksekusi kode `analogWrite(9, 350)` pada Arduino Uno. Apa yang terjadi pada nilai duty cycle sinyal PWM yang dikeluarkan pin 9?",
+        "question_en": "A developer executes `analogWrite(9, 350)` on an Arduino Uno. What happens to the duty cycle of the PWM signal output on pin 9?",
+        "options": [
+            "Pin mengeluarkan duty cycle maksimum 100% (nilai 255).",
+            "Terjadi pembatasan nilai (overflow/wrap-around) 8-bit sehingga nilai yang diproses adalah 94 (350 mod 256).",
+            "Program mengalami crash dan Arduino mereset secara otomatis.",
+            "Pin 9 secara otomatis mengubah batas maksimum PWM menjadi 1023."
+        ],
+        "options_en": [
+            "The pin outputs a maximum duty cycle of 100% (value 255).",
+            "An 8-bit overflow/wrap-around occurs, resulting in a processed value of 94 (350 mod 256).",
+            "The program crashes and the Arduino resets automatically.",
+            "Pin 9 automatically changes its maximum PWM range to 1023."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q17",
+        "question": "Proyek sistem stasiun cuaca membutuhkan 10 sensor analog yang harus dibaca secara bersamaan. Mengapa penggunaan Arduino Mega 2560 lebih disarankan daripada Arduino Uno dalam proyek ini?",
+        "question_en": "A weather station project requires 10 analog sensors to be read simultaneously. Why is using an Arduino Mega 2560 recommended over an Arduino Uno for this project?",
+        "options": [
+            "Arduino Uno tidak mendukung pembacaan sensor analog berbasis suhu.",
+            "Arduino Mega 2560 memiliki 16 pin input analog (A0–A15), sedangkan Arduino Uno hanya memiliki 6 pin (A0–A5).",
+            "Arduino Uno hanya mampu memproses sinyal PWM, bukan sinyal ADC.",
+            "Arduino Mega memiliki ADC 16-bit, sedangkan Uno hanya memproses sinyal digital 1-bit."
+        ],
+        "options_en": [
+            "Arduino Uno does not support reading temperature-based analog sensors.",
+            "Arduino Mega 2560 has 16 analog input pins (A0–A15), whereas Arduino Uno only has 6 pins (A0–A5).",
+            "Arduino Uno can only process PWM signals, not ADC signals.",
+            "Arduino Mega features a 16-bit ADC, whereas Uno only processes 1-bit digital signals."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q18",
+        "question": "Arduino Uno menggunakan ADC 10-bit dengan tegangan referensi 5,0 V. Berapakah resolusi tegangan terkecil (perubahan tegangan minimum per 1 step ADC) yang dapat dideteksi?",
+        "question_en": "An Arduino Uno uses a 10-bit ADC with a reference voltage of 5.0 V. What is the smallest voltage resolution (minimum voltage change per 1 ADC step) it can detect?",
+        "options": [
+            "0,49 mV",
+            "4,89 mV",
+            "19,5 mV",
+            "48,9 mV"
+        ],
+        "options_en": [
+            "0.49 mV",
+            "4.89 mV",
+            "19.5 mV",
+            "48.9 mV"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q19",
+        "question": "Sebuah termistor NTC dipasang pada pembagi tegangan sehingga saat suhu naik, tegangan di pin A0 meningkat. Namun kode program menampilkan suhu yang justru makin menurun. Di manakah letak kesalahan logika program?",
+        "question_en": "An NTC thermistor is wired in a voltage divider so that as temperature rises, the voltage at pin A0 increases. However, the software code displays a decreasing temperature instead. Where is the bug in the program logic?",
+        "options": [
+            "Fungsi analogRead() membalik secara otomatis polaritas dari NTC.",
+            "Formula konversi di program salah mengasumsikan resistansi bertambah saat suhu naik (diperlakukan sebagai PTC).",
+            "Pin A0 lupa dikonfigurasi sebagai OUTPUT pada setup().",
+            "Baud rate Serial monitor terlalu lambat untuk membaca kenaikan suhu."
+        ],
+        "options_en": [
+            "The analogRead() function automatically reverses NTC polarity.",
+            "The conversion formula in the code incorrectly assumes resistance increases with temperature (treated as PTC).",
+            "Pin A0 was not configured as OUTPUT in setup().",
+            "The Serial monitor baud rate is too slow to read temperature increases."
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q20",
+        "question": "Sebuah potensiometer joystick mengalami fluktuasi sinyal kecil (jitter) saat posisi diam sehingga data di Serial Monitor tidak stabil. Solusi perangkat lunak manakah yang paling efektif untuk menstabilkan pembacaan tanpa menambah komponen?",
+        "question_en": "A joystick potentiometer exhibits minor signal fluctuations (jitter) while stationary, making Serial Monitor data unstable. Which software solution is most effective for stabilizing the reading without adding components?",
+        "options": [
+            "Mengganti analogRead() menjadi digitalRead() agar sinyal menjadi stabil.",
+            "Menerapkan algoritma filter rata-rata bergerak (moving average filter) pada beberapa data analogRead() berurutan.",
+            "Menambahkan fungsi analogWrite() pada pin input untuk menaikkan frekuensi.",
+            "Memberikan delay(1000) di akhir fungsi setup() untuk membekukan pembacaan."
+        ],
+        "options_en": [
+            "Replacing analogRead() with digitalRead() to force signal stability.",
+            "Implementing a moving average filter algorithm on consecutive analogRead() samples.",
+            "Adding an analogWrite() function to input pins to increase frequency.",
+            "Adding delay(1000) at the end of setup() to freeze the reading."
+        ],
+        "correctAnswerIndex": 1
+    }
     ],
     "title_en": "Level 3 Post-Test",
     "description_en": "Test your understanding after studying."

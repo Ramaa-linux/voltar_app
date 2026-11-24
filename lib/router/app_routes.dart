@@ -15,7 +15,7 @@ abstract final class AppRoutes {
   /// Dashboard Guru (Fase 25A).
   static const String guru = '/guru';
   static const String guruKelas = '/guru/kelas';
-  static const String guruTugas = '/guru/tugas';
+  static const String guruSiswa = '/guru/siswa';
   static const String guruProfil = '/guru/profil';
 
   /// Halaman edit profil pengguna (Fase 22A).

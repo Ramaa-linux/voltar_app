@@ -78,10 +78,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get guruNavKelas => 'Classes';
 
   @override
-  String get guruNavTugas => 'Tasks';
+  String get guruNavSiswa => 'Students';
 
   @override
   String get guruNavProfil => 'Profile';
+
+  @override
+  String get guruSiswaTitle => 'Student List';
+
+  @override
+  String get guruSiswaSubtitle => 'Monitor student learning progress';
+
+  @override
+  String get guruSiswaNoProgress => 'No progress yet';
+
+  @override
+  String guruSiswaCompleted(Object count) {
+    return '$count materials completed';
+  }
+
+  @override
+  String get guruSiswaEmail => 'Email';
+
+  @override
+  String get guruSiswaProgress => 'Progress';
 
   @override
   String get guruKelasDetailTitle => 'Class Detail';
@@ -94,6 +114,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guruTugasTitle => 'Task List';
+
+  @override
+  String get guruTaskTitle => 'Class Tasks';
+
+  @override
+  String get guruTaskEmpty => 'No tasks yet';
 
   @override
   String guruTugasCount(Object count) {
@@ -970,6 +996,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get guruWelcome => 'Welcome,';
+
+  @override
+  String get guruWelcomeSubtitle => 'Have a great teaching day';
+
+  @override
+  String get guruPagi => 'Good morning';
+
+  @override
+  String get guruSiang => 'Good afternoon';
+
+  @override
+  String get guruSore => 'Good afternoon';
+
+  @override
+  String get guruMalam => 'Good evening';
+
+  @override
+  String get guruStatsKelas => 'Classes';
+
+  @override
+  String get guruStatsTugas => 'Tasks';
+
+  @override
+  String get guruStatsSiswa => 'Students';
+
+  @override
+  String get guruStatsError => 'Failed to load';
+
+  @override
+  String get guruActivitiesEmpty => 'No recent activities';
+
+  @override
+  String get guruActivitiesTugas => 'Created Task:';
+
+  @override
+  String get guruActivitiesPengumuman => 'Created Announcement:';
+
+  @override
+  String get guruGreetingError => 'Failed to load teacher profile';
 
   @override
   String get guruActivities => 'Recent Activities';
@@ -4605,4 +4670,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String folderSubtitle(Object count, Object subtitle) {
     return '$count materials • $subtitle';
   }
+
+  @override
+  String get profilMenuTentang => 'About Application';
+
+  @override
+  String get profilSnackNotifikasi => 'Notifications feature coming soon';
+
+  @override
+  String get profilSnackBantuan => 'Help & Support feature coming soon';
+
+  @override
+  String get profilDialogTentangTitle => 'About Application';
+
+  @override
+  String get profilDialogTentangBody =>
+      'EduVolt v1.0.0\nInteractive Microcontroller Learning Platform\n\nCreated by EduVolt Team';
+
+  @override
+  String get profilSupportEmailCopied => 'Email copied to clipboard';
+
+  @override
+  String get profilSupportCopyBtn => 'Copy Email';
 }

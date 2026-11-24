@@ -50,12 +50,25 @@ extension LocalizationHelper on BuildContext {
       case 'navProfil': return l10n.navProfil;
       case 'guruNavDashboard': return l10n.guruNavDashboard;
       case 'guruNavKelas': return l10n.guruNavKelas;
-      case 'guruNavTugas': return l10n.guruNavTugas;
+      case 'guruNavSiswa': return l10n.guruNavSiswa;
       case 'guruNavProfil': return l10n.guruNavProfil;
+      case 'guruSiswaTitle': return l10n.guruSiswaTitle;
+      case 'guruSiswaSubtitle': return l10n.guruSiswaSubtitle;
+      case 'guruSiswaNoProgress': return l10n.guruSiswaNoProgress;
+      case 'guruSiswaCompleted': return l10n.guruSiswaCompleted(args?.first ?? '');
+      case 'guruSiswaEmail': return l10n.guruSiswaEmail;
+      case 'guruSiswaProgress': return l10n.guruSiswaProgress;
       case 'settingsEditProfil': return l10n.settingsEditProfil;
       case 'settingsNotifications': return l10n.settingsNotifications;
       case 'settingsAbout': return l10n.settingsAbout;
       case 'settingsLanguage': return l10n.settingsLanguage;
+      case 'profilMenuTentang': return l10n.profilMenuTentang;
+      case 'profilSnackNotifikasi': return l10n.profilSnackNotifikasi;
+      case 'profilSnackBantuan': return l10n.profilSnackBantuan;
+      case 'profilDialogTentangTitle': return l10n.profilDialogTentangTitle;
+      case 'profilDialogTentangBody': return l10n.profilDialogTentangBody;
+      case 'profilSupportEmailCopied': return l10n.profilSupportEmailCopied;
+      case 'profilSupportCopyBtn': return l10n.profilSupportCopyBtn;
       case 'logout': return l10n.logout;
       case 'logoutConfirm': return l10n.logoutConfirm;
       case 'confirmYes': return l10n.confirmYes;
@@ -698,6 +711,8 @@ extension LocalizationHelper on BuildContext {
       case 'kelasTabForum': return l10n.kelasTabForum;
       case 'kelasTabTugas': return l10n.kelasTabTugas;
       case 'kelasTabOrang': return l10n.kelasTabOrang;
+      case 'guruTaskTitle': return l10n.guruTaskTitle;
+      case 'guruTaskEmpty': return l10n.guruTaskEmpty;
       // Post detail
       case 'postDetailTaskMarkedComplete': return l10n.postDetailTaskMarkedComplete;
       case 'postDetailSubmissionCancelled': return l10n.postDetailSubmissionCancelled;

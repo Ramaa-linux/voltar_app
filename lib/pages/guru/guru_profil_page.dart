@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../router/app_routes.dart';
 import '../../services/auth_service.dart';
@@ -11,14 +13,13 @@ import '../../theme/app_spacing.dart';
 import '../../theme/app_typography.dart';
 import '../../utils/volt_feedback.dart';
 import '../../widgets/app_icon.dart';
-import '../../widgets/press_scale.dart';
 import '../../widgets/volt_card.dart';
 import '../../utils/localization_helper.dart';
 import '../../providers/locale_provider.dart';
 import 'package:voltar/l10n/app_localizations.dart';
 
 /// Halaman Profil Guru.
-/// Menggunakan data real dari Firestore via [userProfileProvider].
+/// Menggunakan data real dari Firestore via [userProfileProvider] dan FirebaseAuth.
 class GuruProfilPage extends ConsumerWidget {
   const GuruProfilPage({super.key});
 
@@ -27,12 +28,13 @@ class GuruProfilPage extends ConsumerWidget {
     final AsyncValue<Map<String, dynamic>?> profileAsync =
         ref.watch(userProfileProvider);
     final AuthService authService = ref.watch(authServiceProvider);
+    final String? uid = authService.currentUser?.uid;
     final dynamic currentUser = authService.currentUser;
 
     return SafeArea(
       bottom: false,
       child: CustomScrollView(
-        slivers: <Widget>[ 
+        slivers: <Widget>[
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -52,20 +54,96 @@ class GuruProfilPage extends ConsumerWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
-              child: Row(
-                children: <Widget>[ 
-                  Expanded(child: _StatItem(label: context.t('profilStatClasses'), value: '2')),
-                  Expanded(child: _StatItem(label: context.t('profilStatStudents'), value: '60')),
-                  Expanded(child: _StatItem(label: context.t('profilStatAssignments'), value: '12')),
-                ],
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.pagePadding,
               ),
+              child: uid == null
+                  ? const SizedBox.shrink()
+                  : FutureBuilder<Map<String, int>>(
+                      future: _fetchProfileStats(uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: _StatItem(
+                                  label: context.t('profilStatClasses'),
+                                  value: '-',
+                                ),
+                              ),
+                              Expanded(
+                                child: _StatItem(
+                                  label: context.t('profilStatStudents'),
+                                  value: '-',
+                                ),
+                              ),
+                              Expanded(
+                                child: _StatItem(
+                                  label: context.t('profilStatAssignments'),
+                                  value: '-',
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        if (snapshot.hasError || !snapshot.hasData) {
+                          return Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: _StatItem(
+                                  label: context.t('profilStatClasses'),
+                                  value: '-',
+                                ),
+                              ),
+                              Expanded(
+                                child: _StatItem(
+                                  label: context.t('profilStatStudents'),
+                                  value: '-',
+                                ),
+                              ),
+                              Expanded(
+                                child: _StatItem(
+                                  label: context.t('profilStatAssignments'),
+                                  value: '-',
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        final data = snapshot.data!;
+                        return Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: _StatItem(
+                                label: context.t('profilStatClasses'),
+                                value: data['kelas']!.toString(),
+                              ),
+                            ),
+                            Expanded(
+                              child: _StatItem(
+                                label: context.t('profilStatStudents'),
+                                value: data['siswa']!.toString(),
+                              ),
+                            ),
+                            Expanded(
+                              child: _StatItem(
+                                label: context.t('profilStatAssignments'),
+                                value: data['tugas']!.toString(),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xl)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.pagePadding),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.pagePadding,
+              ),
               child: Divider(color: AppColors.border, height: 1, thickness: 1),
             ),
           ),
@@ -74,7 +152,7 @@ class GuruProfilPage extends ConsumerWidget {
             sliver: SliverList.separated(
               itemCount: _menuItems.length,
               separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: AppSpacing.xs),
+                  const SizedBox(height: AppSpacing.md),
               itemBuilder: (BuildContext context, int index) {
                 final _MenuItem item = _menuItems[index];
                 return _MenuTile(
@@ -86,6 +164,15 @@ class GuruProfilPage extends ConsumerWidget {
                       _showLogoutConfirmDialog(context, authService);
                     } else if (item.titleKey == 'profilMenuBahasa') {
                       _showLanguageSheet(context, ref);
+                    } else if (item.titleKey == 'profilMenuNotifikasi') {
+                      showVoltSnackBar(
+                        context,
+                        context.t('profilSnackNotifikasi'),
+                      );
+                    } else if (item.titleKey == 'profilMenuBantuan') {
+                      _showSupportDialog(context);
+                    } else if (item.titleKey == 'profilMenuTentang') {
+                      _showAboutDialog(context);
                     } else {
                       showVoltSnackBar(
                         context,
@@ -97,6 +184,7 @@ class GuruProfilPage extends ConsumerWidget {
               },
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.md)),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -117,6 +205,48 @@ class GuruProfilPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  static Future<Map<String, int>> _fetchProfileStats(String uid) async {
+    final db = FirebaseFirestore.instance;
+
+    // 1) Jumlah kelas
+    final classesSnap = await db
+        .collection('classes')
+        .where('teacherId', isEqualTo: uid)
+        .get();
+    final numClasses = classesSnap.docs.length;
+    final classIds = classesSnap.docs.map((d) => d.id).toList();
+
+    // 2) Jumlah tugas (assignment)
+    final postsSnap = await db
+        .collection('posts')
+        .where('authorId', isEqualTo: uid)
+        .where('type', isEqualTo: 'assignment')
+        .get();
+    final numAssignments = postsSnap.docs.length;
+
+    // 3) Total siswa di semua kelas guru
+    int numStudents = 0;
+    if (classIds.isNotEmpty) {
+      for (int i = 0; i < classIds.length; i += 10) {
+        final chunk = classIds.sublist(
+          i,
+          (i + 10 < classIds.length) ? i + 10 : classIds.length,
+        );
+        final usersSnap = await db
+            .collection('users')
+            .where('classId', whereIn: chunk)
+            .get();
+        numStudents += usersSnap.docs.length;
+      }
+    }
+
+    return <String, int>{
+      'kelas': numClasses,
+      'tugas': numAssignments,
+      'siswa': numStudents,
+    };
   }
 
   Future<void> _showLogoutConfirmDialog(
@@ -181,6 +311,123 @@ class GuruProfilPage extends ConsumerWidget {
     );
   }
 
+  /// Dialog Bantuan & Dukungan: menampilkan email support dengan tombol salin.
+  void _showSupportDialog(BuildContext context) {
+    const String supportEmail = 'ramalewin67@gmail.com';
+
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.card),
+          ),
+          title: Row(
+            children: <Widget>[
+              const AppIcon.helpCircle(
+                size: AppIconSize.lg,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                context.t('profilMenuBantuan'),
+                style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                supportEmail,
+                style: AppTypography.body.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Tap “Salin Email” untuk menyalin alamat email ke papan klip.',
+                style: AppTypography.label.copyWith(
+                  color: AppColors.textTertiary,
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                Clipboard.setData(ClipboardData(text: supportEmail));
+                if (context.mounted) {
+                  showVoltSnackBar(
+                    context,
+                    context.t('profilSupportEmailCopied'),
+                  );
+                }
+              },
+              child: Text(
+                context.t('profilSupportCopyBtn'),
+                style: AppTypography.label.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Tutup',
+                style: AppTypography.label.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAboutDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.card),
+          ),
+          title: Row(
+            children: <Widget>[
+              const AppIcon.info(size: AppIconSize.lg, color: AppColors.primary),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                context.t('profilDialogTentangTitle'),
+                style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          content: Text(
+            context.t('profilDialogTentangBody'),
+            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'OK',
+                style: AppTypography.label.copyWith(color: AppColors.primary),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   /// Bottom Sheet: memilih bahasa aplikasi (Indonesia / English).
   void _showLanguageSheet(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -198,7 +445,7 @@ class GuruProfilPage extends ConsumerWidget {
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(ctx).viewInsets.bottom +
-                  AppSpacing.navBarClearance,
+                AppSpacing.navBarClearance,
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -206,7 +453,8 @@ class GuruProfilPage extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  l10n?.languageDialogTitle ?? context.t('profilLanguageDialogTitle'),
+                  l10n?.languageDialogTitle ??
+                      context.t('profilLanguageDialogTitle'),
                   style: AppTypography.title.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacing.lg),
@@ -269,12 +517,13 @@ class _ProfileHeader extends StatelessWidget {
         : (currentUser?.photoURL?.toString().trim().isNotEmpty == true
               ? currentUser!.photoURL!.toString().trim()
               : null);
-    final String nip = (data?['nip'] as String?)?.trim() ?? context.t('profilNIPUnavailable');
+    final String nip = (data?['nip'] as String?)?.trim() ??
+        context.t('profilNIPUnavailable');
     final String mapel = (data?['subject'] as String?)?.trim() ?? 'TKJ';
     final bool hasPhoto = photoUrl != null && photoUrl.isNotEmpty;
 
     return Column(
-      children: <Widget>[ 
+      children: <Widget>[
         CircleAvatar(
           radius: 50,
           backgroundColor: AppColors.primaryLight,
@@ -292,7 +541,7 @@ class _ProfileHeader extends StatelessWidget {
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
           alignment: WrapAlignment.center,
-          children: <Widget>[ 
+          children: <Widget>[
             _InfoChip(icon: AppIconName.folder, label: mapel),
             _InfoChip(icon: AppIconName.cpu, label: roleLabel),
             _InfoChip(icon: AppIconName.checkSquare, label: nip),
@@ -310,7 +559,7 @@ class _ProfileHeaderSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[ 
+      children: <Widget>[
         Container(
           width: 100,
           height: 100,
@@ -326,7 +575,7 @@ class _ProfileHeaderSkeleton extends StatelessWidget {
         const SizedBox(height: AppSpacing.xl),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[ 
+          children: <Widget>[
             _SkeletonLine(width: 80, height: 28),
             const SizedBox(width: AppSpacing.sm),
             _SkeletonLine(width: 80, height: 28),
@@ -346,46 +595,80 @@ class _ProfileHeaderError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[ 
+      children: <Widget>[
         CircleAvatar(
           radius: 50,
-          backgroundColor: AppColors.errorLight,
-          child: Icon(Icons.error_outline, size: 50, color: AppColors.error),
+          backgroundColor: AppColors.border,
+          child: AppIcon(AppIconName.profile, size: 50, color: AppColors.textTertiary),
         ),
         const SizedBox(height: AppSpacing.lg),
-        Text(context.t('profilLoadFailed'), style: AppTypography.title.copyWith(color: AppColors.error)),
-        const SizedBox(height: AppSpacing.xs),
-        Text(context.t('profilLoadFailedMsg'), style: AppTypography.bodyMuted),
+        Text(
+          AppLocalizations.of(context)!.guruGreetingError,
+          style: AppTypography.bodyMuted,
+        ),
       ],
     );
   }
 }
 
-/// Chip info (mata pelajaran / NIP).
+/// Item statistik profil.
+class _StatItem extends StatelessWidget {
+  const _StatItem({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          value,
+          style: AppTypography.heading.copyWith(
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          label,
+          style: AppTypography.label.copyWith(color: AppColors.textTertiary),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}
+
+/// Chip info profil.
 class _InfoChip extends StatelessWidget {
   const _InfoChip({required this.icon, required this.label});
+
   final AppIconName icon;
   final String label;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
+        borderRadius: BorderRadius.circular(AppRadius.input),
         border: AppBorders.standard,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[ 
-          AppIcon(icon, size: 16, color: AppColors.primary),
+        children: <Widget>[
+          AppIcon(icon, size: 16, color: AppColors.textTertiary),
           const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: AppTypography.label.copyWith(
-              color: AppColors.primaryDark,
-              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
             ),
           ),
         ],
@@ -394,181 +677,79 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
-/// Item statistik profil.
-class _StatItem extends StatelessWidget {
-  const _StatItem({required this.label, required this.value});
-  final String label;
-  final String value;
+/// Row logout di bottom card.
+class _LogoutRow extends StatelessWidget {
+  const _LogoutRow({required this.onTap});
+
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[ 
-        Text(
-          value,
-          style: AppTypography.heading.copyWith(
-            fontWeight: FontWeight.w800,
-            color: AppColors.primary,
-          ),
+    return ListTile(
+      leading: Container(
+        width: 36,
+        height: 36,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.errorLight,
+          borderRadius: BorderRadius.circular(AppRadius.input),
         ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(label, style: AppTypography.bodyMuted),
-      ],
+        child: const Icon(
+          Icons.logout_rounded,
+          size: 20,
+          color: AppColors.error,
+        ),
+      ),
+      title: Text(
+        context.t('profilLogout'),
+        style: AppTypography.body.copyWith(
+          color: AppColors.error,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      trailing: const AppIcon.chevronRight(
+        size: AppIconSize.sm,
+        color: AppColors.textTertiary,
+      ),
+      onTap: onTap,
     );
   }
 }
 
-/// Item menu profil.
-class _MenuItem {
-  const _MenuItem({required this.icon, required this.titleKey, required this.subtitleKey});
-  final AppIconName icon;
-  final String titleKey;
-  final String subtitleKey;
-}
-
-/// Daftar menu statis.
-const List<_MenuItem> _menuItems = <_MenuItem>[
-  _MenuItem(
-    icon: AppIconName.pencil,
-    titleKey: 'profilMenuEditProfil',
-    subtitleKey: 'profilMenuEditProfilSub',
-  ),
-  _MenuItem(
-    icon: AppIconName.bell,
-    titleKey: 'profilMenuNotifikasi',
-    subtitleKey: 'profilMenuNotifikasiSub',
-  ),
-  _MenuItem(
-    icon: AppIconName.helpCircle,
-    titleKey: 'profilMenuBantuan',
-    subtitleKey: 'profilMenuBantuanSub',
-  ),
-  _MenuItem(
-    icon: AppIconName.lock,
-    titleKey: 'profilMenuKeamanan',
-    subtitleKey: 'profilMenuKeamananSub',
-  ),
-  _MenuItem(
-    icon: AppIconName.globe,
-    titleKey: 'profilMenuBahasa',
-    subtitleKey: 'profilMenuBahasaSub',
-  ),
+/// Daftar menu profil.
+final List<_MenuItem> _menuItems = <_MenuItem>[
+  _MenuItem(titleKey: 'profilMenuEditProfil', icon: AppIconName.pencil),
+  _MenuItem(titleKey: 'profilMenuBahasa', icon: AppIconName.globe),
+  _MenuItem(titleKey: 'profilMenuNotifikasi', icon: AppIconName.bell),
+  _MenuItem(titleKey: 'profilMenuBantuan', icon: AppIconName.helpCircle),
+  _MenuItem(titleKey: 'profilMenuTentang', icon: AppIconName.info),
 ];
 
-/// Tile menu dengan PressScale.
-/// Tile menu dengan PressScale + InkWell.
+class _MenuItem {
+  const _MenuItem({required this.titleKey, required this.icon});
+  final String titleKey;
+  final AppIconName icon;
+}
+
 class _MenuTile extends StatelessWidget {
   const _MenuTile({required this.item, required this.onTap});
+
   final _MenuItem item;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius radius = BorderRadius.circular(AppRadius.button);
-
-    return PressScale(
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: radius,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: radius,
-              border: AppBorders.standard,
-            ),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(AppRadius.input),
-                  ),
-                  child: Center(
-                    child: AppIcon(item.icon, size: 20, color: AppColors.primary),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(context.t(item.titleKey), style: AppTypography.body.copyWith(fontWeight: FontWeight.w600)),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(context.t(item.subtitleKey), style: AppTypography.caption),
-                    ],
-                  ),
-                ),
-                const AppIcon(AppIconName.chevronRight, size: 20, color: AppColors.textTertiary),
-              ],
-            ),
-          ),
+    return VoltCard(
+      onTap: onTap,
+      child: ListTile(
+        leading: AppIcon(item.icon, size: 20, color: AppColors.textSecondary),
+        title: Text(
+          context.t(item.titleKey),
+          style: AppTypography.body,
         ),
-      ),
-    );
-  }
-}
-
-/// Baris logout merah.
-class _LogoutRow extends StatelessWidget {
-  const _LogoutRow({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final BorderRadius radius = BorderRadius.circular(AppRadius.card);
-
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: radius,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            minHeight: AppSpacing.minTouchTarget + AppSpacing.sm,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg,
-              vertical: AppSpacing.md,
-            ),
-            child: Row(
-              children: <Widget>[ 
-                Container(
-                  width: 36,
-                  height: 36,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.errorLight,
-                    borderRadius: BorderRadius.circular(AppRadius.input),
-                  ),
-                  child: const Icon(
-                    Icons.logout_rounded,
-                    size: 20,
-                    color: AppColors.error,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    context.t('profilLogout'),
-                    style: AppTypography.body.copyWith(
-                      color: AppColors.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                const AppIcon.chevronRight(
-                  size: AppIconSize.sm,
-                  color: AppColors.textTertiary,
-                ),
-              ],
-            ),
-          ),
+        trailing: const AppIcon.chevronRight(
+          size: AppIconSize.sm,
+          color: AppColors.textTertiary,
         ),
       ),
     );
@@ -593,6 +774,7 @@ class _SkeletonLine extends StatelessWidget {
     );
   }
 }
+
 
 
 

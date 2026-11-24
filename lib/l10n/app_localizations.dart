@@ -230,17 +230,53 @@ abstract class AppLocalizations {
   /// **'Kelas'**
   String get guruNavKelas;
 
-  /// No description provided for @guruNavTugas.
+  /// No description provided for @guruNavSiswa.
   ///
   /// In id, this message translates to:
-  /// **'Tugas'**
-  String get guruNavTugas;
+  /// **'Siswa'**
+  String get guruNavSiswa;
 
   /// No description provided for @guruNavProfil.
   ///
   /// In id, this message translates to:
   /// **'Profil'**
   String get guruNavProfil;
+
+  /// No description provided for @guruSiswaTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar Siswa'**
+  String get guruSiswaTitle;
+
+  /// No description provided for @guruSiswaSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pantau progress belajar siswa'**
+  String get guruSiswaSubtitle;
+
+  /// No description provided for @guruSiswaNoProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada progress'**
+  String get guruSiswaNoProgress;
+
+  /// No description provided for @guruSiswaCompleted.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} materi selesai'**
+  String guruSiswaCompleted(Object count);
+
+  /// No description provided for @guruSiswaEmail.
+  ///
+  /// In id, this message translates to:
+  /// **'Email'**
+  String get guruSiswaEmail;
+
+  /// No description provided for @guruSiswaProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'Progress'**
+  String get guruSiswaProgress;
 
   /// No description provided for @guruKelasDetailTitle.
   ///
@@ -265,6 +301,18 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Daftar Tugas'**
   String get guruTugasTitle;
+
+  /// No description provided for @guruTaskTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas Kelas'**
+  String get guruTaskTitle;
+
+  /// No description provided for @guruTaskEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tugas'**
+  String get guruTaskEmpty;
 
   /// No description provided for @guruTugasCount.
   ///
@@ -1891,6 +1939,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Selamat datang,'**
   String get guruWelcome;
+
+  /// No description provided for @guruWelcomeSubtitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat mengajar hari ini'**
+  String get guruWelcomeSubtitle;
+
+  /// No description provided for @guruPagi.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat pagi'**
+  String get guruPagi;
+
+  /// No description provided for @guruSiang.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat siang'**
+  String get guruSiang;
+
+  /// No description provided for @guruSore.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat sore'**
+  String get guruSore;
+
+  /// No description provided for @guruMalam.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat malam'**
+  String get guruMalam;
+
+  /// No description provided for @guruStatsKelas.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelas'**
+  String get guruStatsKelas;
+
+  /// No description provided for @guruStatsTugas.
+  ///
+  /// In id, this message translates to:
+  /// **'Tugas'**
+  String get guruStatsTugas;
+
+  /// No description provided for @guruStatsSiswa.
+  ///
+  /// In id, this message translates to:
+  /// **'Siswa'**
+  String get guruStatsSiswa;
+
+  /// No description provided for @guruStatsError.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat'**
+  String get guruStatsError;
+
+  /// No description provided for @guruActivitiesEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada aktivitas'**
+  String get guruActivitiesEmpty;
+
+  /// No description provided for @guruActivitiesTugas.
+  ///
+  /// In id, this message translates to:
+  /// **'Membuat Tugas:'**
+  String get guruActivitiesTugas;
+
+  /// No description provided for @guruActivitiesPengumuman.
+  ///
+  /// In id, this message translates to:
+  /// **'Membuat Pengumuman:'**
+  String get guruActivitiesPengumuman;
+
+  /// No description provided for @guruGreetingError.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal memuat profil guru'**
+  String get guruGreetingError;
 
   /// No description provided for @guruActivities.
   ///
@@ -8227,6 +8353,48 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} materi • {subtitle}'**
   String folderSubtitle(Object count, Object subtitle);
+
+  /// No description provided for @profilMenuTentang.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang Aplikasi'**
+  String get profilMenuTentang;
+
+  /// No description provided for @profilSnackNotifikasi.
+  ///
+  /// In id, this message translates to:
+  /// **'Fitur Notifikasi segera hadir'**
+  String get profilSnackNotifikasi;
+
+  /// No description provided for @profilSnackBantuan.
+  ///
+  /// In id, this message translates to:
+  /// **'Fitur Bantuan segera hadir'**
+  String get profilSnackBantuan;
+
+  /// No description provided for @profilDialogTentangTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang Aplikasi'**
+  String get profilDialogTentangTitle;
+
+  /// No description provided for @profilDialogTentangBody.
+  ///
+  /// In id, this message translates to:
+  /// **'EduVolt v1.0.0\nPlatform Pembelajaran Mikrokontroler Interaktif\n\nDibuat oleh Tim EduVolt'**
+  String get profilDialogTentangBody;
+
+  /// No description provided for @profilSupportEmailCopied.
+  ///
+  /// In id, this message translates to:
+  /// **'Email disalin ke papan klip'**
+  String get profilSupportEmailCopied;
+
+  /// No description provided for @profilSupportCopyBtn.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin Email'**
+  String get profilSupportCopyBtn;
 }
 
 class _AppLocalizationsDelegate

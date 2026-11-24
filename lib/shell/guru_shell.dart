@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:voltar/l10n/app_localizations.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/volt_floating_nav_bar.dart';
 
-/// Shell untuk navigasi Guru (4 tab: Dashboard, Kelas, Tugas, Profil).
+/// Shell untuk navigasi Guru (4 tab: Dashboard, Kelas, Siswa, Profil).
 /// Menggunakan [VoltFloatingNavBar] generic yang sudah ada.
 class GuruShell extends ConsumerStatefulWidget {
   const GuruShell({
@@ -39,7 +38,7 @@ class _GuruShellState extends ConsumerState<GuruShell> {
           items: const <VoltNavItem>[
             VoltNavItem(icon: AppIconName.home, labelKey: 'guruNavDashboard'),
             VoltNavItem(icon: AppIconName.folder, labelKey: 'guruNavKelas'),
-            VoltNavItem(icon: AppIconName.checkSquare, labelKey: 'guruNavTugas'),
+            VoltNavItem(icon: AppIconName.profile, labelKey: 'guruNavSiswa'),
             VoltNavItem(icon: AppIconName.profile, labelKey: 'guruNavProfil'),
           ],
         ),

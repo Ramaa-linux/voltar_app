@@ -78,10 +78,30 @@ class AppLocalizationsId extends AppLocalizations {
   String get guruNavKelas => 'Kelas';
 
   @override
-  String get guruNavTugas => 'Tugas';
+  String get guruNavSiswa => 'Siswa';
 
   @override
   String get guruNavProfil => 'Profil';
+
+  @override
+  String get guruSiswaTitle => 'Daftar Siswa';
+
+  @override
+  String get guruSiswaSubtitle => 'Pantau progress belajar siswa';
+
+  @override
+  String get guruSiswaNoProgress => 'Belum ada progress';
+
+  @override
+  String guruSiswaCompleted(Object count) {
+    return '$count materi selesai';
+  }
+
+  @override
+  String get guruSiswaEmail => 'Email';
+
+  @override
+  String get guruSiswaProgress => 'Progress';
 
   @override
   String get guruKelasDetailTitle => 'Detail Kelas';
@@ -94,6 +114,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get guruTugasTitle => 'Daftar Tugas';
+
+  @override
+  String get guruTaskTitle => 'Tugas Kelas';
+
+  @override
+  String get guruTaskEmpty => 'Belum ada tugas';
 
   @override
   String guruTugasCount(Object count) {
@@ -973,6 +999,45 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get guruWelcome => 'Selamat datang,';
+
+  @override
+  String get guruWelcomeSubtitle => 'Selamat mengajar hari ini';
+
+  @override
+  String get guruPagi => 'Selamat pagi';
+
+  @override
+  String get guruSiang => 'Selamat siang';
+
+  @override
+  String get guruSore => 'Selamat sore';
+
+  @override
+  String get guruMalam => 'Selamat malam';
+
+  @override
+  String get guruStatsKelas => 'Kelas';
+
+  @override
+  String get guruStatsTugas => 'Tugas';
+
+  @override
+  String get guruStatsSiswa => 'Siswa';
+
+  @override
+  String get guruStatsError => 'Gagal memuat';
+
+  @override
+  String get guruActivitiesEmpty => 'Belum ada aktivitas';
+
+  @override
+  String get guruActivitiesTugas => 'Membuat Tugas:';
+
+  @override
+  String get guruActivitiesPengumuman => 'Membuat Pengumuman:';
+
+  @override
+  String get guruGreetingError => 'Gagal memuat profil guru';
 
   @override
   String get guruActivities => 'Aktivitas Terkini';
@@ -4618,4 +4683,26 @@ class AppLocalizationsId extends AppLocalizations {
   String folderSubtitle(Object count, Object subtitle) {
     return '$count materi • $subtitle';
   }
+
+  @override
+  String get profilMenuTentang => 'Tentang Aplikasi';
+
+  @override
+  String get profilSnackNotifikasi => 'Fitur Notifikasi segera hadir';
+
+  @override
+  String get profilSnackBantuan => 'Fitur Bantuan segera hadir';
+
+  @override
+  String get profilDialogTentangTitle => 'Tentang Aplikasi';
+
+  @override
+  String get profilDialogTentangBody =>
+      'EduVolt v1.0.0\nPlatform Pembelajaran Mikrokontroler Interaktif\n\nDibuat oleh Tim EduVolt';
+
+  @override
+  String get profilSupportEmailCopied => 'Email disalin ke papan klip';
+
+  @override
+  String get profilSupportCopyBtn => 'Salin Email';
 }

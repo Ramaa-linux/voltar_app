@@ -371,98 +371,370 @@
     "type": "posttest",
     "title": "Post-Test Level 4",
     "description": "Uji pemahamanmu setelah belajar.",
-    "questions": [
-      {
-        "id": "q1",
-        "question": "Sudut posisi motor servo dikendalikan menggunakan sinyal...",
-        "question_en": "The angular position of a servo motor is controlled using a ... signal.",
-        "options": [
-          "ADC",
-          "PWM",
-          "I2C",
-          "UART"
-        ],
-        "options_en": [
-          "ADC",
-          "PWM",
-          "I2C",
-          "UART"
-        ],
-        "correctAnswerIndex": 1
-      },
-      {
-        "id": "q2",
-        "question": "Fungsi millis() mengembalikan...",
-        "question_en": "The millis() function returns...",
-        "options": [
-          "Jumlah milidetik sejak board menyala",
-          "Jam dan tanggal sebenarnya",
-          "Nilai ADC terakhir",
-          "Duty cycle PWM"
-        ],
-        "options_en": [
-          "The number of milliseconds since the board powered on",
-          "The actual time and date",
-          "The last ADC value",
-          "The PWM duty cycle"
-        ],
-        "correctAnswerIndex": 0
-      },
-      {
-        "id": "q3",
-        "question": "Keunggulan menggunakan millis() dibanding delay() adalah...",
-        "question_en": "The advantage of using millis() over delay() is...",
-        "options": [
-          "Program tidak terblokir dan bisa menjalankan tugas lain",
-          "Konsumsi memori menjadi nol",
-          "Tidak membutuhkan fungsi loop()",
-          "Tegangan pin menjadi 12 V"
-        ],
-        "options_en": [
-          "The program is not blocked and can run other tasks",
-          "Memory consumption becomes zero",
-          "It does not require the loop() function",
-          "Pin voltage becomes 12 V"
-        ],
-        "correctAnswerIndex": 0
-      },
-      {
-        "id": "q4",
-        "question": "Mekanisme yang menghentikan sementara program utama untuk langsung merespons sinyal penting disebut...",
-        "question_en": "The mechanism that temporarily pauses the main program to immediately respond to an important signal is called...",
-        "options": [
-          "Polling",
-          "Interrupt",
-          "Debouncing",
-          "Mapping"
-        ],
-        "options_en": [
-          "Polling",
-          "Interrupt",
-          "Debouncing",
-          "Mapping"
-        ],
-        "correctAnswerIndex": 1
-      },
-      {
-        "id": "q5",
-        "question": "Cara mengatasi bouncing tombol tanpa memblokir program adalah...",
-        "question_en": "The way to handle button bouncing without blocking the program is...",
-        "options": [
-          "Memakai delay(5000)",
-          "Menggunakan logika variabel state (seperti btnState)",
-          "Menghapus fungsi setup()",
-          "Mengganti board Arduino"
-        ],
-        "options_en": [
-          "Using delay(5000)",
-          "Using state variable logic (such as btnState)",
-          "Deleting the setup() function",
-          "Replacing the Arduino board"
-        ],
-        "correctAnswerIndex": 1
-      }
+    "questions": 
+	[
+  {
+    "id": "q1",
+    "question": "Sebuah servo motor standar dikendalikan dengan sinyal PWM 50 Hz (periode 20 ms). Jika posisi 0° membutuhkan lebar pulsa HIGH 1,0 ms dan 180° membutuhkan 2,0 ms, berapa lebar pulsa HIGH yang diperlukan untuk memosisikan servo tepat pada 90°?",
+    "question_en": "A standard servo motor is controlled with a 50 Hz PWM signal (20 ms period). If 0° requires a 1.0 ms HIGH pulse width and 180° requires 2.0 ms, what HIGH pulse width is needed to position the servo precisely at 90°?",
+    "options": [
+      "0,5 ms",
+      "1,5 ms",
+      "2,5 ms",
+      "5,0 ms"
     ],
+    "options_en": [
+      "0.5 ms",
+      "1.5 ms",
+      "2.5 ms",
+      "5.0 ms"
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q2",
+    "question": "Seorang siswa membuat sistem pewaktu berulang menggunakan kode: int lastTime = millis(); di dalam loop(). Setelah sistem berjalan sekitar 32,7 detik, pewaktu berhenti bekerja dengan benar. Apakah penyebab utama masalah tersebut?",
+    "question_en": "A student creates a recurring timer using int lastTime = millis(); inside loop(). After running for about 32.7 seconds, the timer stops working correctly. What is the primary cause of this issue?",
+    "options": [
+      "Fungsi millis() berhenti secara otomatis setelah 30 detik.",
+      "Variabel bertipe int (16-bit signed) mengalami overflow saat nilai millis() melebihi 32.767.",
+      "Fungsi millis() hanya dapat dipanggil di dalam setup().",
+      "Pin digital mengalami sirkuit terbuka akibat arus berlebih."
+    ],
+    "options_en": [
+      "The millis() function automatically stops after 30 seconds.",
+      "The int variable (16-bit signed) overflows when the millis() value exceeds 32,767.",
+      "The millis() function can only be called inside setup().",
+      "Digital pins experience an open circuit due to overcurrent."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q3",
+    "question": "Perhatikan potongan kode ISR berikut:\nvoid buttonISR() { digitalWrite(LED_PIN, HIGH); delay(100); digitalWrite(LED_PIN, LOW); }\nSaat interrupt dipicu, sistem mikrokontroler mendadak hang/freeze. Mengapa kode ini bermasalah?",
+    "question_en": "Consider the following ISR code snippet:\nvoid buttonISR() { digitalWrite(LED_PIN, HIGH); delay(100); digitalWrite(LED_PIN, LOW); }\nWhen the interrupt is triggered, the microcontroller system freezes. Why is this code problematic?",
+    "options": [
+      "Fungsi delay() bergantung pada interrupt timer mikrokontroler yang dinonaktifkan saat ISR aktif, sehingga loop delay berhenti selamanya.",
+      "Fungsi digitalWrite() tidak dapat dipanggil dari dalam ISR.",
+      "Pin LED tidak diset sebagai OUTPUT di dalam ISR.",
+      "Variabel LED_PIN tidak dideklarasikan sebagai volatile."
+    ],
+    "options_en": [
+      "The delay() function relies on timer interrupts which are disabled during an ISR, causing the delay loop to hang indefinitely.",
+      "The digitalWrite() function cannot be called from within an ISR.",
+      "The LED pin was not set to OUTPUT inside the ISR.",
+      "The LED_PIN variable was not declared as volatile."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q4",
+    "question": "Anda sedang merancang sistem yang harus membaca sensor secara terus-menerus setiap 10 ms sekaligus mengedipkan LED indikator status setiap 2 detik. Mengapa penggunaan delay(2000) tidak dapat diterima dalam proyek ini?",
+    "question_en": "You are designing a system that must continuously sample a sensor every 10 ms while blinking a status indicator LED every 2 seconds. Why is using delay(2000) unacceptable for this project?",
+    "options": [
+      "delay(2000) memblokir eksekusi CPU selama 2 detik sehingga pembacaan sensor selama rentang waktu tersebut terlewatkan.",
+      "delay(2000) mengonsumsi memori SRAM melebihi kapasitas Arduino Uno.",
+      "delay(2000) secara otomatis menonaktifkan pin input analog.",
+      "delay(2000) merusak tegangan referensi internal mikrokontroler."
+    ],
+    "options_en": [
+      "delay(2000) blocks CPU execution for 2 seconds, causing sensor readings to be completely missed during that duration.",
+      "delay(2000) consumes SRAM memory beyond the Arduino Uno's capacity.",
+      "delay(2000) automatically disables analog input pins.",
+      "delay(2000) damages the microcontroller's internal reference voltage."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q5",
+    "question": "Sebuah tombol push-button dirangkai dengan konfigurasi Active-LOW (menggunakan pull-up internal), sehingga sinyal pada pin bernilai HIGH saat dilepas dan LOW saat ditekan. Mode interrupt apakah yang paling tepat digunakan pada attachInterrupt() untuk mendeteksi momen tepat SAAT TOMBOL DITEKAN?",
+    "question_en": "A push-button is wired in an Active-LOW configuration (using an internal pull-up), so the pin stays HIGH when released and goes LOW when pressed. Which interrupt mode is most appropriate in attachInterrupt() to detect the exact moment WHEN THE BUTTON IS PRESSED?",
+    "options": [
+      "RISING",
+      "FALLING",
+      "LOW",
+      "CHANGE"
+    ],
+    "options_en": [
+      "RISING",
+      "FALLING",
+      "LOW",
+      "CHANGE"
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q6",
+    "question": "Dalam teknik debouncing tombol berbasis variabel state tanpa delay:\nif (reading == LOW && btnState == true) { counter++; btnState = false; }\nApa fungsi utama dari pengubahan btnState menjadi false tersebut?",
+    "question_en": "In a delay-free button debouncing technique using a state variable:\nif (reading == LOW && btnState == true) { counter++; btnState = false; }\nWhat is the primary function of setting btnState to false?",
+    "options": [
+      "Mencegah penambahan counter berulang kali akibat getaran mekanis (bouncing) atau tombol yang masih ditahan.",
+      "Mematikan aliran arus listrik pada pin input digital.",
+      "Mengatur ulang variabel counter menjadi 0.",
+      "Mengubah fungsi pin dari INPUT menjadi OUTPUT."
+    ],
+    "options_en": [
+      "Preventing repeated counter increments caused by mechanical vibration (bouncing) or holding the button down.",
+      "Shutting off electrical current flow on the digital input pin.",
+      "Resetting the counter variable to 0.",
+      "Changing the pin mode from INPUT to OUTPUT."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q7",
+    "question": "Sebuah variabel global state diubah nilainya di dalam ISR, lalu dibaca di fungsi loop(). Jika variabel tersebut dideklarasikan sebagai int state = 0; tanpa kata kunci volatile, masalah apa yang mungkin terjadi?",
+    "question_en": "A global variable state is updated inside an ISR and read inside the loop() function. If declared as int state = 0; without the volatile keyword, what issue might occur?",
+    "options": [
+      "Compiler mungkin mengoptimasi variabel dengan menyimpannya di register CPU, sehingga loop() tidak membaca nilai terbaru dari RAM.",
+      "Mikrokontroler akan menghasilkan error kompilasi 'Undefined Reference'.",
+      "Nilai variabel akan otomatis dikali dua setiap kali ISR dipanggil.",
+      "Interrupt tidak akan bisa dipicu oleh sinyal eksternal."
+    ],
+    "options_en": [
+      "The compiler may optimize the variable by caching it in a CPU register, preventing loop() from reading the updated value from RAM.",
+      "The microcontroller will produce a compilation error: 'Undefined Reference'.",
+      "The variable value will automatically double every time the ISR is called.",
+      "The interrupt will fail to trigger from external signals."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q8",
+    "question": "Sebuah motor servo dihubungkan ke Arduino Uno (Merah ke 5V, Coklat ke GND, Oranye ke Pin 9). Saat servo menggerakkan beban cukup berat, Arduino mendadak ter-reset secara berulang. Solusi perangkat keras manakah yang paling tepat?",
+    "question_en": "A servo motor is connected to an Arduino Uno (Red to 5V, Brown to GND, Orange to Pin 9). When moving a heavy load, the Arduino repeatedly resets. Which hardware solution is most appropriate?",
+    "options": [
+      "Menggunakan catu daya eksternal (power supply terpisah) untuk servo dengan GND yang saling terhubung (common GND).",
+      "Memindahkan kabel oranye dari Pin 9 ke pin analog A0.",
+      "Menukar posisi kabel Merah ke GND dan Coklat ke 5V.",
+      "Menambahkan delay(5000) di dalam fungsi setup()."
+    ],
+    "options_en": [
+      "Use an external power supply for the servo while keeping GND connected together (common GND).",
+      "Move the orange signal wire from Pin 9 to analog pin A0.",
+      "Swap the Red wire to GND and the Brown wire to 5V.",
+      "Add a delay(5000) inside the setup() function."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q9",
+    "question": "Pengembang mencoba memasang eksternal interrupt pada pin D4 Arduino Uno menggunakan kode attachInterrupt(digitalPinToInterrupt(4), myISR, RISING);, namun interrupt tidak pernah terpicu. Mengapa hal ini terjadi pada Arduino Uno?",
+    "question_en": "A developer tries to attach an external interrupt on pin D4 of an Arduino Uno using attachInterrupt(digitalPinToInterrupt(4), myISR, RISING);, but the interrupt never triggers. Why does this happen on an Arduino Uno?",
+    "options": [
+      "Arduino Uno (ATmega328P) hanya mendukung interrupt eksternal perangkat keras pada Pin D2 (Interrupt 0) dan Pin D3 (Interrupt 1).",
+      "Pin D4 hanya dapat digunakan untuk output PWM.",
+      "Mode RISING tidak didukung oleh mikrokontroler AVR.",
+      "Fungsi digitalPinToInterrupt() hanya menerima variabel bertipe float."
+    ],
+    "options_en": [
+      "Arduino Uno (ATmega328P) only hardware-supports external interrupts on Pin D2 (Interrupt 0) and Pin D3 (Interrupt 1).",
+      "Pin D4 can only be used for PWM output.",
+      "RISING mode is not supported by AVR microcontrollers.",
+      "The digitalPinToInterrupt() function only accepts float variables."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q10",
+    "question": "Untuk membuat gerakan sweep servo 0° ke 180° tanpa memblokir kode utama (tanpa delay), teknik pewaktuan manakah yang benar?",
+    "question_en": "To create a servo sweep movement from 0° to 180° without blocking the main loop (without delay), which timing technique is correct?",
+    "options": [
+      "Memeriksa selisih millis() - lastUpdate >= stepInterval, lalu mengupdate posisi sudut servo 1 step secara bertahap.",
+      "Menggunakan delay(15) di dalam loop for(int pos = 0; pos <= 180; pos++).",
+      "Memanggil servo.write(180) lalu mematikan daya mikrokontroler.",
+      "Memasang interrupt pada pin keluaran servo."
+    ],
+    "options_en": [
+      "Check the difference millis() - lastUpdate >= stepInterval, then update the servo angle position by 1 step incrementally.",
+      "Use delay(15) inside a for(int pos = 0; pos <= 180; pos++) loop.",
+      "Call servo.write(180) and then power off the microcontroller.",
+      "Attach an interrupt to the servo output pin."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q11",
+    "question": "Fungsi millis() akan kembali ke 0 (overflow/rollover) setelah sekitar 50 hari. Manakah cara penulisan kondisi waktu yang AMAN dari masalah rollover tersebut?",
+    "question_en": "The millis() function rolls over to 0 after approximately 50 days. Which condition check is SAFE from this rollover issue?",
+    "options": [
+      "if (currentMillis - previousMillis >= interval) dengan variabel bertipe unsigned long.",
+      "if (currentMillis >= previousMillis + interval) dengan variabel bertipe long.",
+      "if (millis() == previousMillis + interval) dengan variabel bertipe int.",
+      "if (previousMillis - currentMillis >= interval) dengan variabel bertipe unsigned int."
+    ],
+    "options_en": [
+      "if (currentMillis - previousMillis >= interval) using unsigned long variables.",
+      "if (currentMillis >= previousMillis + interval) using long variables.",
+      "if (millis() == previousMillis + interval) using int variables.",
+      "if (previousMillis - currentMillis >= interval) using unsigned int variables."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q12",
+    "question": "Diberikan program multitasking dengan dua timer berbasis millis():\n- Task A dieksekusi setiap interval 1000 ms.\n- Task B dieksekusi setiap interval 2500 ms.\nAsumsikan kedua task mulai dari t = 0. Setelah program berjalan tepat 5000 ms (t = 5000), berapa kali Task A dan Task B masing-masing telah dieksekusi?",
+    "question_en": "Given a multitasking program with two millis() timers:\n- Task A executes every 1000 ms interval.\n- Task B executes every 2500 ms interval.\nAssuming both tasks start at t = 0, after the program runs for exactly 5000 ms (t = 5000), how many times have Task A and Task B executed respectively?",
+    "options": [
+      "Task A: 5 kali, Task B: 2 kali",
+      "Task A: 2 kali, Task B: 5 kali",
+      "Task A: 10 kali, Task B: 4 kali",
+      "Task A: 1 kali, Task B: 1 kali"
+    ],
+    "options_en": [
+      "Task A: 5 times, Task B: 2 times",
+      "Task A: 2 times, Task B: 5 times",
+      "Task A: 10 times, Task B: 4 times",
+      "Task A: 1 time, Task B: 1 time"
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q13",
+    "question": "Perhatikan metode debouncing berikut:\nif (reading != lastButtonState) { lastDebounceTime = millis(); }\nif ((millis() - lastDebounceTime) > debounceDelay) { ... }\nApa kelebihan metode debouncing berbasis timer ini dibandingkan debouncing logika btnState sederhana?",
+    "question_en": "Consider the following debouncing method:\nif (reading != lastButtonState) { lastDebounceTime = millis(); }\nif ((millis() - lastDebounceTime) > debounceDelay) { ... }\nWhat is the advantage of this timer-based debouncing method compared to simple btnState logic?",
+    "options": [
+      "Mampu memfilter kebisingan/getaran fisik berdurasi pendek secara presisi berdasarkan ambang batas waktu spesifik (misal 50ms).",
+      "Menghilangkan kebutuhan akan resistor pull-up pada pin tombol.",
+      "Memungkinkan tombol merespons input tanpa terhubung ke GND.",
+      "Mengurangi ukuran file biner hasil kompilasi hingga 50%."
+    ],
+    "options_en": [
+      "It can accurately filter short-duration physical noise/vibrations based on a specific time threshold (e.g., 50ms).",
+      "It eliminates the need for pull-up resistors on button pins.",
+      "It allows the button to respond to inputs without being connected to GND.",
+      "It reduces the compiled binary file size by 50%."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q14",
+    "question": "Pada pemrograman Python menggunakan library pyfirmata, cara yang benar untuk mendefinisikan pin 9 sebagai keluaran Servo dan menggerakkannya ke sudut 90 derajat adalah...",
+    "question_en": "In Python programming using the pyfirmata library, the correct way to define pin 9 as a Servo output and move it to a 90-degree angle is...",
+    "options": [
+      "servo = board.get_pin('d:9:s'); servo.write(90)",
+      "servo = board.digital[9]; servo.set_angle(90)",
+      "board.pinMode(9, SERVO); board.analogWrite(9, 90)",
+      "servo = board.get_pin('a:9:o'); servo.write(90)"
+    ],
+    "options_en": [
+      "servo = board.get_pin('d:9:s'); servo.write(90)",
+      "servo = board.digital[9]; servo.set_angle(90)",
+      "board.pinMode(9, SERVO); board.analogWrite(9, 90)",
+      "servo = board.get_pin('a:9:o'); servo.write(90)"
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q15",
+    "question": "Anda mendesain tombol darurat (Emergency Stop) pada mesin industri yang harus mematikan motor seketika tanpa ada penundaan, meskipun mikrokontroler sedang melakukan kalkulasi rumit di loop(). Pendekatan mana yang paling tepat dan andal?",
+    "question_en": "You are designing an Emergency Stop button on an industrial machine that must halt motors immediately without delay, even if the microcontroller is performing heavy computations in loop(). Which approach is most appropriate and reliable?",
+    "options": [
+      "Menggunakan External Interrupt pada pin D2/D3 yang langsung mengeksekusi instruksi pematian di ISR.",
+      "Membaca tombol dengan digitalRead() di akhir fungsi loop().",
+      "Menggunakan fungsi delay(100) di antara setiap kalkulasi untuk mengecek kondisi tombol.",
+      "Menghubungkan tombol ke pin Analog A0 dan menggunakan analogRead()."
+    ],
+    "options_en": [
+      "Use an External Interrupt on pin D2/D3 that immediately executes motor shutdown instructions inside the ISR.",
+      "Read the button with digitalRead() at the very end of the loop() function.",
+      "Use a delay(100) function between calculations to check the button state.",
+      "Connect the button to Analog pin A0 and use analogRead()."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q16",
+    "question": "Sebuah sensor menghasilkan pulsa berbentuk sinyal kotak (HIGH lalu LOW). Jika ISR dihubungkan dengan mode CHANGE, berapa kali ISR dipanggil dalam 1 siklus pulsa penuh dibandingkan jika menggunakan mode RISING?",
+    "question_en": "A sensor generates square wave pulses (HIGH then LOW). If an ISR is attached with mode CHANGE, how many times is the ISR called in 1 full pulse cycle compared to using mode RISING?",
+    "options": [
+      "Mode CHANGE memanggil ISR 2 kali (saat naik & turun), sedangkan RISING hanya 1 kali (saat naik).",
+      "Mode CHANGE memanggil ISR 1 kali, sedangkan RISING memanggil ISR 2 kali.",
+      "Kedua mode memanggil ISR dalam jumlah yang sama yaitu 4 kali.",
+      "Mode CHANGE tidak pernah memanggil ISR jika sinyal kembali ke LOW."
+    ],
+    "options_en": [
+      "CHANGE mode calls the ISR 2 times (on rising & falling edges), whereas RISING mode calls it only 1 time (on rising edge).",
+      "CHANGE mode calls the ISR 1 time, whereas RISING mode calls it 2 times.",
+      "Both modes call the ISR an equal number of times (4 times).",
+      "CHANGE mode never calls the ISR if the signal returns to LOW."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q17",
+    "question": "Motor servo standar membutuhkan sinyal kendali PWM dengan frekuensi 50 Hz. Berapakah periode total (T) dari satu siklus sinyal tersebut?",
+    "question_en": "A standard servo motor requires a PWM control signal with a frequency of 50 Hz. What is the total period (T) of one signal cycle?",
+    "options": [
+      "10 ms",
+      "20 ms",
+      "50 ms",
+      "100 ms"
+    ],
+    "options_en": [
+      "10 ms",
+      "20 ms",
+      "50 ms",
+      "100 ms"
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q18",
+    "question": "Tanpa penerapan debouncing, saat tombol dipencet 1 kali dengan cepat, nilai variabel counter di Serial Monitor melompat dari 0 langsung ke 4. Mengapa fenomena ini terjadi?",
+    "question_en": "Without debouncing applied, when a button is pressed quickly once, the counter variable value on Serial Monitor jumps from 0 directly to 4. Why does this phenomenon occur?",
+    "options": [
+      "Kontak fisik mekanis di dalam tombol bergetar naik-turun beberapa kali dalam hitungan mikrodetik sebelum stabil.",
+      "Mikrokontroler secara otomatis mengalikan input digital dengan 4.",
+      "Laju transfer Serial Monitor (baud rate) terlalu tinggi.",
+      "Resistor pull-up memicu daya tambahan ke pin digital."
+    ],
+    "options_en": [
+      "Mechanical physical contacts inside the button vibrate up and down several times within microseconds before stabilizing.",
+      "The microcontroller automatically multiplies digital inputs by 4.",
+      "The Serial Monitor transfer rate (baud rate) is set too high.",
+      "The pull-up resistor triggers extra power into the digital pin."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q19",
+    "question": "Dalam mengendalikan 3 LED berdasarkan nilai counter (case 0, 1, 2, 3), pemrogram mengganti puluhan baris digitalWrite() berulang dengan memanggil fungsi kustom runLed(a, b, c). Apa keuntungan utama dari pendekatan ini?",
+    "question_en": "When controlling 3 LEDs based on a counter value (cases 0, 1, 2, 3), the programmer replaces dozens of repeated digitalWrite() lines by calling a custom function runLed(a, b, c). What is the primary advantage of this approach?",
+    "options": [
+      "Meningkatkan keterbacaan kode (readability), mempermudah perawatan (maintainability), dan mengurangi duplikasi kode.",
+      "Mempercepat waktu eksekusi CPU hingga 100 kali lipat.",
+      "Memungkinkan LED menyala tanpa terhubung ke pin ground.",
+      "Mengubah sinyal digital menjadi sinyal analog murni."
+    ],
+    "options_en": [
+      "Improves code readability, simplifies maintainability, and eliminates code duplication.",
+      "Speeds up CPU execution time by 100 times.",
+      "Allows LEDs to light up without being connected to a ground pin.",
+      "Converts digital signals into pure analog signals."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q20",
+    "question": "Pada mikrokontroler 8-bit seperti ATmega328P, variabel 32-bit volatile unsigned long count diupdate di ISR. Saat membaca count di loop(), mengapa disarankan menggunakan noInterrupts() dan interrupts()?",
+    "question_en": "On an 8-bit microcontroller like the ATmega328P, a 32-bit variable volatile unsigned long count is updated in an ISR. When reading count inside loop(), why is it recommended to use noInterrupts() and interrupts()?",
+    "options": [
+      "Mencegah interrupt memotong pembacaan di tengah jalan saat CPU 8-bit baru membaca sebagian byte dari variabel 32-bit (mencegah data korupsi/non-atomic access).",
+      "Mencegah nilai count terhapus dari RAM.",
+      "Meningkatkan frekuensi clock CPU selama pembacaan variabel.",
+      "Fungsi noInterrupts() wajib dipanggil sebelum membaca variabel bertipe unsigned."
+    ],
+    "options_en": [
+      "Prevents an interrupt from corrupting the reading halfway while the 8-bit CPU is reading partial bytes of the 32-bit variable (prevents non-atomic access corruption).",
+      "Prevents the count value from being erased from RAM.",
+      "Increases the CPU clock frequency during variable reading.",
+      "The noInterrupts() function is mandatory before reading any unsigned variable."
+    ],
+    "correctAnswerIndex": 0
+  }
+]
+	,
     "title_en": "Level 4 Post-Test",
     "description_en": "Test your understanding after studying."
   }

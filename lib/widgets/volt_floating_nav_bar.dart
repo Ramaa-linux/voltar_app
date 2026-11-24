@@ -89,7 +89,7 @@ class _VoltNavItemView extends StatelessWidget {
       'navProfil' => context.t('navProfil'),
       'guruNavDashboard' => context.t('guruNavDashboard'),
       'guruNavKelas' => context.t('guruNavKelas'),
-      'guruNavTugas' => context.t('guruNavTugas'),
+      'guruNavSiswa' => context.t('guruNavSiswa'),
       'guruNavProfil' => context.t('guruNavProfil'),
       _ => item.labelKey,
     };
@@ -122,26 +122,27 @@ class _VoltNavItemView extends StatelessWidget {
                 vertical: AppSpacing.sm,
                 horizontal: AppSpacing.xs,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   AppIcon(item.icon, size: AppIconSize.md, color: color),
+                  const SizedBox(height: 4),
                   AnimatedSize(
                     duration: const Duration(milliseconds: 180),
                     curve: Curves.easeOut,
                     child: selected
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: AppSpacing.sm),
-                            child: Flexible(
-                              child: Text(
-                                label,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppTypography.overline.copyWith(
-                                  color: color,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                        ? AnimatedOpacity(
+                            opacity: 1.0,
+                            duration: const Duration(milliseconds: 180),
+                            curve: Curves.easeOut,
+                            child: Text(
+                              label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTypography.overline.copyWith(
+                                color: color,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           )

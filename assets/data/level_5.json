@@ -174,98 +174,370 @@
     "type": "posttest",
     "title": "Post-Test Level 5",
     "description": "Uji pemahamanmu setelah menyelesaikan proyek akhir.",
-    "questions": [
-      {
-        "id": "q1",
-        "question": "Tujuan penggunaan dua batas suhu (histeresis) adalah...",
-        "question_en": "The purpose of using two temperature thresholds (hysteresis) is...",
-        "options": [
-          "Mencegah relay menyala-mati terus-menerus",
-          "Mempercepat pembacaan sensor",
-          "Menghemat memori",
-          "Mengganti sensor"
-        ],
-        "options_en": [
-          "Preventing the relay from rapidly switching on and off",
-          "Speeding up sensor readings",
-          "Saving memory",
-          "Replacing the sensor"
-        ],
-        "correctAnswerIndex": 0
-      },
-      {
-        "id": "q2",
-        "question": "Pada proyek ini, kipas menyala ketika suhu...",
-        "question_en": "In this project, the fan turns on when the temperature is...",
-        "options": [
-          "≤ 28 °C",
-          "≥ 30 °C",
-          "Tepat 29 °C",
-          "Tidak terbaca"
-        ],
-        "options_en": [
-          "≤ 28 °C",
-          "≥ 30 °C",
-          "Exactly 29 °C",
-          "Unreadable"
-        ],
-        "correctAnswerIndex": 1
-      },
-      {
-        "id": "q3",
-        "question": "Mengapa dipilih terminal NO (normally open) pada relay?",
-        "question_en": "Why is the NO (normally open) terminal chosen on the relay?",
-        "options": [
-          "Kipas mati saat relay tidak aktif atau Arduino kehilangan daya",
-          "Lebih murah",
-          "Lebih cepat",
-          "Terminal NC pasti rusak"
-        ],
-        "options_en": [
-          "The fan stays off when the relay is inactive or the Arduino loses power",
-          "It is cheaper",
-          "It is faster",
-          "The NC terminal is always broken"
-        ],
-        "correctAnswerIndex": 0
-      },
-      {
-        "id": "q4",
-        "question": "Jika isnan(t) bernilai true, artinya...",
-        "question_en": "If isnan(t) evaluates to true, it means...",
-        "options": [
-          "Pembacaan sensor gagal",
-          "Suhu sangat tinggi",
-          "Kipas sedang ON",
-          "OLED rusak"
-        ],
-        "options_en": [
-          "The sensor reading failed",
-          "The temperature is very high",
-          "The fan is ON",
-          "The OLED is broken"
-        ],
-        "correctAnswerIndex": 0
-      },
-      {
-        "id": "q5",
-        "question": "Rumus galat (%) pada analisis sensor adalah...",
-        "question_en": "The percentage error (%) formula in sensor analysis is...",
-        "options": [
-          "Galat mutlak / pembanding × 100%",
-          "Pembanding / galat mutlak",
-          "DHT11 × 100%",
-          "Galat mutlak − pembanding"
-        ],
-        "options_en": [
-          "Absolute error / reference × 100%",
-          "Reference / absolute error",
-          "DHT11 × 100%",
-          "Absolute error − reference"
-        ],
-        "correctAnswerIndex": 0
-      }
+    "questions": 
+	[
+  {
+    "id": "q1",
+    "question": "Sistem pendingin memiliki batas atas Histeresis 32 °C dan batas bawah 27 °C. Suhu ruangan mula-mula 25 °C (kipas OFF), kemudian naik menjadi 26 °C -> 30 °C -> 33 °C, lalu turun menjadi 31 °C -> 29 °C -> 26 °C. Pada saat suhu turun mencapai 29 °C, bagaimana status kipas?",
+    "question_en": "A cooling system has an upper Hysteresis limit of 32 °C and a lower limit of 27 °C. The room temperature is initially 25 °C (fan OFF), then rises to 26 °C -> 30 °C -> 33 °C, and then cools down to 31 °C -> 29 °C -> 26 °C. When the temperature cools down to 29 °C, what is the fan state?",
+    "options": [
+      "Kipas OFF karena 29 °C di bawah 32 °C",
+      "Kipas tetap ON karena suhu belum turun sampai/di bawah 27 °C",
+      "Kipas berkedip ON-OFF secara bergantian",
+      "Kipas OFF karena 29 °C berada di rentang tengah"
     ],
+    "options_en": [
+      "Fan is OFF because 29 °C is below 32 °C",
+      "Fan remains ON because the temperature has not dropped to/below 27 °C",
+      "Fan blinks ON-OFF alternately",
+      "Fan is OFF because 29 °C is in the middle range"
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q2",
+    "question": "Seorang siswa menghubungkan modul relay Active-LOW ke Pin 7. Ia menuliskan kode:\nif (t >= 30.0) digitalWrite(7, HIGH); else if (t <= 28.0) digitalWrite(7, LOW);\nBagaimana perilaku kipas yang terhubung ke terminal NO relay tersebut?",
+    "question_en": "A student connects an Active-LOW relay module to Pin 7. They write the code:\nif (t >= 30.0) digitalWrite(7, HIGH); else if (t <= 28.0) digitalWrite(7, LOW);\nHow will the fan connected to the relay's NO terminal behave?",
+    "options": [
+      "Kipas menyala saat t >= 30.0 dan mati saat t <= 28.0.",
+      "Kipas justru mati saat t >= 30.0 dan menyala saat t <= 28.0 (logika terbalik).",
+      "Kipas menyala terus-menerus tanpa memedulikan nilai suhu.",
+      "Relay akan mengalami hubung singkat dan rusak."
+    ],
+    "options_en": [
+      "The fan turns ON when t >= 30.0 and OFF when t <= 28.0.",
+      "The fan turns OFF when t >= 30.0 and ON when t <= 28.0 (inverted logic).",
+      "The fan stays ON continuously regardless of temperature.",
+      "The relay will short-circuit and be damaged."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q3",
+    "question": "Dalam perancangan sistem pendingin darurat untuk beban kritis, pemrogram memilih menggunakan terminal NC (Normally Closed) relay alih-alih NO (Normally Open). Apa pertimbangan utama dari evaluasi ini?",
+    "question_en": "In designing an emergency cooling system for critical loads, the programmer chooses to use the relay's NC (Normally Closed) terminal instead of NO (Normally Open). What is the primary consideration behind this evaluation?",
+    "options": [
+      "Terminal NC mengonsumsi arus listrik lebih sedikit dari mikrokontroler.",
+      "Jika mikrokontroler mendadak kehilangan daya/mati, kipas tetap menyala untuk mencegah overheat (fail-safe ON).",
+      "Terminal NC mereduksi kebisingan getaran mekanis saklar relay.",
+      "Terminal NC memungkinkan pengontrolan kecepatan kipas secara PWM."
+    ],
+    "options_en": [
+      "The NC terminal consumes less electrical current from the microcontroller.",
+      "If the microcontroller suddenly loses power/shuts down, the fan remains ON to prevent overheating (fail-safe ON).",
+      "The NC terminal reduces mechanical vibration noise of the relay switch.",
+      "The NC terminal enables PWM fan speed control."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q4",
+    "question": "Sebuah sensor DHT11 mengukur suhu ruangan sebesar 27,5 °C. Saat dikalibrasi dengan termometer standar laboratorium, suhu sebenarnya adalah 25,0 °C. Berapakah persentase galat (error %) dari pembacaan sensor DHT11 tersebut?",
+    "question_en": "A DHT11 sensor measures a room temperature of 27.5 °C. When calibrated with a laboratory standard thermometer, the actual temperature is 25.0 °C. What is the percentage error (% error) of the DHT11 reading?",
+    "options": [
+      "2,5%",
+      "5,0%",
+      "10,0%",
+      "11,0%"
+    ],
+    "options_en": [
+      "2.5%",
+      "5.0%",
+      "10.0%",
+      "11.0%"
+    ],
+    "correctAnswerIndex": 2
+  },
+  {
+    "id": "q5",
+    "question": "Perhatikan potongan kode tanpa penanganan galat sensor berikut:\nfloat t = dht.readTemperature();\nif (t >= 30.0) digitalWrite(RELAY, LOW); else digitalWrite(RELAY, HIGH);\nJika kabel data DHT11 terlepas sehingga t bernilai NaN, bagaimana perilaku relay active-LOW tersebut?",
+    "question_en": "Consider the following code snippet lacking sensor error handling:\nfloat t = dht.readTemperature();\nif (t >= 30.0) digitalWrite(RELAY, LOW); else digitalWrite(RELAY, HIGH);\nIf the DHT11 data cable is disconnected causing t to be NaN, how will the active-LOW relay behave?",
+    "options": [
+      "Relay langsung LOW (kipas menyala) sebagai antisipasi keselamatan.",
+      "Evaluasi NaN >= 30.0 bernilai false, sehingga eksekusi masuk ke else dan relay HIGH (kipas mati).",
+      "Program mengalami crash dan mikrokontroler melakukan restart otomatis.",
+      "Pin RELAY berganti fungsi menjadi pin INPUT secara otomatis."
+    ],
+    "options_en": [
+      "The relay immediately goes LOW (fan ON) for safety anticipation.",
+      "The evaluation NaN >= 30.0 evaluates to false, jumping to else and making the relay HIGH (fan OFF).",
+      "The program crashes and the microcontroller automatically restarts.",
+      "The RELAY pin automatically changes mode to an INPUT pin."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q6",
+    "question": "Sistem kontrol suhu ruang server A menggunakan histeresis (ON pada 29 °C, OFF pada 25 °C), sedangkan sistem B menggunakan ambang batas tunggal (ON pada > 27 °C, OFF pada <= 27 °C). Mengapa sistem A lebih unggul untuk keandalan jangka panjang?",
+    "question_en": "Server room temperature control System A uses hysteresis (ON at 29 °C, OFF at 25 °C), whereas System B uses a single threshold (ON at > 27 °C, OFF at <= 27 °C). Why is System A superior for long-term reliability?",
+    "options": [
+      "Sistem A menghemat penggunaan memori flash Arduino hingga 50%.",
+      "Sistem A mencegah saklar mekanis relay beralih menyala-mati secara cepat (chattering) saat suhu berosilasi kecil di sekitar 27 °C.",
+      "Sistem A mempercepat respons pembacaan sensor DHT11.",
+      "Sistem A memungkinkan pembacaan suhu tanpa menggunakan library tambahan."
+    ],
+    "options_en": [
+      "System A saves up to 50% of Arduino flash memory usage.",
+      "System A prevents the mechanical relay switch from rapidly chattering on-off when temperature fluctuates slightly around 27 °C.",
+      "System A speeds up the DHT11 sensor response time.",
+      "System A allows temperature reading without using additional libraries."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q7",
+    "question": "Seorang praktikan merangkai layar OLED SSD1306 I2C ke Arduino Uno (VCC->5V, GND->GND, SDA->A4, SCL->A5). Saat program dijalankan, layar tetap gelap. Setelah diperiksa, kode menggunakan display.begin(SSD1306_SWITCHCAPVCC, 0x3D). Modul OLED secara umum menggunakan alamat 0x3C. Apa langkah perbaikan yang tepat?",
+    "question_en": "A student wires an SSD1306 I2C OLED display to an Arduino Uno (VCC->5V, GND->GND, SDA->A4, SCL->A5). When powered on, the display remains dark. Inspection shows the code uses display.begin(SSD1306_SWITCHCAPVCC, 0x3D). The OLED module standard address is 0x3C. What is the correct fix?",
+    "options": [
+      "Memindahkan kabel SDA ke A5 dan SCL ke A4.",
+      "Mengubah parameter alamat I2C di dalam kode menjadi 0x3C.",
+      "Mengganti tegangan VCC OLED dari 5V menjadi 12V.",
+      "Menambahkan resistor 10k Ohm secara seri pada jalur GND."
+    ],
+    "options_en": [
+      "Move the SDA wire to A5 and SCL to A4.",
+      "Change the I2C address parameter in the code to 0x3C.",
+      "Change the OLED VCC voltage from 5V to 12V.",
+      "Add a 10k Ohm resistor in series on the GND line."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q8",
+    "question": "Anda ingin mengembangkan proyek kipas otomatis agar kecepatan kipas DC dapat diatur secara bertahap (0–100%) sesuai kenaikan suhu, bukan sekadar ON/OFF. Kombinasi komponen dan teknik manakah yang harus menggantikan modul relay saklar mekanis?",
+    "question_en": "You want to upgrade the automatic fan project so the DC fan speed can be adjusted continuously (0–100%) according to temperature rise, rather than just ON/OFF. Which combination of components and technique should replace the mechanical relay module?",
+    "options": [
+      "Menggunakan Potensiometer dan sinyal ADC.",
+      "Menggunakan Transistor/MOSFET Driver (atau Motor Driver) dan sinyal PWM.",
+      "Menggunakan Sensor LDR dan sinyal Interrupt.",
+      "Menggunakan LCD 16x2 dan komunikasi SPI."
+    ],
+    "options_en": [
+      "Using a Potentiometer and ADC signals.",
+      "Using a Transistor/MOSFET Driver (or Motor Driver) and PWM signals.",
+      "Using an LDR Sensor and Interrupt signals.",
+      "Using a 16x2 LCD and SPI communication."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q9",
+    "question": "Sensor DHT11 memerlukan jeda pembacaan minimal 1-2 detik agar data stabil. Jika dht.readTemperature() dipanggil di setiap perulangan loop() dengan delay(2000), fungsi lain seperti pembacaan tombol menjadi tidak responsif. Bagaimana solusi restrukturisasi kode yang paling tepat?",
+    "question_en": "The DHT11 sensor requires a minimum reading interval of 1-2 seconds for stable data. If dht.readTemperature() is called every loop() iteration with delay(2000), other functions like button sensing become unresponsive. What is the most appropriate code restructuring solution?",
+    "options": [
+      "Memindahkan pembacaan DHT11 ke fungsi setup().",
+      "Menggunakan pewaktu non-blocking berbasis millis() untuk memanggil dht.readTemperature() setiap 2000 ms.",
+      "Mengganti sensor DHT11 dengan potensiometer analog.",
+      "Menaikkan baud rate Serial Monitor menjadi 115200."
+    ],
+    "options_en": [
+      "Move the DHT11 reading into the setup() function.",
+      "Use a non-blocking timer based on millis() to call dht.readTemperature() every 2000 ms.",
+      "Replace the DHT11 sensor with an analog potentiometer.",
+      "Increase the Serial Monitor baud rate to 115200."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q10",
+    "question": "Saat relay active-LOW memicu kipas DC berdaya besar untuk ON, Arduino Uno mendadak mengalami reset berulang kali (brownout loop). Setelah diperiksa, relay VCC dan kipas dihubungkan langsung ke pin 5V Arduino. Mengapa hal ini terjadi?",
+    "question_en": "When an active-LOW relay triggers a high-power DC fan to turn ON, the Arduino Uno suddenly experiences repeated resets (brownout loop). Inspection shows the relay VCC and fan are powered directly from the Arduino 5V pin. Why does this happen?",
+    "options": [
+      "Sinyal active-LOW merusak pin digital Arduino.",
+      "Kipas DC dan koil relay menarik arus terlalu besar dari regulator Arduino 5V, menyebabkan tegangan anjlok (voltage drop).",
+      "OLED I2C bertabrakan alamat dengan pin relay.",
+      "Sensor DHT11 mengeluarkan tegangan tinggi yang memicu reset."
+    ],
+    "options_en": [
+      "The active-LOW signal damages the Arduino digital pins.",
+      "The DC fan and relay coil draw excessive current from the Arduino 5V regulator, causing a voltage drop.",
+      "The I2C OLED collides in address with the relay pin.",
+      "The DHT11 sensor outputs high voltage that triggers a reset."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q11",
+    "question": "Perhatikan kode pengontrolan OLED SSD1306 berikut:\nvoid loop() {\n  float t = dht.readTemperature();\n  display.clearDisplay();\n  display.setCursor(0,0);\n  display.print(\"Suhu: \"); display.print(t);\n  delay(1000);\n}\nSaat diuji, tampilan OLED tetap kosong setelah booting. Mengapa teks tidak muncul di layar?",
+    "question_en": "Consider the following SSD1306 OLED control code:\nvoid loop() {\n  float t = dht.readTemperature();\n  display.clearDisplay();\n  display.setCursor(0,0);\n  display.print(\"Suhu: \"); display.print(t);\n  delay(1000);\n}\nWhen tested, the OLED screen remains blank after booting. Why does text fail to appear on screen?",
+    "options": [
+      "Fungsi display.display(); tidak dipanggil untuk mentransfer buffer memori ke layar OLED.",
+      "Ukuran teks belum diatur menggunakan display.setTextSize(0);.",
+      "Variabel t harus dikonversi menjadi tipe data String secara manual.",
+      "Fungsi dht.readTemperature() menghapus memori buffer OLED."
+    ],
+    "options_en": [
+      "The display.display(); function was not called to transfer the memory buffer to the OLED screen.",
+      "Text size was not configured using display.setTextSize(0);.",
+      "The variable t must be manually converted to String type.",
+      "The dht.readTemperature() function erases the OLED buffer memory."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q12",
+    "question": "Sensor DHT11 yang Anda gunakan memiliki offset sistematis: selalu membaca 2,0 °C LEBIH TINGGI dari suhu nyata. Bagaimana penulisan kompensasi kalibrasi yang tepat di program sebelum logika histeresis diproses?",
+    "question_en": "The DHT11 sensor you are using has a systematic offset: it always reads 2.0 °C HIGHER than the true temperature. How should the calibration compensation be correctly written in software before processing hysteresis logic?",
+    "options": [
+      "float t_cal = dht.readTemperature() + 2.0;",
+      "float t_cal = dht.readTemperature() - 2.0;",
+      "float t_cal = dht.readTemperature() * 2.0;",
+      "float t_cal = dht.readTemperature() / 2.0;"
+    ],
+    "options_en": [
+      "float t_cal = dht.readTemperature() + 2.0;",
+      "float t_cal = dht.readTemperature() - 2.0;",
+      "float t_cal = dht.readTemperature() * 2.0;",
+      "float t_cal = dht.readTemperature() / 2.0;"
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q13",
+    "question": "Modul relay 5V memiliki terminal NO (Normally Open), NC (Normally Closed), dan COM (Common). Saklar kipas dipasang di antara COM dan NC pada relay Active-LOW (IN terhubung ke Pin 7). Kapan kipas akan MENYALA?",
+    "question_en": "A 5V relay module has NO (Normally Open), NC (Normally Closed), and COM (Common) terminals. The fan switch is connected between COM and NC on an Active-LOW relay (IN connected to Pin 7). When will the fan turn ON?",
+    "options": [
+      "Saat Pin 7 diberi sinyal LOW.",
+      "Saat Pin 7 diberi sinyal HIGH (atau saat mikrokontroler tidak aktif/mati).",
+      "Hanya saat sinyal PWM dikirimkan ke Pin 7.",
+      "Kipas tidak akan pernah menyala karena terminal NC tidak terhubung ke listrik."
+    ],
+    "options_en": [
+      "When Pin 7 is set to LOW signal.",
+      "When Pin 7 is set to HIGH signal (or when the microcontroller is inactive/powered off).",
+      "Only when a PWM signal is sent to Pin 7.",
+      "The fan will never turn ON because the NC terminal is not connected to power."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q14",
+    "question": "Sebuah sistem pengontrol suhu memiliki catatan suhu sebagai berikut:\nDetik ke-0: 27,0 °C\nDetik ke-10: 29,5 °C\nDetik ke-20: 30,5 °C\nDetik ke-30: 28,5 °C\nDetik ke-40: 27,5 °C\nJika batas atas histeresis = 30,0 °C dan batas bawah = 28,0 °C (kondisi awal OFF), pada detik berapakah kipas mulai NYALA dan kapan mulai MATI?",
+    "question_en": "A temperature control system records the following temperature log:\nSecond 0: 27.0 °C\nSecond 10: 29.5 °C\nSecond 20: 30.5 °C\nSecond 30: 28.5 °C\nSecond 40: 27.5 °C\nIf upper hysteresis threshold = 30.0 °C and lower threshold = 28.0 °C (initial state OFF), at which second does the fan turn ON and when does it turn OFF?",
+    "options": [
+      "Nyala di detik ke-10, Mati di detik ke-30",
+      "Nyala di detik ke-20, Mati di detik ke-40",
+      "Nyala di detik ke-20, Mati di detik ke-30",
+      "Nyala di detik ke-10, Mati di detik ke-40"
+    ],
+    "options_en": [
+      "ON at second 10, OFF at second 30",
+      "ON at second 20, OFF at second 40",
+      "ON at second 20, OFF at second 30",
+      "ON at second 10, OFF at second 40"
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q15",
+    "question": "Untuk proyek monitoring suhu portabel berbasis baterai, mengapa layar OLED SSD1306 (0.96 inci) lebih dievaluasi efisien dibanding layar LCD 16x2 dengan backlight standar?",
+    "question_en": "For a battery-powered portable temperature monitoring project, why is an SSD1306 OLED (0.96 inch) display evaluated as more efficient than a standard 16x2 backlit LCD?",
+    "options": [
+      "OLED tidak memerlukan koneksi I2C sehingga menghemat pin digital.",
+      "Piksel OLED memancarkan cahaya sendiri tanpa backlight (piksel hitam tidak mengonsumsi daya), serta mendukung grafis piksel bebas.",
+      "LCD 16x2 mengonsumsi daya 100 kali lebih besar pada mode standby.",
+      "OLED SSD1306 mampu menyimpan log data suhu tanpa kartu SD."
+    ],
+    "options_en": [
+      "OLED does not require I2C connection, saving digital pins.",
+      "OLED pixels self-emit without a backlight (black pixels consume no power), and it supports custom pixel graphics.",
+      "16x2 LCD consumes 100 times more power in standby mode.",
+      "SSD1306 OLED can store temperature data logs without an SD card."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q16",
+    "question": "Dalam proyek kritis sistem pendingin server, jika sensor DHT11 mengalami kegagalan pembacaan (isnan(t) bernilai true) selama 5 kali berturut-turut, tindakan fail-safe manakah yang paling aman bagi sistem?",
+    "question_en": "In a critical server cooling system project, if the DHT11 sensor fails to read (isnan(t) evaluates to true) for 5 consecutive times, which fail-safe action is safest for the system?",
+    "options": [
+      "Mematikan kipas pendingin (kipasNyala = false) untuk menghemat listrik.",
+      "Memaksa kipas pendingin tetap MENYALA (kipasNyala = true) dan membunyikan alarm peringatan overheat.",
+      "Mereset alamat I2C layar OLED secara otomatis.",
+      "Mengubah batas suhu histeresis menjadi 0 °C."
+    ],
+    "options_en": [
+      "Turn off the cooling fan (kipasNyala = false) to save electricity.",
+      "Force the cooling fan to remain ON (kipasNyala = true) and trigger an overheat warning alarm.",
+      "Automatically reset the OLED I2C address.",
+      "Change the hysteresis temperature limits to 0 °C."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q17",
+    "question": "Seorang siswa membuat logika histeresis sebagai berikut:\nif (t > 30.0) kipasNyala = true;\nif (t < 28.0) kipasNyala = false;\nSaat suhu ruangan perlahan naik dari 29.5 °C dan menyentuh tepat 30.0 °C, apa yang terjadi pada status kipas?",
+    "question_en": "A student writes the following hysteresis logic:\nif (t > 30.0) kipasNyala = true;\nif (t < 28.0) kipasNyala = false;\nWhen the room temperature slowly rises from 29.5 °C and reaches exactly 30.0 °C, what happens to the fan state?",
+    "options": [
+      "Kipas langsung menyala.",
+      "Kipas tetap mati (OFF) karena kondisi t > 30.0 belum terpenuhi (harus di atas 30.0 °C).",
+      "Status kipas mengalami kebingungan dan berkedip cepat.",
+      "Program akan menghasilkan runtime error karena pertidaksamaan."
+    ],
+    "options_en": [
+      "The fan immediately turns ON.",
+      "The fan remains OFF because the condition t > 30.0 is not yet satisfied (must exceed 30.0 °C).",
+      "The fan state gets confused and blinks rapidly.",
+      "The program throws a runtime error due to strict inequality."
+    ],
+    "correctAnswerIndex": 1
+  },
+  {
+    "id": "q18",
+    "question": "Mengapa pemisahan catu daya antara Sisi Kontrol (Arduino/OLED/DHT11) dan Sisi Beban (Kipas DC/Relay Load) sangat disarankan pada proyek kontrol industri?",
+    "question_en": "Why is separating the power supply between the Control Side (Arduino/OLED/DHT11) and Load Side (DC Fan/Relay Load) strongly recommended in industrial control projects?",
+    "options": [
+      "Untuk mencegah gangguan elektromagnetik (EMI) dan lonjakan arus induktif kipas mengganggu keandalan mikrokontroler.",
+      "Agar layar OLED dapat menampilkan warna RGB.",
+      "Karena Arduino tidak mendukung tegangan di bawah 12 V.",
+      "Untuk mempercepat waktu kompilasi program pada Arduino IDE."
+    ],
+    "options_en": [
+      "To prevent electromagnetic interference (EMI) and inductive fan current spikes from affecting microcontroller reliability.",
+      "So that the OLED screen can display RGB colors.",
+      "Because Arduino does not support voltages below 12 V.",
+      "To speed up program compilation time in Arduino IDE."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q19",
+    "question": "Aplikasi inkubator penetas telur membutuhkan akurasi suhu tinggi sebesar ±0,1 °C pada rentang 37-39 °C. Mengapa sensor DHT11 TIDAK LAYAK dievaluasi untuk proyek ini?",
+    "question_en": "An egg incubator application requires high temperature accuracy of ±0.1 °C in the 37-39 °C range. Why is the DHT11 sensor EVALUATED AS UNSUITABLE for this project?",
+    "options": [
+      "DHT11 hanya memiliki tingkat akurasi suhu sekitar ±2 °C dengan resolusi pembacaan 1 °C.",
+      "DHT11 hanya dapat digunakan untuk mengukur suhu di bawah 0 °C.",
+      "DHT11 tidak dapat terhubung ke pin digital Arduino.",
+      "DHT11 membutuhkan tegangan kerja minimal 24 V DC."
+    ],
+    "options_en": [
+      "DHT11 only has a temperature accuracy of around ±2 °C with a 1 °C resolution.",
+      "DHT11 can only be used to measure sub-zero temperatures.",
+      "DHT11 cannot be connected to Arduino digital pins.",
+      "DHT11 requires a minimum operating voltage of 24 V DC."
+    ],
+    "correctAnswerIndex": 0
+  },
+  {
+    "id": "q20",
+    "question": "Diberikan data pengujian sensor DHT11 terhadap termometer acuan laboratorium pada 4 titik suhu:\n- Acuan 20 °C -> DHT11 22 °C (Galat mutlak = 2 °C)\n- Acuan 30 °C -> DHT11 33 °C (Galat mutlak = 3 °C)\n- Acuan 40 °C -> DHT11 42 °C (Galat mutlak = 2 °C)\n- Acuan 50 °C -> DHT11 51 °C (Galat mutlak = 1 °C)\nBerapakah RATA-RATA galat persentase (error %) dari sensor DHT11 tersebut?",
+    "question_en": "Given DHT11 sensor test data against a laboratory reference thermometer at 4 temperature points:\n- Reference 20 °C -> DHT11 22 °C (Absolute error = 2 °C)\n- Reference 30 °C -> DHT11 33 °C (Absolute error = 3 °C)\n- Reference 40 °C -> DHT11 42 °C (Absolute error = 2 °C)\n- Reference 50 °C -> DHT11 51 °C (Absolute error = 1 °C)\nWhat is the AVERAGE percentage error (% error) of this DHT11 sensor?",
+    "options": [
+      "6,75%",
+      "7,00%",
+      "8,00%",
+      "10,00%"
+    ],
+    "options_en": [
+      "6.75%",
+      "7.00%",
+      "8.00%",
+      "10.00%"
+    ],
+    "correctAnswerIndex": 0
+  }
+]
+	,
     "title_en": "Level 5 Post-Test",
     "description_en": "Test your understanding after completing the final project."
   }

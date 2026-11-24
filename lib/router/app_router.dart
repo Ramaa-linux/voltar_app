@@ -16,7 +16,7 @@ import 'package:voltar/pages/guru/guru_dashboard_page.dart';
 import 'package:voltar/pages/guru/guru_kelas_detail_page.dart';
 import 'package:voltar/pages/guru/guru_kelas_page.dart';
 import 'package:voltar/pages/guru/guru_profil_page.dart';
-import 'package:voltar/pages/guru/guru_tugas_page.dart';
+import 'package:voltar/pages/guru/guru_siswa_page.dart';
 import 'package:voltar/pages/home/home_page.dart';
 import 'package:voltar/pages/kelas/kelas_page.dart';
 import 'package:voltar/pages/materi/kuis_page.dart';
@@ -263,13 +263,13 @@ GoRouter createAppRouter({
               ),
             ],
           ),
-          // Branch 2: Tugas Guru
+          // Branch 2: Siswa Guru (monitoring progress)
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
-                path: AppRoutes.guruTugas,
+                path: AppRoutes.guruSiswa,
                 builder: (BuildContext context, GoRouterState state) =>
-                    const GuruTugasPage(),
+                    const GuruSiswaPage(),
               ),
             ],
           ),

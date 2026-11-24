@@ -400,98 +400,370 @@
     "type": "posttest",
     "title": "Post-Test Level 2",
     "description": "Uji pemahamanmu setelah belajar.",
-    "questions": [
-      {
+    "questions": 
+	[
+    {
         "id": "q1",
-        "question": "Fungsi loop() pada sketch Arduino dijalankan...",
-        "question_en": "The loop() function in an Arduino sketch runs...",
+        "question": "Perhatikan deklarasi array pin LED berikut:\n\nint LED[4] = {12, 11, 10, 9};\n\nBerapakah nilai LED[2]?",
+        "question_en": "Look at the following LED pin array declaration:\n\nint LED[4] = {12, 11, 10, 9};\n\nWhat is the value of LED[2]?",
         "options": [
-          "Sekali saat board menyala",
-          "Berulang selama Arduino menyala",
-          "Hanya saat terjadi error",
-          "Ketika dikompilasi"
+            "12",
+            "11",
+            "10",
+            "9"
         ],
         "options_en": [
-          "Once when the board powers on",
-          "Repeatedly while the Arduino is powered on",
-          "Only when an error occurs",
-          "When compiled"
+            "12",
+            "11",
+            "10",
+            "9"
         ],
-        "correctAnswerIndex": 1
-      },
-      {
+        "correctAnswerIndex": 2
+    },
+    {
         "id": "q2",
-        "question": "Operator logika AND ditulis...",
-        "question_en": "The logical AND operator is written as...",
+        "question": "Pada program 4 LED dengan satu push button, variabel x bertambah 1 setiap tombol ditekan dan direset menjadi 0 saat x mencapai 4. Jika x awalnya 0 dan tombol ditekan 6 kali, berapa nilai x sekarang?",
+        "question_en": "In a 4-LED program with a single push button, the variable x increases by 1 each time the button is pressed and is reset to 0 when x reaches 4. If x starts at 0 and the button is pressed 6 times, what is the value of x now?",
         "options": [
-          "||",
-          "&&",
-          "!",
-          "=="
+            "0",
+            "2",
+            "4",
+            "6"
         ],
         "options_en": [
-          "||",
-          "&&",
-          "!",
-          "=="
+            "0",
+            "2",
+            "4",
+            "6"
         ],
         "correctAnswerIndex": 1
-      },
-      {
+    },
+    {
         "id": "q3",
-        "question": "Terminal relay yang terhubung ke COM hanya saat relay aktif (ON) adalah...",
-        "question_en": "The relay terminal connected to COM only when the relay is active (ON) is...",
+        "question": "Perhatikan potongan kode berikut di dalam loop():\n\ndigitalWrite(13, HIGH);\ndelay(500);\ndigitalWrite(13, LOW);\ndelay(500);\n\nBerapa kali LED pada pin 13 menyala (satu siklus kedip lengkap) dalam waktu 10 detik?",
+        "question_en": "Look at the following code snippet inside loop():\n\ndigitalWrite(13, HIGH);\ndelay(500);\ndigitalWrite(13, LOW);\ndelay(500);\n\nHow many times does the LED on pin 13 turn on (one complete blink cycle) in 10 seconds?",
         "options": [
-          "NC (Normally Close)",
-          "NO (Normally Open)",
-          "GND",
-          "VCC"
+            "5",
+            "20",
+            "100",
+            "10"
         ],
         "options_en": [
-          "NC (Normally Closed)",
-          "NO (Normally Open)",
-          "GND",
-          "VCC"
+            "5",
+            "20",
+            "100",
+            "10"
         ],
-        "correctAnswerIndex": 1
-      },
-      {
+        "correctAnswerIndex": 3
+    },
+    {
         "id": "q4",
-        "question": "Perintah untuk membaca status tombol pada pin digital adalah...",
-        "question_en": "The command to read a button's state on a digital pin is...",
+        "question": "Sebuah kipas disambung ke COM dan NO pada relay yang aktif saat pin diberi HIGH. Program di loop():\n\ndigitalWrite(relay, HIGH);\ndelay(5000);\ndigitalWrite(relay, LOW);\ndelay(1000);\n\nDalam 60 detik, berapa total waktu kipas menyala?",
+        "question_en": "A fan is connected to COM and NO on a relay that activates when the pin is set HIGH. The program in loop():\n\ndigitalWrite(relay, HIGH);\ndelay(5000);\ndigitalWrite(relay, LOW);\ndelay(1000);\n\nIn 60 seconds, what is the total time the fan is on?",
         "options": [
-          "digitalWrite()",
-          "digitalRead()",
-          "analogWrite()",
-          "pinMode()"
+            "50 detik",
+            "10 detik",
+            "54 detik",
+            "60 detik"
         ],
         "options_en": [
-          "digitalWrite()",
-          "digitalRead()",
-          "analogWrite()",
-          "pinMode()"
-        ],
-        "correctAnswerIndex": 1
-      },
-      {
-        "id": "q5",
-        "question": "Cara menulis komentar satu baris pada kode Arduino adalah menggunakan...",
-        "question_en": "A single-line comment in Arduino code is written using...",
-        "options": [
-          "//",
-          "##",
-          "--",
-          "<!--"
-        ],
-        "options_en": [
-          "//",
-          "##",
-          "--",
-          "<!--"
+            "50 seconds",
+            "10 seconds",
+            "54 seconds",
+            "60 seconds"
         ],
         "correctAnswerIndex": 0
-      }
-    ],
+    },
+    {
+        "id": "q5",
+        "question": "Manakah deklarasi variabel berikut yang valid dan sesuai aturan penamaan variabel Arduino?",
+        "question_en": "Which of the following variable declarations is valid and follows Arduino variable naming rules?",
+        "options": [
+            "int 2ledPin = 2;",
+            "int led pin = 2;",
+            "int ledPin = 2;",
+            "int led-pin = 2;"
+        ],
+        "options_en": [
+            "int 2ledPin = 2;",
+            "int led pin = 2;",
+            "int ledPin = 2;",
+            "int led-pin = 2;"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q6",
+        "question": "Perhatikan kode berikut:\n\nint status = 1;\nint x = 4;\nif (status == 1 && x < 4) {\n  digitalWrite(LED, HIGH);\n}\n\nApa yang terjadi pada blok if tersebut?",
+        "question_en": "Look at the following code:\n\nint status = 1;\nint x = 4;\nif (status == 1 && x < 4) {\n  digitalWrite(LED, HIGH);\n}\n\nWhat happens to that if block?",
+        "options": [
+            "Blok if dijalankan karena status bernilai 1",
+            "Blok if tidak dijalankan karena x < 4 bernilai false, sehingga seluruh ekspresi && bernilai false",
+            "Terjadi error kompilasi karena && tidak dikenal di Arduino",
+            "Blok if dijalankan karena x bernilai 4"
+        ],
+        "options_en": [
+            "The if block runs because status is 1",
+            "The if block does not run because x < 4 is false, so the entire && expression is false",
+            "A compile error occurs because && is not recognized in Arduino",
+            "The if block runs because x is 4"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q7",
+        "question": "Untuk mencari nilai terendah dari array {80, 65, 90, 72}, variabel terendah diinisialisasi 100 lalu setiap elemen dibandingkan satu per satu (jika elemen < terendah, terendah diganti). Berapa kali nilai variabel terendah diperbarui selama proses?",
+        "question_en": "To find the lowest value in the array {80, 65, 90, 72}, the variable lowest is initialized to 100 and each element is compared one by one (if the element < lowest, lowest is replaced). How many times is the value of the variable lowest updated during the process?",
+        "options": [
+            "2",
+            "1",
+            "3",
+            "4"
+        ],
+        "options_en": [
+            "2",
+            "1",
+            "3",
+            "4"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q8",
+        "question": "Siswa menulis kode berikut untuk menginisialisasi 4 LED:\n\nconst int LED[4] = {12, 11, 10, 9};\nvoid setup() {\n  for (int i = 0; i <= 4; i++) {\n    pinMode(LED[i], OUTPUT);\n  }\n}\n\nApa masalah utama pada kode tersebut?",
+        "question_en": "A student writes the following code to initialize 4 LEDs:\n\nconst int LED[4] = {12, 11, 10, 9};\nvoid setup() {\n  for (int i = 0; i <= 4; i++) {\n    pinMode(LED[i], OUTPUT);\n  }\n}\n\nWhat is the main problem in this code?",
+        "options": [
+            "pinMode() seharusnya dipanggil di dalam loop(), bukan setup()",
+            "Array tidak boleh dideklarasikan dengan const",
+            "Indeks array seharusnya dimulai dari 1, bukan 0",
+            "Perulangan memakai i <= 4 sehingga mengakses LED[4] yang berada di luar batas array (indeks valid 0–3)"
+        ],
+        "options_en": [
+            "pinMode() should be called inside loop(), not setup()",
+            "An array cannot be declared with const",
+            "The array index should start from 1, not 0",
+            "The loop uses i <= 4 so it accesses LED[4], which is outside the array bounds (valid indexes are 0–3)"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q9",
+        "question": "Siswa membuat program kecepatan kedip LED dengan push button:\n\nint status = digitalRead(2);\nif (status = 1) {\n  delay(100);\n} else {\n  delay(500);\n}\n\nLED selalu berkedip cepat meskipun tombol tidak ditekan. Apa penyebabnya?",
+        "question_en": "A student makes an LED blink-speed program with a push button:\n\nint status = digitalRead(2);\nif (status = 1) {\n  delay(100);\n} else {\n  delay(500);\n}\n\nThe LED always blinks fast even when the button is not pressed. What is the cause?",
+        "options": [
+            "Operator = pada if (status = 1) adalah penugasan sehingga kondisi selalu benar; seharusnya memakai ==",
+            "digitalRead() tidak dapat disimpan ke dalam variabel int",
+            "delay(100) tidak boleh diletakkan di dalam blok if",
+            "Pin 2 tidak dapat dipakai sebagai input"
+        ],
+        "options_en": [
+            "The = operator in if (status = 1) is an assignment so the condition is always true; it should use ==",
+            "digitalRead() cannot be stored in an int variable",
+            "delay(100) must not be placed inside an if block",
+            "Pin 2 cannot be used as an input"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q10",
+        "question": "Pada program 4 LED dengan satu push button, siswa menghapus perintah delay(300) di akhir loop(). Akibatnya, satu kali tekan membuat LED melompat melewati beberapa urutan. Apa analisis penyebab yang paling tepat?",
+        "question_en": "In a 4-LED program with a single push button, a student removes the delay(300) command at the end of loop(). As a result, a single press makes the LEDs jump over several steps in the sequence. What is the most accurate analysis of the cause?",
+        "options": [
+            "Resistor LED terlalu kecil sehingga urutan LED terlewati",
+            "Array LED tidak diinisialisasi sebagai output",
+            "Tanpa jeda, loop() berjalan sangat cepat sehingga satu tekanan (dengan bouncing) terbaca berkali-kali dan x bertambah lebih dari satu",
+            "Switch case tidak dapat dipakai bersama push button"
+        ],
+        "options_en": [
+            "The LED resistor is too small so the sequence steps are skipped",
+            "The LED array is not initialized as outputs",
+            "Without a pause, loop() runs very fast so a single press (with bouncing) is read multiple times and x increases by more than one",
+            "Switch case cannot be used together with a push button"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q11",
+        "question": "Kipas DC disambung ke COM dan NC pada relay. Program mengatur relay HIGH (ON) selama 5 detik lalu LOW (OFF) selama 1 detik. Siswa mengamati kipas mati selama 5 detik dan menyala selama 1 detik, kebalikan dari yang diharapkan. Apa analisis penyebabnya?",
+        "question_en": "A DC fan is connected to COM and NC on a relay. The program sets the relay HIGH (ON) for 5 seconds and then LOW (OFF) for 1 second. The student observes the fan is off for 5 seconds and on for 1 second, the opposite of what was expected. What is the analysis of the cause?",
+        "options": [
+            "Nilai delay pada program tertukar secara otomatis oleh Arduino",
+            "NC terhubung ke COM saat relay OFF, sehingga pola hidup-mati kipas menjadi terbalik dibanding memakai NO",
+            "Relay 5V DC tidak dapat mengendalikan kipas DC 12 V",
+            "pinMode(relay, OUTPUT) belum dipanggil sehingga sinyal terbalik"
+        ],
+        "options_en": [
+            "The delay values in the program are swapped automatically by the Arduino",
+            "NC is connected to COM when the relay is OFF, so the fan's on/off pattern is reversed compared to using NO",
+            "A 5V DC relay cannot control a 12 V DC fan",
+            "pinMode(relay, OUTPUT) was not called so the signal is inverted"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q12",
+        "question": "Siswa menulis int besar = 100000; pada Arduino Uno lalu menampilkan nilainya di serial monitor, dan hasilnya bukan 100000. Apa analisis penyebab dan perbaikan yang paling tepat?",
+        "question_en": "A student writes int big = 100000; on an Arduino Uno and displays the value in the serial monitor, and the result is not 100000. What is the most accurate analysis of the cause and fix?",
+        "options": [
+            "int hanya dapat menyimpan bilangan negatif, sehingga harus diganti boolean",
+            "Angka 100000 harus ditulis dengan tanda kutip agar tersimpan",
+            "Nama variabel dengan huruf besar tidak diperbolehkan",
+            "Rentang memori int terlalu kecil untuk angka sebesar itu (overflow); gunakan tipe long"
+        ],
+        "options_en": [
+            "int can only store negative numbers, so it must be replaced with boolean",
+            "The number 100000 must be written in quotation marks to be stored",
+            "Variable names with uppercase letters are not allowed",
+            "The memory range of int is too small for such a number (overflow); use the long type"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q13",
+        "question": "Perhatikan kode berikut di dalam setup():\n\n// digitalWrite(LED[0], HIGH);\ndigitalWrite(LED[1], HIGH);\n/* digitalWrite(LED[2], HIGH);\ndigitalWrite(LED[3], HIGH); */\n\nLED mana saja yang akan menyala setelah kode ini dijalankan?",
+        "question_en": "Look at the following code inside setup():\n\n// digitalWrite(LED[0], HIGH);\ndigitalWrite(LED[1], HIGH);\n/* digitalWrite(LED[2], HIGH);\ndigitalWrite(LED[3], HIGH); */\n\nWhich LEDs will turn on after this code runs?",
+        "options": [
+            "Hanya LED[1]",
+            "LED[0] dan LED[1]",
+            "LED[1], LED[2], dan LED[3]",
+            "Semua LED"
+        ],
+        "options_en": [
+            "Only LED[1]",
+            "LED[0] and LED[1]",
+            "LED[1], LED[2], and LED[3]",
+            "All LEDs"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q14",
+        "question": "Data nilai disimpan dalam array: int nilai[3][2] = {{80, 70}, {60, 90}, {75, 85}}; dengan baris = siswa dan kolom = mata pelajaran (matematika, IPA). Jika nomor siswa dimulai dari 1, siswa nomor berapa yang memiliki rata-rata tertinggi?",
+        "question_en": "Score data is stored in an array: int score[3][2] = {{80, 70}, {60, 90}, {75, 85}}; with rows = students and columns = subjects (math, science). If student numbers start from 1, which student number has the highest average?",
+        "options": [
+            "Siswa 1",
+            "Siswa 2",
+            "Siswa 3",
+            "Siswa 1 dan Siswa 2 sama-sama tertinggi"
+        ],
+        "options_en": [
+            "Student 1",
+            "Student 2",
+            "Student 3",
+            "Student 1 and Student 2 are tied for highest"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q15",
+        "question": "Dua pendekatan untuk mengontrol 4 LED dengan satu push button: (A) empat variabel pin terpisah dengan if-else bersarang yang panjang; (B) array pin LED, perulangan for untuk inisialisasi, dan switch case. Jika LED nanti akan ditambah menjadi 8, pendekatan mana yang lebih baik?",
+        "question_en": "Two approaches for controlling 4 LEDs with a single push button: (A) four separate pin variables with long nested if-else; (B) an LED pin array, a for loop for initialization, and a switch case. If the LEDs will later be increased to 8, which approach is better?",
+        "options": [
+            "Pendekatan A, karena setiap pin memiliki variabel sendiri sehingga tidak perlu mengubah kode lain",
+            "Pendekatan B, karena array dan for membuat kode rapi dan mudah ditambah tanpa banyak mengubah kode",
+            "Keduanya sama, karena jumlah LED tidak memengaruhi struktur kode",
+            "Pendekatan A, karena if-else selalu lebih hemat memori daripada array"
+        ],
+        "options_en": [
+            "Approach A, because each pin has its own variable so no other code needs to change",
+            "Approach B, because the array and for loop keep the code tidy and easy to extend without changing much code",
+            "Both are the same, because the number of LEDs does not affect code structure",
+            "Approach A, because if-else always uses less memory than an array"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q16",
+        "question": "Sebuah proyek ingin menyalakan lampu rumah 220 V AC lewat Arduino. Solusi mana yang paling tepat dan aman?",
+        "question_en": "A project wants to turn on a 220 V AC household lamp through an Arduino. Which solution is the most appropriate and safe?",
+        "options": [
+            "Hubungkan lampu langsung ke pin digital Arduino",
+            "Hubungkan lampu ke tactile switch lalu ke Arduino",
+            "Pasang resistor 220 Ω seri dengan lampu pada pin digital",
+            "Gunakan modul relay 5V DC: pin digital mengendalikan relay, dan lampu disambung lewat COM dan NO"
+        ],
+        "options_en": [
+            "Connect the lamp directly to an Arduino digital pin",
+            "Connect the lamp to a tactile switch and then to the Arduino",
+            "Put a 220 Ω resistor in series with the lamp on a digital pin",
+            "Use a 5V DC relay module: the digital pin controls the relay, and the lamp is connected through COM and NO"
+        ],
+        "correctAnswerIndex": 3
+    },
+    {
+        "id": "q17",
+        "question": "Sebuah kipas pendingin harus tetap menyala saat relay tidak aktif (termasuk ketika Arduino mati atau belum diprogram), dan hanya dimatikan sesaat ketika relay diaktifkan. Sambungan relay mana yang paling tepat?",
+        "question_en": "A cooling fan must keep running when the relay is inactive (including when the Arduino is off or not yet programmed), and is only turned off briefly when the relay is activated. Which relay connection is the most appropriate?",
+        "options": [
+            "Sambungkan kipas ke COM dan NC",
+            "Sambungkan kipas ke COM dan NO",
+            "Sambungkan kipas langsung ke pin digital Arduino",
+            "Sambungkan kipas hanya ke NO dan GND"
+        ],
+        "options_en": [
+            "Connect the fan to COM and NC",
+            "Connect the fan to COM and NO",
+            "Connect the fan directly to an Arduino digital pin",
+            "Connect the fan only to NO and GND"
+        ],
+        "correctAnswerIndex": 0
+    },
+    {
+        "id": "q18",
+        "question": "Sebuah sensor digital hanya memiliki dua keadaan: terdeteksi atau tidak terdeteksi. Tipe data mana yang paling tepat untuk menyimpan statusnya?",
+        "question_en": "A digital sensor has only two states: detected or not detected. Which data type is the most appropriate for storing its status?",
+        "options": [
+            "String, karena status dapat ditulis sebagai kata \"aktif\" atau \"mati\"",
+            "float, karena paling akurat untuk semua jenis data",
+            "boolean, karena hanya perlu dua nilai (true/false), hemat memori, dan sesuai dengan logika kondisi",
+            "long, karena rentang nilainya paling besar"
+        ],
+        "options_en": [
+            "String, because the status can be written as the words \"active\" or \"off\"",
+            "float, because it is the most accurate for all kinds of data",
+            "boolean, because only two values (true/false) are needed, it saves memory, and it fits condition logic",
+            "long, because its value range is the largest"
+        ],
+        "correctAnswerIndex": 2
+    },
+    {
+        "id": "q19",
+        "question": "Untuk mencari nilai terendah dari data nilai berkisar 0–100, Siswa A menginisialisasi variabel terendah = 100, sedangkan Siswa B menginisialisasi terendah = 0. Keduanya membandingkan setiap elemen dengan syarat elemen < terendah. Penilaian mana yang paling tepat?",
+        "question_en": "To find the lowest value in score data ranging from 0–100, Student A initializes the variable lowest = 100, while Student B initializes lowest = 0. Both compare each element using the condition element < lowest. Which evaluation is the most accurate?",
+        "options": [
+            "Siswa B benar, karena nilai awal 0 lebih kecil sehingga lebih aman",
+            "Siswa A benar, karena nilai awal harus besar (100) agar setiap elemen dapat menggantikannya; pada Siswa B tidak ada elemen yang < 0 sehingga hasilnya selalu 0",
+            "Keduanya benar, karena nilai awal tidak memengaruhi hasil",
+            "Keduanya salah, karena nilai awal harus berupa String"
+        ],
+        "options_en": [
+            "Student B is correct, because an initial value of 0 is smaller and therefore safer",
+            "Student A is correct, because the initial value must be large (100) so every element can replace it; for Student B no element is < 0 so the result is always 0",
+            "Both are correct, because the initial value does not affect the result",
+            "Both are wrong, because the initial value must be a String"
+        ],
+        "correctAnswerIndex": 1
+    },
+    {
+        "id": "q20",
+        "question": "Saat debugging, siswa ingin menonaktifkan sementara 20 baris kode sekaligus dan mudah mengaktifkannya kembali tanpa menghapus apa pun. Pendekatan mana yang paling efisien?",
+        "question_en": "While debugging, a student wants to temporarily disable 20 lines of code at once and be able to re-enable them easily without deleting anything. Which approach is the most efficient?",
+        "options": [
+            "Menghapus 20 baris tersebut lalu menulis ulang nanti",
+            "Menambahkan // di awal setiap baris satu per satu",
+            "Mengubah semua baris tersebut menjadi String",
+            "Membungkus 20 baris tersebut dengan komentar blok /* ... */"
+        ],
+        "options_en": [
+            "Deleting the 20 lines and rewriting them later",
+            "Adding // at the start of each line one by one",
+            "Changing all those lines into a String",
+            "Wrapping the 20 lines in a block comment /* ... */"
+        ],
+        "correctAnswerIndex": 3
+    }
+]
+	,
     "title_en": "Level 2 Post-Test",
     "description_en": "Test your understanding after studying."
   }
