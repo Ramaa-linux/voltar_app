@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,8 +16,17 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
 });
 
 /// Provider untuk memuat himpunan ID step yang telah selesai.
-final completedStepsProvider = FutureProvider<Set<String>>((ref) async {
+/// Prioritas: SharedPreferences lokal (data utama), kemudian sinkronisasi dari Firestore jika user login.
+/// ponytail: Firestore menjadi cadangan/backup; SharedPreferences tetap menjadi source of truth untuk operasi cepat & offline.
+final completedStepsProvider = FutureProvider<Set<String>>((ref) {
   final repo = ref.watch(progressRepositoryProvider);
+  void onProgressUpdate() {
+    ref.invalidateSelf();
+  }
+  ProgressRepository.progressVersionNotifier.addListener(onProgressUpdate);
+  ref.onDispose(() {
+    ProgressRepository.progressVersionNotifier.removeListener(onProgressUpdate);
+  });
   return repo.getCompletedSteps();
 });
 
@@ -194,18 +205,56 @@ class ProgressRepository {
   }
 
   /// Mengambil seluruh ID step yang telah ditandai selesai.
+  /// Prioritas: SharedPreferences lokal (data utama), kemudian sinkronisasi dari Firestore jika user login.
+  /// ponytail: Firestore menjadi cadangan/backup; SharedPreferences tetap menjadi source of truth untuk operasi cepat & offline.
   Future<Set<String>> getCompletedSteps() async {
     try {
       final SharedPreferences prefs = await _getPrefs();
-      final List<String> list =
-          prefs.getStringList(storageKey) ?? const <String>[];
-      return list.toSet();
+      
+      // 1. Ambil dari SharedPreferences lokal (source of truth untuk operasi app)
+      final List<String> list = prefs.getStringList(storageKey) ?? const <String>[];
+      Set<String> completedSteps = list.toSet();
+
+      // 2. Jika user login dan bukan test, coba sinkronisasi dari Firestore
+      final bool isTest = Platform.environment.containsKey('FLUTTER_TEST');
+      if (!isTest) {
+        final String? uid = FirebaseAuth.instance.currentUser?.uid;
+        if (uid != null && uid.isNotEmpty) {
+          try {
+            final DocumentSnapshot<Map<String, dynamic>> doc =
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .get();
+            final dynamic raw = doc.data()?['completedSteps'];
+            if (raw is List) {
+              final Set<String> firestoreSteps = raw
+                  .whereType<String>()
+                  .where((s) => s.isNotEmpty)
+                  .toSet();
+              // Gabungkan lokal dan Firestore; hanya update jika ada perbedaan
+              final Set<String> merged = {...completedSteps, ...firestoreSteps};
+              if (!merged.containsAll(completedSteps) || 
+                  !completedSteps.containsAll(merged)) {
+                await prefs.setStringList(storageKey, merged.toList());
+                completedSteps = merged;
+                ProgressRepository.progressVersionNotifier.value++;
+              }
+            }
+          } on Object {
+            // Offline / gagal akses Firestore - biarkan lokal tetap digunakan
+          }
+        }
+      }
+
+      return completedSteps;
     } on Object {
       return <String>{};
     }
   }
 
   /// Menandai satu step dengan [stepId] sebagai selesai.
+  /// Menyimpan ke SharedPreferences serta sinkronisasi ke Firestore.
   Future<void> markCompleted(String stepId) {
     if (stepId.isEmpty) return Future<void>.value();
     return _enqueueWrite(() async {
@@ -218,6 +267,17 @@ class ProgressRepository {
         }
         await _recordActivityInternal(prefs, now());
         progressVersionNotifier.value++;
+        // Sinkronisasi ke Firestore jika user sudah login (hanya di production)
+        final bool isTest = Platform.environment.containsKey('FLUTTER_TEST');
+        if (!isTest) {
+          final String? uid = FirebaseAuth.instance.currentUser?.uid;
+          if (uid != null && uid.isNotEmpty) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(uid)
+                .update({'completedSteps': FieldValue.arrayUnion([stepId])});
+          }
+        }
       } on Object {
         // Abaikan bila platform channel tidak tersedia.
       }

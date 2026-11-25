@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:voltar/repositories/progress_repository.dart';
 
 /// Exception autentikasi berpesan Bahasa Indonesia untuk ditampilkan ke UI.
 class AuthException implements Exception {
@@ -232,10 +234,12 @@ class AuthService extends ChangeNotifier {
             'name': fallbackName,
             'email': cleanEmail,
             'role': 'siswa',
-            'coins': 0,
             'completedSteps': <String>[],
             'createdAt': FieldValue.serverTimestamp(),
           }, SetOptions(merge: true));
+        } else {
+          // Tarik progress dari Firestore ke SharedPreferences lokal saat login
+          await _syncCompletedStepsFromSnapshot(snapshot.data());
         }
         await reloadAndCheckVerified();
       }
@@ -251,6 +255,27 @@ class AuthService extends ChangeNotifier {
       throw const AuthException(
         'Terjadi kesalahan saat masuk. Silakan coba lagi.',
       );
+    }
+  }
+
+  /// Tarik `completedSteps` dari dokumen Firestore ke SharedPreferences lokal.
+  /// ponytail: overwrite lokal dengan cloud saat login; tambah merge conflict resolution jika offline edit dibutuhkan.
+  Future<void> _syncCompletedStepsFromSnapshot(
+    Map<String, dynamic>? data,
+  ) async {
+    final dynamic raw = data?['completedSteps'];
+    if (raw is! List) return;
+    final List<String> steps = raw
+        .whereType<String>()
+        .where((String s) => s.isNotEmpty)
+        .toSet()
+        .toList();
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(ProgressRepository.storageKey, steps);
+      ProgressRepository.progressVersionNotifier.value++;
+    } on Object {
+      // Abaikan bila platform channel belum siap (mis. unit test tanpa mock prefs).
     }
   }
 
@@ -397,7 +422,6 @@ class AuthService extends ChangeNotifier {
       'name': cleanName,
       'email': cleanEmail,
       'role': cleanRole,
-      'coins': 0,
       'completedSteps': <String>[],
       'createdAt': FieldValue.serverTimestamp(),
     };

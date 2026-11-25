@@ -197,8 +197,8 @@ class GuruKelasPage extends ConsumerWidget {
 
     if (teacherId == null) {
       showVoltSnackBar(
-        ref.context!,
-        ref.context!.t("guruLoginFirst"),
+        ref.context,
+        ref.context.t("guruLoginFirst"),
       );
       return;
     }
@@ -217,13 +217,13 @@ class GuruKelasPage extends ConsumerWidget {
       });
 
       showVoltSnackBar(
-        ref.context!,
-        ref.context!.t("guruClassCreated", args: [nama, classCode]),
+        ref.context,
+        ref.context.t("guruClassCreated", args: [nama, classCode]),
       );
     } catch (e) {
       showVoltSnackBar(
-        ref.context!,
-        ref.context!.t("guruClassCreateFailed", args: [e.toString()]),
+        ref.context,
+        ref.context.t("guruClassCreateFailed", args: [e.toString()]),
       );
     }
   }

@@ -85,7 +85,7 @@ class KelasPage extends ConsumerWidget {
                           studentCount: studentCount,
                           teacherId: teacherId,
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => DetailKelasPage(classId: classId!, className: className, classCode: classCode, teacherId: teacherId, isTeacher: false)));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => DetailKelasPage(classId: classId, className: className, classCode: classCode, teacherId: teacherId, isTeacher: false)));
                           },
                         ),
                       );

@@ -443,7 +443,7 @@ void main() {
         expect(saved!['name'], 'Budi Santoso');
         expect(saved['email'], 'budi@smk.sch.id');
         expect(saved['role'], 'siswa');
-        expect(saved['coins'], 0);
+        expect(saved.containsKey('coins'), isFalse);
         expect(saved['completedSteps'], isEmpty);
       },
     );
@@ -482,7 +482,7 @@ void main() {
       expect(doc!['name'], 'Budi Santoso');
       expect(doc['email'], 'budi@smk.sch.id');
       expect(doc['role'], 'siswa');
-      expect(doc['coins'], 0);
+      expect(doc.containsKey('coins'), isFalse);
       expect(doc['completedSteps'], isEmpty);
     });
 
@@ -553,7 +553,6 @@ void main() {
         'name': 'Rama Pratama',
         'email': 'test@test.com',
         'role': 'siswa',
-        'coins': 10,
       };
 
       final Stream<Map<String, dynamic>?> stream = service.userProfileStream(
@@ -583,7 +582,6 @@ void main() {
         'name': 'Old Name',
         'email': 'test@test.com',
         'role': 'siswa',
-        'coins': 5,
       };
 
       await service.updateProfile(name: 'New Name');
@@ -594,7 +592,6 @@ void main() {
       expect(stored?['name'], 'New Name');
       expect(stored?['email'], 'test@test.com');
       expect(stored?['role'], 'siswa');
-      expect(stored?['coins'], 5);
     });
 
     test('updateProfile throws when name is empty', () async {

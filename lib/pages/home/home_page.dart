@@ -247,49 +247,7 @@ class _ProgressCaption extends ConsumerWidget {
   }
 }
 
-class _ProgressStreakStat extends ConsumerWidget {
-  const _ProgressStreakStat();
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final int streakDays = ref.watch(
-      homeProgressSummaryProvider.select(
-        (asyncVal) => asyncVal.value?.streakDays ?? 0,
-      ),
-    );
-    return Semantics(
-      label: context.t('homeStreakDays', args: [streakDays]),
-      child: _ProgressStat(
-        icon: AppIconName.zap,
-        iconColor: AppColors.accent,
-        value: context.t('homeStreakDays', args: [streakDays]),
-        label: context.t('homeStreakLabel'),
-      ),
-    );
-  }
-}
-
-class _ProgressCoinsStat extends ConsumerWidget {
-  const _ProgressCoinsStat();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final int coins = ref.watch(
-      homeProgressSummaryProvider.select(
-        (asyncVal) => asyncVal.value?.coins ?? 240,
-      ),
-    );
-    return Semantics(
-      label: context.t('homeCoinsCount', args: [coins]),
-      child: _ProgressStat(
-        icon: AppIconName.lightbulb,
-        iconColor: AppColors.accent,
-        value: '$coins',
-        label: context.t('homeCoinsLabel'),
-      ),
-    );
-  }
-}
 
 class _ProgressModuleStat extends ConsumerWidget {
   const _ProgressModuleStat();
@@ -368,10 +326,9 @@ class _ProgressCard extends ConsumerWidget {
             const Divider(),
             const SizedBox(height: AppSpacing.md),
             const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Expanded(child: _ProgressStreakStat()),
-                Expanded(child: _ProgressCoinsStat()),
-                Expanded(child: _ProgressModuleStat()),
+                _ProgressModuleStat(),
               ],
             ),
           ],
@@ -397,7 +354,7 @@ class _ProgressStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         AppIcon(icon, size: AppIconSize.sm, color: iconColor),
         const SizedBox(height: AppSpacing.xs),

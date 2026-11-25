@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../repositories/progress_repository.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_borders.dart';
 import '../../theme/app_colors.dart';
@@ -11,6 +12,13 @@ import '../../shell/guru_shell.dart';
 import '../../utils/localization_helper.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/volt_card.dart';
+
+// Total steps dihitung sekali dari repository (levels 1-5), bukan dari Firestore query.
+// Provider ini didefinisikan di luar class agar stabil dan tidak mereload setiap build.
+final _guruTotalStepsProvider = FutureProvider<int>((ref) async {
+  final repo = ref.watch(progressRepositoryProvider);
+  return repo.getTotalSteps();
+});
 
 /// Halaman Monitoring Progress Siswa untuk Guru.
 /// Menampilkan daftar siswa (role == 'siswa') dari koleksi `users`
@@ -73,15 +81,23 @@ class GuruSiswaPage extends ConsumerWidget {
 
 /// Kartu satu siswa dengan nama, email, dan progress bar.
 class _SiswaCard extends StatelessWidget {
-  const _SiswaCard({required this.data});
+  const _SiswaCard({required this.data, required this.totalSteps});
 
   final Map<String, dynamic> data;
+  final int totalSteps;
+
+  int _getCompletedCount() {
+    final dynamic raw = data['completedSteps'];
+    if (raw is List) {
+      return raw.whereType<String>().where((s) => s.isNotEmpty).length;
+    }
+    return 0;
+  }
 
   double _getProgress() {
-    final completed = data['completedSteps'] as num?;
-    final total = data['totalSteps'] as num?;
-    if (completed == null || total == null || total == 0) return 0;
-    return (completed / total).clamp(0.0, 1.0);
+    final completed = _getCompletedCount();
+    if (totalSteps == 0) return 0;
+    return (completed / totalSteps).clamp(0.0, 1.0);
   }
 
   @override
@@ -93,8 +109,8 @@ class _SiswaCard extends StatelessWidget {
         ? (data['email'] as String).trim()
         : '-';
     final progress = _getProgress();
-    final completed = data['completedSteps'] as int? ?? 0;
-    final total = data['totalSteps'] as int? ?? 0;
+    final completed = _getCompletedCount();
+    final total = totalSteps;
 
     return VoltCard(
       child: Column(
@@ -230,23 +246,37 @@ class _SiswaList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final totalStepsAsync = ref.watch(_guruTotalStepsProvider);
+
     final stream = FirebaseFirestore.instance
         .collection('users')
         .where('role', isEqualTo: 'siswa')
-        .orderBy('name', descending: false)
         .snapshots();
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: stream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
+          debugPrint('Query siswa: loading...');
           return SliverList.separated(
             itemCount: 3,
             separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
             itemBuilder: (_, _) => const _SiswaSkeleton(),
           );
         }
-        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        if (snapshot.hasError) {
+          final errorMsg = snapshot.error.toString();
+          debugPrint('Error query siswa: $errorMsg');
+          return SliverToBoxAdapter(
+            child: _EmptyState(
+              icon: AppIconName.profile,
+              title: context.t('guruSiswaTitle'),
+              message: 'Gagal memuat data siswa: $errorMsg',
+            ),
+          );
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          debugPrint('Jumlah siswa: 0 (data kosong)');
           return SliverToBoxAdapter(
             child: _EmptyState(
               icon: AppIconName.profile,
@@ -255,13 +285,15 @@ class _SiswaList extends ConsumerWidget {
             ),
           );
         }
+        debugPrint('Jumlah siswa: ${snapshot.data!.docs.length}');
+        final int totalSteps = totalStepsAsync.value ?? 0;
         final siswa = snapshot.data!.docs;
         return SliverList.separated(
           itemCount: siswa.length,
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
           itemBuilder: (context, index) {
             final data = siswa[index].data();
-            return _SiswaCard(data: data);
+            return _SiswaCard(data: data, totalSteps: totalSteps);
           },
         );
       },

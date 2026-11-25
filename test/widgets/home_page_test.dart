@@ -97,8 +97,6 @@ void main() {
         ];
         SharedPreferences.setMockInitialValues(<String, Object>{
           ProgressRepository.storageKey: completedList,
-          ProgressRepository.streakCountKey: 3,
-          ProgressRepository.streakLastDayKey: '2026-03-10',
         });
         final repo = ProgressRepository(
           materiRepository: fakeRepo,
@@ -111,7 +109,7 @@ void main() {
         expect(find.text('12 dari 25 materi selesai'), findsOneWidget);
         expect(find.text('12'), findsOneWidget);
         expect(find.text('Judul Step 13'), findsOneWidget);
-        expect(find.text('3 hari'), findsOneWidget);
+        expect(find.text('3 hari'), findsNothing);
 
         final bars = tester.widgetList<SparkProgressBar>(
           find.byType(SparkProgressBar),
@@ -254,8 +252,6 @@ void main() {
           ProgressRepository.storageKey: [
             for (int i = 1; i <= 12; i++) 'step_$i',
           ],
-          ProgressRepository.streakCountKey: 5,
-          ProgressRepository.streakLastDayKey: '2026-03-10',
         });
         await capture(
           ProgressRepository(
@@ -270,8 +266,6 @@ void main() {
           ProgressRepository.storageKey: [
             for (int i = 1; i <= 13; i++) 'step_$i',
           ],
-          ProgressRepository.streakCountKey: 5,
-          ProgressRepository.streakLastDayKey: '2026-03-10',
         });
         await capture(
           ProgressRepository(
@@ -293,8 +287,6 @@ void main() {
           ProgressRepository.storageKey: [
             for (int i = 1; i <= 25; i++) 'step_$i',
           ],
-          ProgressRepository.streakCountKey: 7,
-          ProgressRepository.streakLastDayKey: '2026-03-10',
         });
         await capture(
           ProgressRepository(
